@@ -1,8 +1,8 @@
-=================
-Modifying Angband
-=================
+==================
+Modifying Heroband
+==================
 
-Angband is not just a great game in its own right, it is really easy to modify.
+Heroband is not just a great game in its own right, it is really easy to modify.
 Much of the detail of the game is contained in text data files.  These can be
 changed using nothing more than a text editor for an immediate change to how
 the game works.
@@ -34,7 +34,7 @@ object_base.txt
 
 object.txt
   This file contains the names, properties and description of all the object
-  types that appear in Angband.  New object kinds can easily be added to this
+  types that appear in Heroband.  New object kinds can easily be added to this
   file, or existing ones edited.  Each object defined by this file has an
   object base, and is also allocated another numeric index called an 'sval'.
   A tval-sval pair completely identifies an object - since the tval and sval
@@ -129,7 +129,7 @@ shape.txt
   "SHAPECHANGE:*name of shape to assume*" in its list of effects.
 
 terrain.txt
-  This file defines the kind of terrain which can appear in Angband, and its
+  This file defines the kind of terrain which can appear in Heroband, and its
   properties.  Current terrain can be changed (with possibly large effects),
   but removing it without code changes is likely to break the game.  Adding
   new terrain will have no effect by itself, because there is no mechanism
@@ -166,15 +166,15 @@ dungeon_profile.txt
 
 world.txt
   This defines how the levels of the dungeon are linked.  It is very much a
-  stub.  If what you want is much like Angband with a single dungeon and a
+  stub.  If what you want is much like Heroband with a single dungeon and a
   fixed number of levels linked sequentially, then all you would change here
   are the names and ensure that there is configuration for each level up to
   one less than what's set by world:max-depth in constants.txt.  Anything
   else likely requires changes to struct level in game-world.h,
   level generation, and how the player interacts with the terrain (staircases
-  in Angband) that links levels.  Depending on what aspects of that world
+  in Heroband) that links levels.  Depending on what aspects of that world
   layout you want to be configurable, the contents of world.txt and how it is
-  parsed in init.c probably will be nothing like what is in Angband.
+  parsed in init.c probably will be nothing like what is in Heroband.
 
 store.txt
   This details the shop owners and their relative generosity.
@@ -271,7 +271,7 @@ ui_knowledge.txt
 Making Graphical Tilesets
 =========================
 
-You can make new graphical tilesets for Angband or customize existing ones. In
+You can make new graphical tilesets for Heroband or customize existing ones. In
 this section we'll dive into how tilesets are defined and describe how to set
 one up from scratch. First, we'll enumerate the steps required and then we'll
 break down each step in detail.
@@ -280,7 +280,7 @@ break down each step in detail.
 2. Register the tileset in ``lib/tiles/list.txt``
 3. Create an empty bitmap image large enough to hold your tileset
 4. Store the empty bitmap image in your tileset folder
-5. Author one or more ``.prf`` files to inform Angband how to use your tileset
+5. Author one or more ``.prf`` files to inform Heroband how to use your tileset
 6. Create a Makefile in your tileset folder
 
 First you need to create a directory to contain your tileset's files. Put the
@@ -293,7 +293,7 @@ Shockbolt's tileset uses 64x64 pixel tiles. It also uses the special alpha
 blending flag so it can use double-height tiles (64x128) for large or tall
 monsters. Its dimensions are 8192x2048 but the tileset is not completely
 full. More tiles can be added without increasing the size of the image as new
-objects are added to future releases of Angband. This should be kept in mind as
+objects are added to future releases of Heroband. This should be kept in mind as
 packing your tileset into the smallest possible image size may not be the most
 maintainable solution. Be sure to name the image file after the tile size, for
 example 64x64.png. Use the base size even if you are enabling double-height
@@ -308,10 +308,10 @@ tileset's files, how big the tiles are in pixels (i.e. 64x64), the name of the
 main preference file for the tileset and some additional flags which have to do
 with alpha blending. Not all tilesets need to set extra flags.
 
-Now that the basic setup is complete you need to tell Angband how to interpret
+Now that the basic setup is complete you need to tell Heroband how to interpret
 your tileset image. You need to map each tile in your image to a specific
-element in the game so that Angband knows which tiles to show for which ASCII
-characters. This process can be done incrementally because Angband will
+element in the game so that Heroband knows which tiles to show for which ASCII
+characters. This process can be done incrementally because Heroband will
 continue to show the default character symbols in-game for objects that have
 not yet been mapped. This is especially helpful for verifying that your tileset
 has been setup correctly before beginning to map things out in earnest. It also
@@ -402,7 +402,7 @@ files with comments for each logical section of objects to be mapped::
   %:other-stuff.prf  # Load another preference file
 
 The last step to take is to make sure your tileset will be packaged with
-Angband when it is compiled for distribution and that it can be installed
+Heroband when it is compiled for distribution and that it can be installed
 alongside the other tilesets. to do this you will need to add a file called
 'Makefile' to your tileset directory. Copy and paste an existing Makefile from
 one of the other tileset directories and update the DATA and PACKAGE lines to
@@ -438,6 +438,5 @@ Beyond this, you will have to have some knowledge of the C programming
 language, and can start making changes to the way the game runs or appears.
 Many people have done this - there are over 100 variants of Angband:
 https://nickmcconnell.github.io/AngbandPlus/
-Should you get to this point, the best thing to do is to discuss your ideas on
-the Angband forums at https://live/angband.live/forums/.  The people there are
-typically keen to hear new ideas and ways to play.
+For Heroband, discuss proposed changes on the GitHub project first, especially
+when a change touches player-facing powers, classes, artifacts, or corruption.

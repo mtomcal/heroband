@@ -2,11 +2,11 @@
 A quick demonstration
 =====================
 
-Angband is a very complex game, so you may want to try the following quick
+Heroband is a very complex game, so you may want to try the following quick
 demonstration. The following instructions are for demonstration purposes only,
 and so they are intentionally boring.
 
-For this demo, we will assume that you have never played Angband before,
+For this demo, we will assume that you have never played Heroband before,
 that you have not requested any special "sub-windows", that you have not
 requested any special "graphics" modes, that you have a "numeric keypad" on
 your computer, and that you are using the default options, including, in
@@ -34,7 +34,7 @@ placed into the "town".
 
 You should now be looking at the basic dungeon interaction screen. To the
 left is some information about your character. To the right is an overhead
-view of the town. Nothing happens in Angband while the game is waiting for
+view of the town. Nothing happens in Heroband while the game is waiting for
 you to specify a command, so take a good look at the town. You will see a
 variety of symbols on the screen. Each symbol normally represents a terrain
 feature, an object, or a monster. The ``@`` symbol is special, it
@@ -139,7 +139,7 @@ To make matters worse, as you get used to the difference between the player
 and the character, it becomes so "obvious" that you start to ignore it. At
 that point, you find yourself merging the player and the character in your
 mind, and you find yourself saying things like "So yesterday, I was at my
-friend's house, and I stayed up late playing Angband, and I was attacked by
+friend's house, and I stayed up late playing Heroband, and I was attacked by
 some wild dogs, and I got killed by a demon, but I made it to the high
 score list", in which the pronoun changes back and forth from the real
 world to the virtual one several times in the same sentence. So, from this
@@ -246,7 +246,7 @@ press ``v``, ``b``, ``'`` to throw a flask of oil at the nearest monster.
 To drop an item from your inventory, press ``d`` plus the index of that
 item. You can use the '^X' key to quit and save the game.
 
-You now know enough to play a quick game of Angband. There is a lot more
+You now know enough to play a quick game of Heroband. There is a lot more
 for you to learn, including how to interpret information about your
 character, how to create different kinds of characters, how to determine
 which equipment to wield/wear, how to use various kinds of objects, and how

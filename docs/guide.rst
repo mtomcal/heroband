@@ -1,14 +1,14 @@
 ===============================
- A Players' Guide to Angband 
+ A Player Guide to Heroband
 ===============================
 
 This guide assumes familiarity with the basic mechanics of the game. If you're
-completely new to Angband, check out the user's manual and just start playing,
+completely new to Heroband, check out the user's manual and just start playing,
 get into the dungeon and try, well, whatever seems to be prudent. You'll
 probably die rather quickly, but the following will make much more sense to you
 if you have just a little actual gameplay experience.
 
-This guide was written for Angband 3.5.0, and is now a little out of date
+This guide began as an Angband 3.5.0 guide, and is now a little out of date
 (although the worst of the obsolete stuff has been cleaned out).  It is still
 a handy source of hints and advice; just don't take it as an authority.
 
@@ -33,11 +33,11 @@ Until you find Sauron, your task is to survive and eventually get to level 99.
 The next point is that you don't need to fight any particular monster (other
 than the big two). Yes, there might be a rather impressive hoard in that
 vault – but if the monsters guarding it are too many or too fierce, well, just
-give it a pass. Angband offers an endless supply of monsters and treasure and
+give it a pass. Heroband offers an endless supply of monsters and treasure and
 everything. There will always be another day – provided you live to see another
 day. Sometimes you just have to bug out and run for your life.
 
-So, let me recap, the vital points of Angband are:
+So, let me recap, the vital points of Heroband are:
 
 * go down a lot of stairs
 * kill Sauron (dl 99)
@@ -58,7 +58,7 @@ because it doesn't add significant HP until well above 18.
 
 Example character::
 
-  [Angband 3.5.0 Character Dump]
+  [Heroband 0.1.0 Character Dump]
 
  Name   Anar         Age            102          Self  RB  CB  EB   Best
  Sex    Female       Height       5'11"   STR:     17  +1  +0  +0     18
@@ -213,7 +213,7 @@ What to avoid
 On Bad Luck
 -----------
 
-This is rule number one of Angband: don't take unnecessary risks. If you take
+This is rule number one of Heroband: don't take unnecessary risks. If you take
 enough low-probability chances of death, you'll never survive to fight Sauron.
 Such deaths are generally called 'stupid', but that's not always accurate.
 Sometimes it's just bad luck. But given enough chances, you are guaranteed to
@@ -232,20 +232,20 @@ following is intended to state what many perceive to be blatantly obvious,
 hence "you did WHAT!" face-palm deaths. This really should be cleaned up and
 refactored, but placing here for now.
 
-WARNING. I have yet to defeat Angband. This is a compilation of some of the
+WARNING. I have yet to defeat Heroband. This is a compilation of some of the
 better tips I've learned while trying to explore the depths... (to Level ~35).
 Additional advice would be greatly appreciated!
 
 Start simple
 ````````````
 
-Begin your Angband career as a warrior. Warriors are relatively simple to
+Begin your Heroband career as a warrior. Warriors are relatively simple to
 begin with, and are less likely to be eaten by a pack of jackals.
 
 Focus!
 ``````
 
-Angband is a very harsh game, in that the character you've been playing for
+Heroband is a very harsh game, in that the character you've been playing for
 months could be killed by a single careless action. Playing when tired or
 drunk is probably a good way to leave yourself with nothing but a sad tale to
 share on the forums. If you have the ability to sense monsters or traps then
@@ -255,7 +255,7 @@ that, without the appropriate gear, will kill your character in a single move.
 Use that stuff
 ``````````````
 
-Angband has potions, spell books, wands, staffs, rods, activate-able items,
+Heroband has potions, spell books, wands, staffs, rods, activate-able items,
 melee weapons, ranged weapons, and whatnot. They're meant to be used, for
 crying out loud! It can take a while to get used to using all the different
 types of items, but they work best when used in concert. For those able to use
@@ -269,7 +269,7 @@ Rangers have a bow
 Really a subset of the previous point, but it happens so often... Don't try to
 play a ranger like a warrior -- rely on the bow! Similarly for mages, don't do
 a Gandalf. He may be able to draw a sword and rush headlong in to a pack or
-orcs, but mages in Angband are considerably more fragile. Priests are better
+orcs, but mages in Heroband are considerably more fragile. Priests are better
 equipped to engage in melee combat - with their healing abilities compensating
 for their somewhat fragile nature.
 
@@ -295,7 +295,7 @@ Common fallacy: you find an incredibly powerful Staff of Mighty BOOM! (3
 charges), or a single Potion of become Chuck Norris, and then you keep
 carrying it around and never actually use it. It could be a life insurance,
 but you might still reconsider your strategy: maybe you've become too careful
-lately (Angband rewards deliberate risk-taking, after all).
+lately (Heroband rewards deliberate risk-taking, after all).
 
 Identifying your items
 ``````````````````````
@@ -463,7 +463,7 @@ yet, you have a higher chance of survival.
 Information Awareness
 `````````````````````
 
-Angband offers a LOT of information on a LOT of different screens. If you
+Heroband offers a LOT of information on a LOT of different screens. If you
 haven't already, try enabling multiple consoles -- ALL of them -- and then try
 out different options / combinations. Being able to view a lot of information
 simultaneously at a glance is a considerable benefit over having to be
@@ -472,7 +472,7 @@ diligent enough to manually check each relevant screen each time.
 Also, change the text size. Sure you may be accustomed to your terminal font
 and size for reading; however, you can read and make sense from context a lot
 easier than you can reliably identify the glyph, color, and relative position
-of every character on the screen. Angband may be a text-based game, but you
+of every character on the screen. Heroband may be a text-based game, but you
 don't have to play with a tiny (or even normal size font). Using a slightly
 larger font makes identifying things a LOT easier. The SDL interface is
 perhaps the easiest for using multiple terminals and changing fonts.

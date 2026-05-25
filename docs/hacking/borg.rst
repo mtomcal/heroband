@@ -2,7 +2,7 @@
 Borg
 ====
 
-The Borg is an "Automatic Angband Player".
+The Borg is an "Automatic Heroband Player".
 
 It was first written for about 2.8.0, separate from the game as
 distributed. It was pulled into the game in around 3.3. It was removed
@@ -25,7 +25,7 @@ on its own save file, or on a copy of your save file.
 
 To run the Borg:
 
-1. Ensure Angband is compiled with borg support (this is controlled by
+1. Ensure Heroband is compiled with borg support (this is controlled by
    ``ALLOW_BORG``)
 2. Start or load a game
 3. Press ``^z`` (Ctrl-Z) to access the Borg command interface
@@ -36,7 +36,7 @@ To run the Borg:
 Borg Command Interface
 ======================
 
-The Borg command interface is only available when Angband is compiled
+The Borg command interface is only available when Heroband is compiled
 with borg support.
 
 To access the Borg command interface, press ``^z`` (Ctrl-Z) during
@@ -295,7 +295,7 @@ Create a detailed snapshot of the current game state for debugging:
 2. Press ``l`` to create a snapshot log file
 
 This generates a comprehensive ``.map`` file (e.g., ``player_name.map``) in
-your Angband ``archive`` directory containing:
+your Heroband ``archive`` directory containing:
 
 - ASCII dungeon map: Current level layout showing terrain, monsters (``&``),
   items, and player (``@``) position
@@ -316,7 +316,7 @@ The Borg can be configured to run as a Windows screensaver that
 automatically plays the game in continuous play mode, automatically
 restarting with new characters when the current character dies.
 
-**WARNING:** The Angband display is not always dynamic. While modern LCD
+**WARNING:** The game display is not always dynamic. While modern LCD
 monitors are not susceptible to burn-in, OLED displays may still experience
 image retention with prolonged static content. Configure energy saving
 settings to turn off your monitor after inactivity. The screensaver keeps
@@ -329,12 +329,12 @@ Installation
 1. Copy ``angband.scr`` and the included ``angband.ini`` into your Windows
    directory
 
-2. Ensure you have the Windows version of Angband installed with all supporting
+2. Ensure you have the Windows version of Heroband installed with all supporting
    files in the ``lib`` directory
 
 3. Edit ``angband.ini`` with a text editor:
    
-   - Set ``AngbandPath`` to point to your Angband installation directory
+   - Set ``AngbandPath`` to point to your Heroband installation directory
      (must end with a backslash ``\``)
    - Set ``SaverFile`` to the character name you want to use for the screensaver
      (a random character will be automatically created if the character doesn't
@@ -348,14 +348,14 @@ Installation
 
 4. Test the screensaver in Windows Display Properties
 
-It's recommended to create a normal character first using regular Angband,
+It's recommended to create a normal character first using regular Heroband,
 set up your terminal windows as desired, save that file, and use that filename
 as the ``SaverFile`` for your screensaver.
 
 Technical Details
 -----------------
 
-- The screensaver is a renamed Windows Angband executable with modified
+- The screensaver is a renamed Windows Heroband executable with modified
   ``main-win.c``
 - Normal Borgs get highscore entries, but screensaver Borgs (continuous
   play mode) do not
@@ -363,9 +363,9 @@ Technical Details
 
   - Can be toggled via "Options/Low priority" menu when using as normal
     executable for background Borg play
-- Uses the normal Angband installation's ``angband.ini`` for screen layout,
+- Uses the normal Heroband installation's ``angband.ini`` for screen layout,
   graphics, and sound settings
-- Can be used as a normal Angband executable by renaming to ``angband.exe``
+- Can be used as a normal Heroband executable by renaming to ``angband.exe``
 
 Known Limitations
 -----------------

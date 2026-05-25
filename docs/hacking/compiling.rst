@@ -1,10 +1,10 @@
 Compiling Instructions
 ======================
 
-The methods for compiling Angband vary by platform and by build system. If
-you get Angband working on a different platform or build system please let us
+The methods for compiling Heroband vary by platform and by build system. If
+you get Heroband working on a different platform or build system please let us
 know so we can add to this file.  Unless otherwise noted, all the commands
-listed are to be run from top-level directory of the Angband source files.
+listed are to be run from top-level directory of the Heroband source files.
 
 .. contents:: Contents
    :local:
@@ -24,7 +24,7 @@ directory, ``build/game``, that you can move elsewhere or rename.  To run the
 result, change directories to ``build/game`` or whatever you renamed it to) and
 run ``./angband``.
 
-To build Angband with the X11 front end::
+To build Heroband with the X11 front end::
 
     cmake -B build
     cmake --build build
@@ -33,17 +33,17 @@ If you want to build the X11 front end while building one of the other
 graphical front ends, the option to pass to CMake is
 ``-DSUPPORT_X11_FRONTEND=ON``.
 
-To build Angband with the SDL front end::
+To build Heroband with the SDL front end::
 
     cmake -DSUPPORT_SDL_FRONTEND=ON -B build
     cmake --build build
 
-To build Angband with the SDL2 front end::
+To build Heroband with the SDL2 front end::
 
     cmake -DSUPPORT_SDL2_FRONTEND=ON -B build
     cmake --build build
 
-To build Angband with the GCU front end::
+To build Heroband with the GCU front end::
 
     cmake -DSUPPORT_GCU_FRONTEND=ON -B build
     cmake --build build
@@ -81,8 +81,8 @@ READONLY_INSTALL when SUPPORT_WINDOWS_FRONTEND is on is also not supported
 and will cause CMake to exit with an error.  To customize where the shared
 and read-only installations place files, pass -DCMAKE_INSTALL_PREFIX=prefix
 to install all the files within the given prefix (i.e. using
-``-DCMAKE_INSTALL_PREFIX=/opt/Angband-4.2`` would place all the files within
-/opt/Angband-4.2 or its subdirectories).  For finer-grained placement of the
+``-DCMAKE_INSTALL_PREFIX=/opt/heroband-0.1`` would place all the files within
+/opt/heroband-0.1 or its subdirectories).  For finer-grained placement of the
 files within the given prefix, you could also set CMAKE_INSTALL_BINDIR
 (for the subdirectory of prefix where the executable will be placed; by
 default that is bin), CMAKE_INSTALL_DATAROOTDIR (for the subdirectory of
@@ -163,10 +163,10 @@ it off by also including ``-DSUPPORT_STATS_FRONTEND=OFF`` in the options.
 Linux / other UNIX with autotools
 ---------------------------------
 
-Some sets of source code (e.g. downloads from Rephial.org) will contain a
-"configure" script in the root directory of the unpacked files, while other
-filesets (e.g. the "Source code (tar.gz)" links on the Releases pages or a
-cloned git repository) will not contain the "configure" script.
+The Heroband source tarballs attached to GitHub releases contain a
+``configure`` script in the root directory of the unpacked files.  GitHub's
+automatically generated "Source code" links and cloned git repositories do not
+contain the generated ``configure`` script.
 
 If the code you download does not contain the "configure" script, then you
 will first need to run the following command to create that script::
@@ -181,7 +181,7 @@ configure does, run::
 
     ./configure --help
 
-To build Angband to be run in-place, run this::
+To build Heroband to be run in-place, run this::
 
     ./configure --with-no-install [other options as needed]
     make
@@ -195,7 +195,7 @@ To see what command line options are accepted, use::
 
     src/angband -?
 
-Note that some of Angband's makefiles (src/Makefile and src/tests/Makefile are
+Note that some of Heroband's makefiles (src/Makefile and src/tests/Makefile are
 the primary offenders) may assume features present in GNU make.  If the default
 make on your system is not GNU make, you'll likely have to replace instances
 of make in the quoted commands with whatever will run GNU make.  On OpenBSD,
@@ -203,7 +203,7 @@ for instance, that is gmake (which can be installed by running
 ``pkg_add gmake``).
 
 On systems where there's several C compilers, ./configure may choose the
-wrong one.  One example of that is on OpenBSD 6.9 when building Angband with
+wrong one.  One example of that is on OpenBSD 6.9 when building Heroband with
 SDL2:  ./configure chooses gcc but the installed version of gcc can't handle
 the SDL2 header files that are installed via pkg_add.  To override ./configure's
 default selection of the compiler, use::
@@ -214,7 +214,7 @@ Replace the_good_compiler in that command with the command for running the
 compiler that you want.  For OpenBSD 6.9 when compiling with SDL2, you'd
 replace the_good_compiler with cc or clang.
 
-To build Angband to be installed in some other location, run this::
+To build Heroband to be installed in some other location, run this::
 
     ./configure --prefix /path/to [other options as needed]
     make
@@ -228,7 +228,7 @@ Debug build
 
 **WARNING** this build is intended primarily for debugging purposes. It might have a somewhat slower performance, higher memory requirements and panic saves don't always work (in case of a crash there is a higher chance of losing progress).
 
-When debugging crashes it can be very useful to get more information about *what exactly* went wrong. There are many tools that can detect common issues and provide useful information. Two such tools that are best used together are AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan). To use them you'll need to enable them when compiling angband::
+When debugging crashes it can be very useful to get more information about *what exactly* went wrong. There are many tools that can detect common issues and provide useful information. Two such tools that are best used together are AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan). To use them you'll need to enable them when compiling Heroband::
 
     ./configure [options]
     SANITIZE_FLAGS="-fsanitize=undefined -fsanitize=address" make
@@ -381,7 +381,7 @@ Run with::
     cd build/game
     ./angband.exe
 
-If you want to build the Unix version of Angband that uses X11 or
+If you want to build the Unix version of Heroband that uses X11 or
 Curses and run it under Cygwin, then follow the Linux/Unix instructions.
 
 Using Cygwin with MinGW and autotools
@@ -401,7 +401,7 @@ And run::
 
     ./angband.exe
 
-If you want to build the Unix version of Angband that uses X11 or
+If you want to build the Unix version of Heroband that uses X11 or
 Curses and run it under Cygwin, then follow the Linux/Unix instructions.
 
 Using eclipse (Indigo) on Windows (with MinGW)
@@ -481,7 +481,7 @@ be done by including ``CFLAGS=-DUSE_STATS`` in the options to configure.
 Cross-building for Windows with MinGW and CMake
 -----------------------------------------------
 
-Many developers (as well as the auto-builder) build Angband for Windows using
+Many developers build Heroband for Windows using
 MinGW on Linux. This requires that the necessary MinGW packages are all
 installed.  CMake's documentation for cross-compiling is available
 `here <https://cmake.org/cmake/help/book/mastering-cmake/chapter/Cross%20Compiling%20With%20CMake.html>`__.

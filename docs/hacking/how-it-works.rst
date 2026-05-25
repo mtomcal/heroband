@@ -2,7 +2,7 @@
 How It Works
 ============
 
-This document describes how Angband actually *works* at a high level. Individual
+This document describes how Heroband actually *works* at a high level. Individual
 sections referenced from the TOC are marked with anchors in square brackets to
 make grepping for them easier.
 
@@ -13,7 +13,7 @@ make grepping for them easier.
 The Game
 ========
 
-As you probably know if you're reading this, Angband is a roguelike game set in
+As you probably know if you're reading this, Heroband is a roguelike game set in
 a high-fantasy universe. The game world is made up of levels, numbered from zero
 ("the town") to some maximum depth. Levels are increasingly dangerous the deeper
 they are into the dungeon. Levels are filled with monsters, traps, and objects.
@@ -24,7 +24,7 @@ game is to find Morgoth at depth 100 and kill him.
 Data Structures
 ===============
 
-There are three important top-level data structures in Angband: the 'chunk', the
+There are three important top-level data structures in Heroband: the 'chunk', the
 player, and the static data tables.
 
 The Chunk
@@ -51,7 +51,7 @@ them easier to test.
 The Static Data
 ---------------
 
-Angband's static data - player and monster races, object types, artifacts, et
+Heroband's static data - player and monster races, object types, artifacts, et
 cetera - is loaded from the `gamedata Files`_. Once loaded, this
 data is stored in global tables, sometimes referred to as the 'info arrays'.
 These arrays are generally declared in the header files of the code that uses
@@ -61,7 +61,7 @@ these arrays are stored in a 'maxima' structure, called z_info.
 The Z Layer
 ===========
 
-The lowest-level code in Angband is the "Z" layer, which provides
+The lowest-level code in Heroband is the "Z" layer, which provides
 platform-independent abstractions and generic data structures. Currently, the Z
 layer provides:
 
@@ -89,7 +89,7 @@ Code in the Z layer may not depend on files outside the Z layer.
 Key Abstractions
 ================
 
-Certain game-specific abstractions are important and widely used in Angband to
+Certain game-specific abstractions are important and widely used in Heroband to
 glue the UI code to the game engine. These are the command queue, which sends
 player commands to the game engine, and events, which indicate to the UI that
 the state of the game changed.
@@ -120,7 +120,7 @@ system. The intent is to expand the event system in the future.
 Files
 =====
 
-Angband uses three types of files for storing data: gamedata files, which contain
+Heroband uses three types of files for storing data: gamedata files, which contain
 the game's static data, pref files, which contain UI settings,
 and save files, which contain the state of a game in progress.
 
@@ -157,7 +157,7 @@ strings are stored null-terminated.
 Control Flow
 ============
 
-The flow of control through Angband is complicated and can be very non-obvious
+The flow of control through Heroband is complicated and can be very non-obvious
 due to overuse of global variables as special-behavior hooks. That said, this
 section gives a high-level overview of the control flow of a game session.
 
@@ -171,11 +171,11 @@ begins.
 
 ``main.c`` and ``main-*.c``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-main.c's ``main()`` is the entry point for Angband execution except on Windows,
+main.c's ``main()`` is the entry point for Heroband execution except on Windows,
 where main-win.c's ``WinMain()`` is used, on Nintendo DS, where a special
 ``main()`` in main-nds.c is used, and on OS X where main-cocoa.m's ``main()``
 is used. The ``main()`` function is responsible for dropping permissions if
-Angband is running setuid, parsing command line arguments, then finding a
+Heroband is running setuid, parsing command line arguments, then finding a
 frontend to use and initializing it. Once ``main()`` finds a frontend, it sets
 up signal handlers, sets up the display, and calls `init.c - init_angband`_,
 which loads all the `gamedata files`_ and initializes other static data used
@@ -218,7 +218,7 @@ is responsible for stepping the simulation.
 game-world.c - the game main loop
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The main loop of the game, run_game_loop() is repeatedly called inside
-play_game(). Each iteration of the main loop is one "turn" in Angband parlance,
+play_game(). Each iteration of the main loop is one "turn" in Heroband parlance,
 or one step of the simulator. During each turn:
 
 * All monsters with more energy than the player act
@@ -231,7 +231,7 @@ or one step of the simulator. During each turn:
 mon-move.c - process_monsters()
 *******************************
 
-In Angband, creatures act in order of "energy", which roughly determines how
+In Heroband, creatures act in order of "energy", which roughly determines how
 many actions they can take per step through the simulation. The
 process_monsters() function in mon-move.c is responsible for walking through
 the list of all monsters in the current chunk (see `the chunk`_) and having each
@@ -356,11 +356,11 @@ Stats
 -----
 
 The stats generation code aims to make it easy to analyze object generation,
-monster generation, and other Angband processes suitable for Monte Carlo
+monster generation, and other Heroband processes suitable for Monte Carlo
 simulation.  The stats pseudo-visual module will repeatedly create a character,
 walk her down the dungeon, and, for each dungeon level, kill the monsters
 there and dump information about the monsters and objects.  The end result
-is a SQLite3 database, written to the stats subdirectory of Angband's user
+is a SQLite3 database, written to the stats subdirectory of Heroband's user
 directory.  A similar procedure is used by the ``S`` debugging command.  It
 will generate a text file summarizing the monsters and objects generated.
 That output may be more accessible, since one doesn't have to deal with the

@@ -2,7 +2,7 @@
 Frequently Asked Questions
 ==========================
 
-The best way to get answers to your questions is to post them on the `Angband forum`_.
+The best way to get answers to your questions is to check the Heroband GitHub project or the public manual. For inherited gameplay questions, the upstream Angband forum can still be useful.
 
 .. contents:: Contents
    :local:
@@ -13,7 +13,7 @@ Issues and problems
 How do I report a bug?
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Post on the `Angband forum`_.
+Open an issue on the Heroband GitHub project.
 
 Bug reports should include:
 
@@ -49,7 +49,7 @@ On Linux, the required font is typically provided as ``10x20.pcf.gz``. If your d
 
 Depending on the distribution and configuration, installing these packages may not be sufficient if X11 is not configured to search the installed font paths.
 
-If none of the above works, please check the forums for distribution-specific advice or post a question including your OS, distribution, and Angband version.
+If none of the above works, open an issue with your OS, distribution, frontend, and Heroband version.
 
 Is there a way to disable that thing that pops up when you hit the enter key?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,14 +67,15 @@ Development
 What are the current plans for the game?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ever-changing and subject to U-turning with public dissent. Discussion typically happens in the `Vanilla section`_ of the forums.
+Heroband plans are tracked in the GitHub project and in the fork-specific development notes.
 
 How do I suggest an idea/feature?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Post it on the forums.  If people think it's a good idea, it will generally get some discussion; if they don't, it won't.  The developers keep an eye on the forums, and ideas deemed OK will get filed for future implementation.
+Open an issue or discussion on GitHub.  If the idea fits Heroband's direction,
+it can be discussed there and turned into a focused implementation plan.
 
-Sometimes a suggestion may not be right for the game, though. Some suggestions would change aspects of Angband that are essential to its nature; Angband has a long history, and so has developed a certain character over the years.  Some suggestions might make a good game, perhaps even a better game than Angband, but would make a game that is not Angband. To some extent, variants exist to address this, but even so they tend to adhere to the core Angband principles.
+Some suggestions may not fit Heroband. In particular, player-facing power from demons, undead, blood magic, shadow magic, necromancy, soul pacts, curse benefits, or occult ritual conflicts with the fork rule: the player may fight evil, but may not wield evil.
 
 How do I get a copy of the source code?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,17 +93,16 @@ How do I contribute to the game?
 You have two options:
 
 * Write your patch and submit it as a pull request on GitHub.
-* Post about it on the forum.
+* Open a GitHub issue with a focused bug report, test case, or proposal.
 
 All contributions are accepted as dual-licenced with both the Angband and GPLv2 licences.
 
 There are contribution guidelines in CONTRIBUTING.md in the top level directory of the source code.
 
-If the patch is a bugfix, then you can reasonably expect it to be integrated into the development tree. If it's more involved, and the feature is not one that the next version is planned to have, the patch may go through several reviews before being incorporated. It may also just be unsuitable for Angband - in which case, please don't take rejection badly; you may just be better off writing a variant.
+Bug fixes and Heroband-aligned improvements are welcome. Gameplay changes should preserve Angband behavior unless it conflicts with Heroband's moral design rule.
 
-Non-code activities are different. Documentation can be written on the wiki, or if you're a graphics designer (and they're always welcome) then please talk on the mailing list about your work.
+Documentation, test cases, playtest reports, tiles, and release packaging improvements are also useful contributions.
 
 
-.. _GitHub: https://github.com/angband/angband/
+.. _GitHub: https://github.com/mtomcal/heroband/
 .. _Angband forum: https://angband.live/forums/
-.. _Vanilla section: https://angband.live/forums/forum/angband/vanilla

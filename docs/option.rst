@@ -27,7 +27,7 @@ to make it easier to get to a well-known state for all of those options.
 They are:  's' to save the current selections so that they will be used
 as the starting point for future characters, 'r' to reset the current
 selections to the defaults for a new character, and 'x' to reset the
-current selections to the Angband maintainer's defaults for the user
+current selections to Heroband's defaults for the user
 interface options.
 
 Rogue-like commands ``rogue_like_commands``
@@ -157,7 +157,7 @@ well-known state for all of the birth options.  They are:  's' to save the
 current selections so that they will be used as the starting point for
 future characters, 'r' to reset the current selections to the defaults
 for a new character, and 'x' to reset the current selections to the
-Angband maintainer's defaults for the birth options.
+Heroband's defaults for the birth options.
 
 Generate a new, random artifact set ``birth_randarts``
   A different set of artifacts will be created, in place of the standard
