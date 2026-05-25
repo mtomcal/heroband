@@ -834,7 +834,8 @@ int rd_player(void)
 	rd_u32b(&player->resting_turn);
 
 	/* Future use */
-	strip_bytes(32);
+	rd_u32b(&player->corruption);
+	strip_bytes(28);
 
 	return 0;
 }

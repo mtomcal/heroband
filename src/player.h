@@ -79,6 +79,8 @@ enum
 #define PY_MAX_EXP		99999999L	/* Maximum exp */
 #define PY_KNOW_LEVEL	30			/* Level to know all runes */
 #define PY_MAX_LEVEL	50			/* Maximum level */
+#define PY_CORRUPTION_AGGRAVATE	5	/* Corruption starts drawing hostile attention */
+#define PY_CORRUPTION_DOOMED	10	/* Corruption is deep enough to doom victory */
 
 /**
  * Flags for player.spell_flags[]
@@ -545,6 +547,7 @@ struct player {
 	int16_t stat_map[STAT_MAX];	/* Tracks remapped stats from temp stat swap */
 
 	int16_t *timed;				/* Timed effects */
+	uint32_t corruption;			/* Character-bound corruption from corrupt use */
 
 	int16_t word_recall;			/* Word of recall counter */
 	int16_t deep_descent;			/* Deep Descent counter */
@@ -638,6 +641,8 @@ void player_flags_timed(struct player *p, bitflag f[OF_SIZE]);
 uint8_t player_hp_attr(struct player *p);
 uint8_t player_sp_attr(struct player *p);
 bool player_restore_mana(struct player *p, int amt);
+void player_inc_corruption(struct player *p, uint32_t amount);
+bool player_is_deeply_corrupted(const struct player *p);
 size_t player_random_name(char *buf, size_t buflen);
 void player_safe_name(char *safe, size_t safelen, const char *name, bool strip_suffix);
 void player_cleanup_members(struct player *p);

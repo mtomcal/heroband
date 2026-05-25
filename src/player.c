@@ -362,6 +362,20 @@ bool player_restore_mana(struct player *p, int amt) {
 	return p->csp != old_csp;
 }
 
+void player_inc_corruption(struct player *p, uint32_t amount)
+{
+	if (UINT32_MAX - p->corruption < amount) {
+		p->corruption = UINT32_MAX;
+	} else {
+		p->corruption += amount;
+	}
+}
+
+bool player_is_deeply_corrupted(const struct player *p)
+{
+	return p->corruption >= PY_CORRUPTION_DOOMED;
+}
+
 /**
  * Construct a random player name appropriate for the setting.
  *

@@ -398,6 +398,12 @@ becoming fragile, and a fragile object may be destroyed on future curse removal
 attempts.  It is up to you to balance the risks and rewards in your use
 of cursed items.
 
+Some evil artifacts and Morgul weapons are worse than ordinary cursed objects:
+they are corrupt.  Heroband warns before you equip or activate corrupt power.
+If you confirm that use, corruption is recorded on the character, can bring
+hostile consequences, and can doom a final victory.  Corruption is not a class
+path or a safe heroic optimization.
+
 Mining
 ======
 

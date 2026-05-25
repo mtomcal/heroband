@@ -1,21 +1,21 @@
 # Corruption Mechanics Implementation Plan
 ## Player-accessible evil power and corrupt artifact policy
 
-> **Status: FOUNDATION IMPLEMENTED** - 12 grill decisions resolved. Slices 1-3 are implemented and tested: corrupt item classification, equip warnings, and activation warnings. Slices 4+ remain planned follow-up work.
+> **Status: CORE CORRUPTION POLICY IMPLEMENTED** - 12 grill decisions resolved. Slices 1-10 are implemented and tested: corrupt item classification, equip/activation warnings, persistent character-bound corruption on confirmed corrupt use, hostile corruption thresholds, forbidden player-power removals, shadow-book access gates, scroll policy, and deep-corruption victory failure. Documentation and scenario-save playtest validation remain.
 
 ## Implementation Progress
 
 - [x] Slice 1: Corrupt Item Classification
 - [x] Slice 2: Warning Before Equipping Corrupt Gear
 - [x] Slice 3: Warning Before Activating Corrupt Power
-- [ ] Slice 4: First Corruption State Consequence
-- [ ] Slice 5: Escalating Corruption Effects
-- [ ] Slice 6: Convert Player Drain Life Devices
-- [ ] Slice 7: Remove Vampiric and Bloodlust Player Power
-- [ ] Slice 8: Shadow Player Infrastructure Access Gate
-- [ ] Slice 9: Summon Undead and Curse Scroll Policy
-- [ ] Slice 10: Heroic Victory Gate and Corruption Failure Ending
-- [ ] Slice 11: Docs and Ubiquitous Language
+- [x] Slice 4: First Corruption State Consequence
+- [x] Slice 5: Escalating Corruption Effects
+- [x] Slice 6: Convert Player Drain Life Devices
+- [x] Slice 7: Remove Vampiric and Bloodlust Player Power
+- [x] Slice 8: Shadow Player Infrastructure Access Gate
+- [x] Slice 9: Summon Undead and Curse Scroll Policy
+- [x] Slice 10: Heroic Victory Gate and Corruption Failure Ending
+- [x] Slice 11: Docs and Ubiquitous Language
 
 ## Overview
 
@@ -572,50 +572,50 @@ Classify every remaining hit for blood, shadow, nether, soul, vampire, demon, un
 
 ### Slice 6: Convert Player Drain Life Devices
 
-- [ ] RED: add wand `Drain Life` policy test.
-- [ ] GREEN: replace, remove, or corrupt-gate wand use.
-- [ ] RED/GREEN: repeat for rod `Drain Life`.
-- [ ] RED/GREEN: repeat for artifact `DRAIN_LIFE*` activations.
-- [ ] REFACTOR: clean player-facing descriptions.
+- [x] RED: add wand `Drain Life` policy test.
+- [x] GREEN: replace, remove, or corrupt-gate wand use.
+- [x] RED/GREEN: repeat for rod `Drain Life`.
+- [x] RED/GREEN: repeat for artifact `DRAIN_LIFE*` activations.
+- [x] REFACTOR: clean player-facing descriptions.
 
 ### Slice 7: Remove Vampiric and Bloodlust Player Power
 
-- [ ] RED: add no-class-`BLOODLUST` access test.
-- [ ] GREEN: remove class/object access to `BLOODLUST`.
-- [ ] RED/GREEN: add no-player-`ATT_VAMP` shape test.
-- [ ] RED/GREEN: replace vampire/werewolf forms.
-- [ ] REFACTOR: clean descriptions and rerun alltests.
+- [x] RED: add no-class-`BLOODLUST` access test.
+- [x] GREEN: remove class/object access to `BLOODLUST`.
+- [x] RED/GREEN: add no-player-`ATT_VAMP` shape test.
+- [x] RED/GREEN: replace vampire/werewolf forms.
+- [x] REFACTOR: clean descriptions and rerun alltests.
 
 ### Slice 8: Shadow Player Infrastructure Access Gate
 
-- [ ] RED: add no-playable-shadow-realm test.
-- [ ] GREEN: remove playable shadow realm use.
-- [ ] RED/GREEN: add no-town-shadow-book access test.
-- [ ] RED/GREEN: remove or reclassify monster shadow-book drops.
-- [ ] REFACTOR: document compatibility plumbing that remains.
+- [x] RED: add no-playable-shadow-realm test.
+- [x] GREEN: remove playable shadow realm use.
+- [x] RED/GREEN: add no-town-shadow-book access test.
+- [x] RED/GREEN: remove or reclassify monster shadow-book drops.
+- [x] REFACTOR: document compatibility plumbing that remains.
 
 ### Slice 9: Summon Undead and Curse Scroll Policy
 
-- [ ] RED: add `Summon Undead` object policy test.
-- [ ] GREEN: remove, hostile-classify, or corrupt-gate it.
-- [ ] RED/GREEN: repeat for `Curse Weapon` and `Curse Armour`.
-- [ ] REFACTOR: clarify dangerous descriptions.
+- [x] RED: add `Summon Undead` object policy test.
+- [x] GREEN: remove, hostile-classify, or corrupt-gate it.
+- [x] RED/GREEN: repeat for `Curse Weapon` and `Curse Armour`.
+- [x] REFACTOR: clarify dangerous descriptions.
 
 ### Slice 10: Heroic Victory Gate and Corruption Failure Ending
 
-- [ ] RED: add deep-corruption victory-block test.
-- [ ] GREEN: add minimum victory gate.
-- [ ] RED/GREEN: add unique failure reason/message.
-- [ ] RED/GREEN: verify uncorrupted victory path unchanged.
-- [ ] REFACTOR: keep failure text separate from ordinary death.
+- [x] RED: add deep-corruption victory-block test.
+- [x] GREEN: add minimum victory gate.
+- [x] RED/GREEN: add unique failure reason/message.
+- [x] RED/GREEN: verify uncorrupted victory path unchanged.
+- [x] REFACTOR: keep failure text separate from ordinary death.
 
 ### Slice 11: Documentation and Ubiquitous Language
 
-- [ ] RED: run term/stale-reference checks and capture failures.
-- [ ] GREEN: add `Corruption Mechanic` to `UBIQUITOUS_LANGUAGE.md`.
-- [ ] RED/GREEN: update docs/help for corrupt warnings and consequences.
-- [ ] RED/GREEN: remove stale player-facing evil power recommendations.
-- [ ] REFACTOR: tighten moral terminology.
+- [x] RED: run term/stale-reference checks and capture failures.
+- [x] GREEN: add `Corruption Mechanic` to `UBIQUITOUS_LANGUAGE.md`.
+- [x] RED/GREEN: update docs/help for corrupt warnings and consequences.
+- [x] RED/GREEN: remove stale player-facing evil power recommendations.
+- [x] REFACTOR: tighten moral terminology.
 
 ## Notes and Follow-Ups
 

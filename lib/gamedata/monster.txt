@@ -3188,7 +3188,6 @@ innate-freq:5
 spell-freq:8
 spells:WHIP
 spells:WOUND | SCARE | DARKNESS
-drop-base:shadow book:5:1:1
 friends:50:1d2:Illusionist
 friends:50:1d2:Priest
 friends:50:1d2:warrior
@@ -3478,8 +3477,6 @@ flags:DROP_1 | ONLY_ITEM
 flags:FORCE_SLEEP
 spell-freq:5
 spells:BLIND | WOUND | CONF | DARKNESS | HEAL
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 desc:A dwarf of the east, dressed all in black, chanting words of dark sorcery.
 
 name:air spirit
@@ -4617,8 +4614,6 @@ innate-freq:6
 spell-freq:12
 spells:DARKNESS | SCARE
 spells:BOLT
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 friends:50:1d1:rogue
 friends:50:1d1:ranger
 friends:50:1d1:paladin
@@ -5995,8 +5990,6 @@ spell-freq:5
 spells:BLIND | WOUND | DARKNESS | SCARE
 spells:BO_NETH
 spells:S_UNDEAD
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 friends-base:80:1d3:skeleton
 desc:A gaunt figure, clothed in black robes.
 
@@ -6637,8 +6630,6 @@ flags:OPEN_DOOR
 flags:FORCE_SLEEP
 spell-freq:8
 spells:BLIND | WOUND | DARKNESS | SCARE
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 friends:50:1d1:rogue
 friends:50:1d1:Ranger
 friends:50:1d1:Paladin
@@ -8810,8 +8801,6 @@ spells:BLIND | WOUND | DARKNESS | HOLD | SCARE
 spells:TPORT
 spells:BO_NETH
 spells:S_UNDEAD
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 friends-base:80:1d3:skeleton
 desc:A necromancer recruited to the evil realm of Angmar during the decline of
 desc: the North Kingdom.
@@ -9202,8 +9191,6 @@ spell-freq:5
 spells:BLIND | WOUND | SCARE
 spells:BO_NETH
 spells:S_MONSTERS
-drop-base:shadow book:8:1:1
-drop-base:shadow book:8:1:1
 friends:50:1d1:Imp
 desc:It is a humanoid figure dressed in armour of an ancient form.  From beneath
 desc: its helmet, eyes glow a baleful red and seem to pierce you like lances of
@@ -9958,7 +9945,6 @@ spells:BA_COLD | BA_FIRE
 spells:BO_ACID
 spells:S_DEMON | S_MONSTER | S_UNDEAD
 drop-base:magic book:8:1:1
-drop-base:shadow book:8:1:1
 desc:A dwarf with plaited beard and painted face, dressed in deepest black.
 desc:  Power seems to crackle from his stocky frame.
 
@@ -10730,8 +10716,6 @@ flags:FORCE_SLEEP
 spell-freq:2
 spells:BLIND | WOUND | HEAL | HOLD
 spells:S_MONSTER | S_UNDEAD
-drop-base:shadow book:5:1:1
-drop-base:shadow book:10:1:1
 friends:30:1d1:Master thief
 friends:30:1d1:Ranger chieftain
 friends:30:1d1:Sorcerer

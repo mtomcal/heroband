@@ -356,12 +356,11 @@ resistance to nether bolts, balls and breaths, reducing the damage and
 preventing any experience drains from those attacks, but has no effect on
 melee "hits to drain experience". Monsters caught in the blast from a nether
 ball or breath will take damage proportional to distance from the centre of
-the attack, except for undead who are totally immune. The player may find
-wands or rods of Drain Life, which are similarly ineffective on those undead
-creatures which have no life to drain: however, the real player equivalent
-attack spell is the priest/paladin spell of "Orb of Draining", a ball spell
-which does damage to all monsters, double damage to evil monsters, and is
-resisted by none.
+the attack, except for undead who are totally immune. Heroband does not offer
+life-draining devices as safe player power. The clean player equivalent attack
+spell is the priest/paladin spell of "Orb of Draining", a ball spell which
+does damage to all monsters, double damage to evil monsters, and is resisted by
+none.
 
 Other attack forms are rarer, but may include: disenchantment (both in
 melee or by a monster breath), chaos (breath or melee, which if unresisted

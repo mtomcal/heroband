@@ -507,7 +507,8 @@ void wr_player(void)
 	wr_u32b(player->resting_turn);
 
 	/* Future use */
-	for (i = 0; i < 8; i++) wr_u32b(0L);
+	wr_u32b(player->corruption);
+	for (i = 0; i < 7; i++) wr_u32b(0L);
 }
 
 

@@ -33,6 +33,7 @@
 #include "obj-pile.h"
 #include "obj-tval.h"
 #include "obj-util.h"
+#include "player.h"
 #include "player-attack.h"
 #include "player-calcs.h"
 #include "player-spell.h"
@@ -308,6 +309,9 @@ void do_cmd_wield(struct command *cmd)
 	/* If the slot is open, wield and be done */
 	if (!equip_obj) {
 		inven_wield(obj, slot);
+		if (object_is_corrupt(obj)) {
+			player_inc_corruption(player, 1);
+		}
 		return;
 	}
 
@@ -364,6 +368,9 @@ void do_cmd_wield(struct command *cmd)
 		act = "You were wearing";
 
 	inven_wield(obj, slot);
+	if (object_is_corrupt(obj)) {
+		player_inc_corruption(player, 1);
+	}
 
 	/* Message */
 	msgt(MSG_WIELD, "%s %s (%c).", act, o_name,
@@ -882,6 +889,7 @@ void do_cmd_zap_rod(struct command *cmd)
 void do_cmd_activate(struct command *cmd)
 {
 	struct object *obj;
+	int old_timeout;
 
 	if (!player_get_resume_normal_shape(player, cmd)) {
 		cmd_set_repeat(0);
@@ -910,8 +918,12 @@ void do_cmd_activate(struct command *cmd)
 	}
 
 	/* Disable autorepetition when successful. */
+	old_timeout = obj->timeout;
 	if (!use_aux(cmd, obj, USE_TIMEOUT, MSG_ACT_ARTIFACT)) {
 		cmd_set_repeat(0);
+	}
+	if (object_is_corrupt(obj) && obj->timeout > old_timeout) {
+		player_inc_corruption(player, 1);
 	}
 }
 

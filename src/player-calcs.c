@@ -1920,6 +1920,9 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 
 	/* Extract the player flags */
 	player_flags(p, collect_f);
+	if (p->corruption >= PY_CORRUPTION_AGGRAVATE) {
+		of_on(collect_f, OF_AGGRAVATE);
+	}
 
 	/* Analyze equipment */
 	for (i = 0; i < p->body.count; i++) {
@@ -2730,4 +2733,3 @@ void handle_stuff(struct player *p)
 	if (p->upkeep->update) update_stuff(p);
 	if (p->upkeep->redraw) redraw_stuff(p);
 }
-

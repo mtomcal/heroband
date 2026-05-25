@@ -2766,7 +2766,7 @@ graphics:?:w
 level:15
 weight:5
 cost:0
-alloc:10:15 to 100
+#A:10:15 to 100
 pile:70:1d3
 power:0
 effect:SUMMON:UNDEAD
@@ -4091,9 +4091,9 @@ effect:ARC:POIS:0:30
 dice:160
 
 
-### Drain lifes ###
+### Force devices ###
 
-name:Drain Life
+name:Force Bolts
 type:wand
 graphics:-:d
 level:50
@@ -4104,10 +4104,10 @@ attack:1d1:0:0
 armor:0:0
 charges:3+d3
 power:11
-effect:BOLT_STATUS_DAM:MON_DRAIN
+effect:BOLT:FORCE
 dice:150
 
-name:Annihilation
+name:Force Blast
 type:wand
 graphics:-:d
 level:60
@@ -4119,7 +4119,7 @@ armor:0:0
 charges:1+d2
 flags:IGNORE_ACID | IGNORE_ELEC | IGNORE_FIRE | IGNORE_COLD
 power:12
-effect:BOLT_STATUS_DAM:MON_DRAIN
+effect:BOLT:FORCE
 dice:250
 
 
@@ -4837,7 +4837,7 @@ dice:$B
 expr:B:PLAYER_LEVEL:+ 0
 time:25
 
-name:Drain Life
+name:Force Bolts
 type:rod
 graphics:-:d
 level:75
@@ -4847,7 +4847,7 @@ alloc:20:75 to 100
 attack:1d1:0:0
 armor:0:0
 power:11
-effect:BOLT_STATUS_DAM:MON_DRAIN
+effect:BOLT:FORCE
 dice:150
 time:23
 
@@ -5334,4 +5334,3 @@ flags:INSTA_ART | QUEST_ART
 
 
 #The "Special Artifacts" are now automatically generated from artifact.txt
-

@@ -11,6 +11,7 @@
 | **Moral Restriction** | A gameplay or content rule that prevents playable characters from using forbidden power sources. | Content filter, flavor pass |
 | **Clean Heroic Power** | Player power sourced from natural skill, courage, discipline, craft, lawful authority, healing, light, faith, music, tactics, nature, or heroic resolve. | Reskinned dark power |
 | **Replacement Class** | A new playable class that preserves a gameplay niche while replacing forbidden power sources with clean heroic mechanics. | Rename, reflavor |
+| **Corruption Mechanic** | A hostile temptation system for corrupt artifacts or Morgul gear where confirmed use warns the player, records corruption, escalates penalties, and can doom heroic victory. | Evil build path, dark class |
 
 ## Testing And Playtest
 
@@ -37,6 +38,7 @@
 - **Player-Accessible Evil Power** violates the **Central Design Rule**.
 - **Enemy-Only Evil Content** can remain when it is clearly antagonistic.
 - A **Replacement Class** must use **Clean Heroic Power**, not a renamed forbidden mechanic.
+- A **Corruption Mechanic** is not **Clean Heroic Power**; it is a hostile consequence for wielding forbidden objects.
 - The **Promotion Rule** turns durable findings from an **Angband Test Session** into **Deterministic Tests** when the test frontend or unit-test layer can express them.
 
 ## Example Dialogue

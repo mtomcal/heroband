@@ -244,11 +244,19 @@ bool quest_check(struct player *p, const struct monster *m)
 
 		/* Nothing left, game over... */
 		if (total == 0) {
-			p->total_winner = true;
+			if (player_is_deeply_corrupted(p)) {
+				p->is_dead = true;
+				my_strcpy(p->died_from, "Corruption",
+					sizeof(p->died_from));
+				msg("*** CORRUPTION CLAIMS YOU ***");
+				msg("You have defeated Morgoth, but corruption has destroyed your character.");
+			} else {
+				p->total_winner = true;
+				msg("*** CONGRATULATIONS ***");
+				msg("You have won the game!");
+				msg("You may retire (key is shift-q) when you are ready.");
+			}
 			p->upkeep->redraw |= (PR_TITLE);
-			msg("*** CONGRATULATIONS ***");
-			msg("You have won the game!");
-			msg("You may retire (key is shift-q) when you are ready.");
 		}
 
 		return true;

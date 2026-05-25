@@ -1064,6 +1064,7 @@ desc: fire demons, who war forever, fettered by sorcerous binds.
 
 name:of Théoden
 base-object:polearm:Beaked Axe
+corrupt
 level:30
 weight:180
 cost:40000
@@ -1258,6 +1259,7 @@ desc: and dire wolves.
 
 name:'Turmil'
 base-object:hafted:Lead-Filled Mace
+corrupt
 level:20
 weight:120
 cost:30000

@@ -5,6 +5,7 @@
 #include "test-utils.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "cave.h"
 #include "cmd-core.h"
 #include "game-event.h"
@@ -86,6 +87,7 @@ int teardown_tests(void *state) {
 }
 
 static int test_newgame(void *state) {
+	const char *scenario_save = getenv("HEROBAND_SCENARIO_SAVE_OUT");
 
 	/* Try making a new game */
 	eq(player_make_simple(NULL, NULL, "Tester"), true);
@@ -96,12 +98,18 @@ static int test_newgame(void *state) {
 	notnull(cave);
 	eq(player->chp, player->mhp);
 	eq(player->timed[TMD_FOOD], PY_FOOD_FULL - 1);
+	player->corruption = 7;
 
 	/* Should be all set up to save properly now */
 	eq(savefile_save("Test1"), true);
 
 	/* Make sure it saved properly */
 	eq(file_exists("Test1"), true);
+
+	if (scenario_save && scenario_save[0]) {
+		eq(savefile_save(scenario_save), true);
+		eq(file_exists(scenario_save), true);
+	}
 
 	ok;
 }
@@ -116,6 +124,7 @@ static int test_loadgame(void *state) {
 	notnull(cave);
 	eq(player->chp, player->mhp);
 	eq(player->timed[TMD_FOOD], PY_FOOD_FULL - 1);
+	eq(player->corruption, 7);
 
 	ok;
 }

@@ -409,7 +409,7 @@ void borg_init_item_val(void)
     sv_rod_elec_bolt        = borg_lookup_sval_fail(tval, "Lightning Bolts");
     sv_rod_cold_bolt        = borg_lookup_sval_fail(tval, "Frost Bolts");
     sv_rod_acid_bolt        = borg_lookup_sval_fail(tval, "Acid Bolts");
-    sv_rod_drain_life       = borg_lookup_sval_fail(tval, "Drain Life");
+    sv_rod_drain_life       = borg_lookup_sval_fail(tval, "Force Bolts");
     sv_rod_fire_ball        = borg_lookup_sval_fail(tval, "Fire Balls");
     sv_rod_elec_ball        = borg_lookup_sval_fail(tval, "Lightning Balls");
     sv_rod_cold_ball        = borg_lookup_sval_fail(tval, "Cold Balls");
@@ -446,7 +446,7 @@ void borg_init_item_val(void)
     kv_wand_stinking_cloud  = borg_lookup_kind(tval, sv_wand_stinking_cloud);
     sv_wand_magic_missile   = borg_lookup_sval_fail(tval, "Magic Missile");
     kv_wand_magic_missile   = borg_lookup_kind(tval, sv_wand_magic_missile);
-    sv_wand_annihilation    = borg_lookup_sval_fail(tval, "Annihilation");
+    sv_wand_annihilation    = borg_lookup_sval_fail(tval, "Force Blast");
     kv_wand_annihilation    = borg_lookup_kind(tval, sv_wand_annihilation);
     sv_wand_stone_to_mud    = borg_lookup_sval_fail(tval, "Stone to Mud");
     sv_wand_wonder          = borg_lookup_sval_fail(tval, "Wonder");
@@ -464,7 +464,7 @@ void borg_init_item_val(void)
     sv_wand_elec_ball       = borg_lookup_sval_fail(tval, "Lightning Bolts");
     sv_wand_dragon_cold     = borg_lookup_sval_fail(tval, "Dragon's Frost");
     sv_wand_dragon_fire     = borg_lookup_sval_fail(tval, "Dragon's Flame");
-    sv_wand_drain_life      = borg_lookup_sval_fail(tval, "Drain Life");
+    sv_wand_drain_life      = borg_lookup_sval_fail(tval, "Force Bolts");
 
     tval                    = tval_find_idx("sword");
     sv_dagger               = borg_lookup_sval_fail(tval, "Dagger");
