@@ -48,6 +48,9 @@ lib/user/save/*
 lib/user/scores/scores.*
 lib/user/sdl2init.txt
 lib/user/window.prf
+lib/archive/*
+lib/panic/*
+lib/save/*
 mk/buildsys.mk
 mk/extra.mk
 mk/sinclude.mk

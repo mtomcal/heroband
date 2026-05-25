@@ -42,8 +42,21 @@ static int test_generate0(void *state) {
 	ok;
 }
 
+static int test_forbidden_classes_unplayable(void *state) {
+	struct player_class warrior = { .name = "Warrior" };
+	struct player_class necromancer = { .name = "Necromancer" };
+	struct player_class blackguard = { .name = "Blackguard" };
+
+	eq(player_class_is_playable(NULL), false);
+	eq(player_class_is_playable(&warrior), true);
+	eq(player_class_is_playable(&necromancer), false);
+	eq(player_class_is_playable(&blackguard), false);
+	ok;
+}
+
 const char *suite_name = "player/birth";
 struct test tests[] = {
 	{ "generate0", test_generate0 },
+	{ "forbidden_classes_unplayable", test_forbidden_classes_unplayable },
 	{ NULL, NULL }
 };

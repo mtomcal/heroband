@@ -73,11 +73,31 @@ if ! command -v tmux >/dev/null 2>&1; then
 	exit 1
 fi
 
+if [ "$do_build" -eq 1 ]; then
+	if ! command -v pkg-config >/dev/null 2>&1; then
+		echo "pkg-config is required to configure the GCU frontend." >&2
+		echo "On Debian/Ubuntu, install the playtest dependencies with:" >&2
+		echo "  sudo apt-get install -y pkg-config libncurses-dev tmux ninja-build" >&2
+		exit 1
+	fi
+
+	if ! pkg-config --exists ncursesw; then
+		echo "ncursesw development metadata is required for the GCU frontend." >&2
+		echo "On Debian/Ubuntu, install the playtest dependencies with:" >&2
+		echo "  sudo apt-get install -y pkg-config libncurses-dev tmux ninja-build" >&2
+		exit 1
+	fi
+fi
+
 if [ -z "$state_dir" ]; then
 	state_dir=$(mktemp -d /tmp/heroband-playtest.XXXXXX)
 else
 	mkdir -p "$state_dir"
 fi
+
+for subdir in user save panic archive; do
+	mkdir -p "$state_dir/$subdir"
+done
 
 contract_abs=$(CDPATH= cd -- "$(dirname -- "$contract")" && pwd)/$(basename -- "$contract")
 state_contract="$state_dir/TEST_CONTRACT.md"
@@ -88,15 +108,18 @@ fi
 if [ "$do_build" -eq 1 ]; then
 	if [ ! -f "$build_dir/CMakeCache.txt" ]; then
 		if command -v ninja >/dev/null 2>&1; then
-			cmake -G Ninja -B "$build_dir" -DSUPPORT_GCU_FRONTEND=ON -DSUPPORT_TEST_FRONTEND=ON "$repo_root"
+			cmake -G Ninja -B "$build_dir" -DSUPPORT_GCU_FRONTEND=ON -DSUPPORT_TEST_FRONTEND=ON -DPKG_CONFIG_EXECUTABLE="$(command -v pkg-config)" "$repo_root"
 		else
-			cmake -B "$build_dir" -DSUPPORT_GCU_FRONTEND=ON -DSUPPORT_TEST_FRONTEND=ON "$repo_root"
+			cmake -B "$build_dir" -DSUPPORT_GCU_FRONTEND=ON -DSUPPORT_TEST_FRONTEND=ON -DPKG_CONFIG_EXECUTABLE="$(command -v pkg-config)" "$repo_root"
 		fi
 	else
 		if ! grep -q '^SUPPORT_GCU_FRONTEND:BOOL=ON$' "$build_dir/CMakeCache.txt"; then
 			echo "$build_dir exists but SUPPORT_GCU_FRONTEND is not ON." >&2
 			echo "Use a dedicated GCU build directory or reconfigure explicitly." >&2
 			exit 1
+		fi
+		if grep -q '^PKG_CONFIG_EXECUTABLE:FILEPATH=.*NOTFOUND$' "$build_dir/CMakeCache.txt"; then
+			cmake -B "$build_dir" -DPKG_CONFIG_EXECUTABLE="$(command -v pkg-config)" "$repo_root"
 		fi
 	fi
 	cmake --build "$build_dir" -j2
@@ -123,7 +146,7 @@ CONTRACT=$state_dir/TEST_CONTRACT.md
 EOF
 
 tmux new-session -d -s "$session" -c "$repo_root" \
-	"HOME='$state_dir' TERM=xterm-256color '$exe' -mgcu"
+	"HOME='$state_dir' TERM=xterm-256color '$exe' -duser='$state_dir/user' -dsave='$state_dir/save' -dpanic='$state_dir/panic' -darchive='$state_dir/archive' -mgcu"
 
 {
 	echo "Started tmux session: $session"

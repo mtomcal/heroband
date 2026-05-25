@@ -92,6 +92,11 @@ All scripts live relative to this skill:
 - `scripts/send-playtest-key.sh`: send one or more tmux keys, then immediately capture the pane.
 - `scripts/stop-playtest.sh`: stop the tmux session, optionally preserving artifacts.
 
+The start wrapper keeps runtime writes isolated by redirecting Angband's
+`user`, `save`, `panic`, and `archive` directories into the state directory.
+If GCU dependencies are missing, install the Debian/Ubuntu baseline with:
+`sudo apt-get install -y pkg-config libncurses-dev tmux ninja-build`.
+
 Typical use:
 
 ```sh
