@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Borg &#8212; The Heroband Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=8fc57837"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Heroband Development" href="heroband.html" />
+    <link rel="prev" title="Documentation on documentation" href="metadoc.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<header id="pageheader">
+    <div>
+        <div style="display: flex; align-items: baseline;">
+            <h1>The Heroband Manual</h1>
+            <span class="version">vheroband-0.1.0-1-gcc578f3d8-dirty</span>
+        </div>
+        <nav class="manual-nav" aria-label="Primary">
+            <a href="../index.html">Home</a>
+            <a href="../heroband.html">Heroband</a>
+            <a href="../birth.html">Classes</a>
+            <a href="../command.html">Commands</a>
+            <a href="heroband.html">Developers</a>
+        </nav>
+    </div>
+    <img src="../_static/att.svg" style="height: 4rem;">
+</header>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="borg">
+<h1>Borg<a class="headerlink" href="#borg" title="Link to this heading">¶</a></h1>
+<p>The Borg is an “Automatic Heroband Player”.</p>
+<p>It was first written for about 2.8.0, separate from the game as
+distributed. It was pulled into the game in around 3.3. It was removed
+in 4.0 as there was too much conflict with the big changes made then.
+It was reincorporated in around 4.2.3.</p>
+<p>The name comes from “The Borg” in Star Trek which, in turn, comes from
+cyborg.</p>
+<p>The primary use of the Borg is entertainment. It is fun to watch the
+Borg play the game, and it can be amusing to see how it handles
+situations. It has been used to test the game and find bugs.</p>
+<section id="running-the-borg">
+<h2>Running The Borg<a class="headerlink" href="#running-the-borg" title="Link to this heading">¶</a></h2>
+<p>It is not recommended to run the Borg on a live game, as it could
+cause unexpected behavior or even crashes. It is best to run the Borg
+on its own save file, or on a copy of your save file.</p>
+<p>To run the Borg:</p>
+<ol class="arabic simple">
+<li><p>Ensure Heroband is compiled with borg support (this is controlled by
+<code class="docutils literal notranslate"><span class="pre">ALLOW_BORG</span></code>)</p></li>
+<li><p>Start or load a game</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">^z</span></code> (Ctrl-Z) to access the Borg command interface</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">z</span></code> to activate the Borg</p></li>
+<li><p>Watch the Borg play automatically</p></li>
+<li><p>Press any key to stop the Borg when desired</p></li>
+</ol>
+</section>
+<section id="borg-command-interface">
+<h2>Borg Command Interface<a class="headerlink" href="#borg-command-interface" title="Link to this heading">¶</a></h2>
+<p>The Borg command interface is only available when Heroband is compiled
+with borg support.</p>
+<p>To access the Borg command interface, press <code class="docutils literal notranslate"><span class="pre">^z</span></code> (Ctrl-Z) during
+gameplay. When you first run the command you’ll be presented with a warning
+message you can continue through. The most common command is <code class="docutils literal notranslate"><span class="pre">z</span></code> which
+starts the Borg.</p>
+<p>Pressing any key while the Borg is running will stop the Borg.</p>
+<section id="main-commands">
+<h3>Main Commands<a class="headerlink" href="#main-commands" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">?</span></code></p></td>
+<td><p>Display Help</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">c</span></code></p></td>
+<td><p>Toggle cheat death flag</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">C</span></code></p></td>
+<td><p>List count of ‘nasties’</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f</span></code></p></td>
+<td><p>Toggle flags</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">F</span></code></p></td>
+<td><p>Fear levels of current location</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">G</span></code></p></td>
+<td><p>Display selected grid Features</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">h</span></code></p></td>
+<td><p>Borg_Has function</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">I</span></code></p></td>
+<td><p>Display selected grid Information</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">D</span></code></p></td>
+<td><p>Display selected grid Danger</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+<td><p>Create a snapshot log file</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
+<td><p>Map information</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">o</span></code></p></td>
+<td><p>Object Information</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">p</span></code></p></td>
+<td><p>Borg Power</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">P</span></code></p></td>
+<td><p>Level preparation information</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">R</span></code></p></td>
+<td><p>Respawn Borg</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">s</span></code></p></td>
+<td><p>Search mode</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S</span></code></p></td>
+<td><p>Dump spell info</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">t</span></code></p></td>
+<td><p>Display targeting</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">u</span></code></p></td>
+<td><p>Update the Borg’s variables (as if taking zero steps)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">v</span></code></p></td>
+<td><p>Version stamp</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">w</span></code></p></td>
+<td><p>My Swap Weapon/Armor</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td><p>Step the Borg</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p>Last 75 steps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>Activate the Borg</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">!</span></code></p></td>
+<td><p>Time</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">$</span></code></p></td>
+<td><p>Reload borg.txt</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&#64;</span></code></p></td>
+<td><p>Borg LOS</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">^</span></code></p></td>
+<td><p>Flow Pathway</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>Borg stats (str/int etc)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="map-information">
+<h3>Map Information<a class="headerlink" href="#map-information" title="Link to this heading">¶</a></h3>
+<p>After pressing <code class="docutils literal notranslate"><span class="pre">m</span></code> from the main borg interface you enter map information
+display mode. This is map information as the borg understands it. The
+following selections can be made.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span></code></p></td>
+<td><p>Avoidances - dangerous areas with level of danger.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f</span></code></p></td>
+<td><p>Features with subselection of which feature to show.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">g</span></code></p></td>
+<td><p>Glyph locations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
+<td><p>Monsters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">o</span></code></p></td>
+<td><p>Objects</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="flag-commands">
+<h3>Flag Commands<a class="headerlink" href="#flag-commands" title="Link to this heading">¶</a></h3>
+<p>After pressing <code class="docutils literal notranslate"><span class="pre">f</span></code> from the main borg interface you enter flag toggle mode.
+You will be able to select any borg configuration and change its runtime value.</p>
+</section>
+<section id="borg-has-commands">
+<h3>Borg_has Commands<a class="headerlink" href="#borg-has-commands" title="Link to this heading">¶</a></h3>
+<p>After pressing <code class="docutils literal notranslate"><span class="pre">h</span></code> from the main borg interface you enter “has”
+display mode. These are things the borg has. The list is put in the games
+messages.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a</span></code></p></td>
+<td><p>Any</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">i</span></code></p></td>
+<td><p>Inventory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">w</span></code></p></td>
+<td><p>Worn items</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">r</span></code></p></td>
+<td><p>Artifacts</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">s</span></code></p></td>
+<td><p>Skills</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="search-mode">
+<h3>Search Mode<a class="headerlink" href="#search-mode" title="Link to this heading">¶</a></h3>
+<p>After pressing <code class="docutils literal notranslate"><span class="pre">s</span></code> from the main borg interface you enter a search string.
+If the borg sees that string in the messages it will stop.  Default is
+“plain gold ring” for The One Ring.</p>
+</section>
+</section>
+<section id="customizing-the-borg">
+<h2>Customizing The Borg<a class="headerlink" href="#customizing-the-borg" title="Link to this heading">¶</a></h2>
+<p>The Borg’s behavior is primarily configured through the <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file.
+This allows for extensive customization of the Borg’s decision-making without
+needing to recompile the game.</p>
+<p>A sample <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file is provided in the <code class="docutils literal notranslate"><span class="pre">src/borg</span></code> directory of the
+source code. To use it, copy this file to the user preferences directory for
+your operating system, and then customize it.</p>
+<ul class="simple">
+<li><p>Windows: Copy <code class="docutils literal notranslate"><span class="pre">src/borg/borg.txt</span></code> to <code class="docutils literal notranslate"><span class="pre">lib/user/borg.txt</span></code></p></li>
+<li><p>macOS/Linux: Copy <code class="docutils literal notranslate"><span class="pre">src/borg/borg.txt</span></code> to <code class="docutils literal notranslate"><span class="pre">~/.angband/Angband/borg.txt</span></code></p></li>
+</ul>
+<p>Once copied, you can edit <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> to change the Borg’s behavior. To apply
+changes while the game is running, use the <code class="docutils literal notranslate"><span class="pre">$</span></code> command from the Borg command
+interface (<code class="docutils literal notranslate"><span class="pre">^z</span></code>).</p>
+<p>How you customize the Borg depends on whether you are using a pre-compiled
+build or compiling from source.</p>
+<section id="configuration-options">
+<h3>Configuration Options<a class="headerlink" href="#configuration-options" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file offers a wide range of options to customize the Borg’s
+behavior. Below is a summary of the key settings. For a complete list and
+detailed explanations, refer to the comments within the <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file
+itself.</p>
+<section id="adjusting-borg-speed">
+<h4>Adjusting Borg Speed<a class="headerlink" href="#adjusting-borg-speed" title="Link to this heading">¶</a></h4>
+<p>When you first run the Borg it may move very slowly. This is often due to the
+game’s <code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">delay</span> <span class="pre">factor</span></code>, a general setting that affects all animations. To
+speed up the Borg you can decrease this value:</p>
+<ol class="arabic simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">=</span></code> to open the main options menu</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">d</span></code> to change the <code class="docutils literal notranslate"><span class="pre">delay</span> <span class="pre">factor</span></code></p></li>
+<li><p>Decrease the value</p></li>
+</ol>
+<p>Conversely, if the Borg is moving too quickly to follow, you can increase this
+value. You can also add a Borg-specific delay by setting <code class="docutils literal notranslate"><span class="pre">borg_delay_factor</span></code>
+in <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code>.</p>
+</section>
+<section id="worships">
+<h4>Worships<a class="headerlink" href="#worships" title="Link to this heading">¶</a></h4>
+<p>These settings (e.g., <code class="docutils literal notranslate"><span class="pre">borg_worships_damage</span></code>, <code class="docutils literal notranslate"><span class="pre">borg_worships_gold</span></code>)
+influence the Borg’s priorities and decision-making by assigning value to
+different actions and items. For example, they can make the Borg favor
+powerful weapons, seek out treasure, or prioritize speed.</p>
+</section>
+<section id="play-style">
+<h4>Play Style<a class="headerlink" href="#play-style" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_plays_risky</span></code>: Makes the Borg dive deeper faster and be more
+aggressive in combat</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_kills_uniques</span></code>: Forces the Borg to defeat uniques before
+proceeding deeper into the dungeon</p></li>
+</ul>
+</section>
+<section id="item-management">
+<h4>Item Management<a class="headerlink" href="#item-management" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_uses_swaps</span></code>: Allows the Borg to carry and use swap items for
+situational resistances and abilities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_worships_gold</span></code>: Causes the Borg to return to town frequently to
+sell items for gold, especially at lower levels</p></li>
+</ul>
+</section>
+<section id="respawn-and-continuous-play">
+<h4>Respawn and Continuous Play<a class="headerlink" href="#respawn-and-continuous-play" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_cheat_death</span></code>: If enabled, the Borg will not die and will
+continue playing, enabling continuous play. This can be set in
+<code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> or toggled via the Borg command interface (<code class="docutils literal notranslate"><span class="pre">^z</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">c</span></code>, then <code class="docutils literal notranslate"><span class="pre">d</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_respawn_race</span></code> and <code class="docutils literal notranslate"><span class="pre">borg_respawn_class</span></code>: Specify the race and
+class for the next character when the Borg respawns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">borg_respawn_winners</span></code>: If enabled, the Borg will create a new
+character after defeating Morgoth</p></li>
+</ul>
+</section>
+<section id="dynamic-formulas">
+<h4>Dynamic Formulas<a class="headerlink" href="#dynamic-formulas" title="Link to this heading">¶</a></h4>
+<p>The Borg can use either its internal hard-coded logic for decision-making
+or a more flexible system of dynamic formulas defined in <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code>. To
+enable the formula-based system, set the following in <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code>:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">borg_uses_dynamic_calcs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">TRUE</span>
+</pre></div>
+</div>
+<p>The dynamic calculations are more customizable but may be slower and
+are not always as up-to-date as the internal code logic.</p>
+</section>
+</section>
+<section id="using-official-builds">
+<h3>Using Official Builds<a class="headerlink" href="#using-official-builds" title="Link to this heading">¶</a></h3>
+<p>In most official builds, Borg support is already included and enabled. You just
+need to copy and configure the <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file in the correct location as
+described above.</p>
+</section>
+<section id="compiling-yourself">
+<h3>Compiling Yourself<a class="headerlink" href="#compiling-yourself" title="Link to this heading">¶</a></h3>
+<p>When compiling from source, the Borg is enabled by default on most platforms.
+For starter instructions on how to compile, see the <a class="reference internal" href="compiling.html"><span class="doc">Compiling Instructions</span></a> guide.</p>
+<p>If you find the Borg is disabled in your build configuration, you can typically
+enable it by:</p>
+<ul class="simple">
+<li><p>Uncommenting an <code class="docutils literal notranslate"><span class="pre">allow_borg</span></code> line in a configuration file (like
+<code class="docutils literal notranslate"><span class="pre">config.h</span></code>)</p></li>
+<li><p>Passing a <code class="docutils literal notranslate"><span class="pre">-DALLOW_BORG</span></code> flag to the compiler</p></li>
+</ul>
+<p>When compiling, you can also enable the <code class="docutils literal notranslate"><span class="pre">SCORE_BORGS</span></code> flag to allow Borg
+characters to appear in the high score list. This is disabled by default.</p>
+<p>Refer to the compilation instructions for your specific platform for details.
+After compiling with Borg support, place your <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> file in the correct
+location as described above.</p>
+</section>
+</section>
+<section id="borg-logging">
+<h2>Borg Logging<a class="headerlink" href="#borg-logging" title="Link to this heading">¶</a></h2>
+<p>The Borg suppresses most messages by default. To see what the Borg is doing,
+you’ll want to use multi-window support to display additional information
+windows.</p>
+<section id="window-configuration">
+<h3>Window Configuration<a class="headerlink" href="#window-configuration" title="Link to this heading">¶</a></h3>
+<p>For optimal Borg monitoring, open additional terminal windows to display:</p>
+<ul class="simple">
+<li><p>Equipment: See what the Borg is wearing and wielding</p></li>
+<li><p>Messages: View game messages and Borg status updates</p></li>
+<li><p>Monster Recall: See information about monsters the Borg encounters</p></li>
+<li><p>Inventory: Monitor what items the Borg is carrying</p></li>
+</ul>
+<p>Set these up through the <a class="reference internal" href="../customize.html#showing-extra-info-in-subwindows"><span class="std std-ref">window menu</span></a>
+before activating the Borg. Borg-specific messages will appear in the
+Messages window when verbose mode is enabled.</p>
+</section>
+<section id="verbose-mode">
+<h3>Verbose Mode<a class="headerlink" href="#verbose-mode" title="Link to this heading">¶</a></h3>
+<p>Enable verbose mode to get detailed output about the Borg’s decision-making
+process, including calculations, target selection, danger assessment, and
+action decisions.</p>
+<section id="via-flag-command">
+<h4>Via Flag Command<a class="headerlink" href="#via-flag-command" title="Link to this heading">¶</a></h4>
+<ol class="arabic simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">^z</span></code> to access the Borg command interface</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">f</span></code> to enter flag toggle mode</p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">borg_verbose</span></code> to toggle verbose mode on/off</p></li>
+</ol>
+</section>
+<section id="via-configuration">
+<h4>Via Configuration<a class="headerlink" href="#via-configuration" title="Link to this heading">¶</a></h4>
+<p>Set <code class="docutils literal notranslate"><span class="pre">borg_verbose</span> <span class="pre">=</span> <span class="pre">TRUE</span></code> in the <code class="docutils literal notranslate"><span class="pre">borg.txt</span></code> configuration file, then
+reload with <code class="docutils literal notranslate"><span class="pre">^z</span></code> <code class="docutils literal notranslate"><span class="pre">$</span></code>.</p>
+</section>
+</section>
+<section id="log-snapshot">
+<h3>Log Snapshot<a class="headerlink" href="#log-snapshot" title="Link to this heading">¶</a></h3>
+<p>Create a detailed snapshot of the current game state for debugging:</p>
+<ol class="arabic simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">^z</span></code> to access the Borg command interface</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">l</span></code> to create a snapshot log file</p></li>
+</ol>
+<p>This generates a comprehensive <code class="docutils literal notranslate"><span class="pre">.map</span></code> file (e.g., <code class="docutils literal notranslate"><span class="pre">player_name.map</span></code>) in
+your Heroband <code class="docutils literal notranslate"><span class="pre">archive</span></code> directory containing:</p>
+<ul class="simple">
+<li><p>ASCII dungeon map: Current level layout showing terrain, monsters (<code class="docutils literal notranslate"><span class="pre">&amp;</span></code>),
+items, and player (<code class="docutils literal notranslate"><span class="pre">&#64;</span></code>) position</p></li>
+<li><p>Recent game messages: Last actions, movements, and events</p></li>
+<li><p>Complete character state: Equipment, inventory, quiver, and home contents</p></li>
+<li><p>Borg configuration: Current swap items and borg settings</p></li>
+<li><p>Detailed statistics: All internal borg trait values, resistances, and
+assessments</p></li>
+</ul>
+<p>The snapshot provides a complete picture of both the game state and the
+Borg’s internal knowledge at that moment, useful for understanding its
+behavior or debugging issues.</p>
+</section>
+</section>
+<section id="borg-screensaver">
+<h2>Borg Screensaver<a class="headerlink" href="#borg-screensaver" title="Link to this heading">¶</a></h2>
+<p>The Borg can be configured to run as a Windows screensaver that
+automatically plays the game in continuous play mode, automatically
+restarting with new characters when the current character dies.</p>
+<p><strong>WARNING:</strong> The game display is not always dynamic. While modern LCD
+monitors are not susceptible to burn-in, OLED displays may still experience
+image retention with prolonged static content. Configure energy saving
+settings to turn off your monitor after inactivity. The screensaver keeps
+the processor and hard disk busy, preventing power-saving features that
+depend on inactivity.</p>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Copy <code class="docutils literal notranslate"><span class="pre">angband.scr</span></code> and the included <code class="docutils literal notranslate"><span class="pre">angband.ini</span></code> into your Windows
+directory</p></li>
+<li><p>Ensure you have the Windows version of Heroband installed with all supporting
+files in the <code class="docutils literal notranslate"><span class="pre">lib</span></code> directory</p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">angband.ini</span></code> with a text editor:</p>
+<ul class="simple">
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">AngbandPath</span></code> to point to your Heroband installation directory
+(must end with a backslash <code class="docutils literal notranslate"><span class="pre">\</span></code>)</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">SaverFile</span></code> to the character name you want to use for the screensaver
+(a random character will be automatically created if the character doesn’t
+exist)</p></li>
+</ul>
+<p>Example configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Angband</span><span class="p">]</span>
+<span class="n">AngbandPath</span><span class="o">=</span><span class="s2">&quot;c:\games</span><span class="se">\a</span><span class="s2">ngband-4.2.5</span><span class="se">\&quot;</span>
+<span class="n">SaverFile</span><span class="o">=</span><span class="s2">&quot;Saver&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Test the screensaver in Windows Display Properties</p></li>
+</ol>
+<p>It’s recommended to create a normal character first using regular Heroband,
+set up your terminal windows as desired, save that file, and use that filename
+as the <code class="docutils literal notranslate"><span class="pre">SaverFile</span></code> for your screensaver.</p>
+</section>
+<section id="technical-details">
+<h3>Technical Details<a class="headerlink" href="#technical-details" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The screensaver is a renamed Windows Heroband executable with modified
+<code class="docutils literal notranslate"><span class="pre">main-win.c</span></code></p></li>
+<li><p>Normal Borgs get highscore entries, but screensaver Borgs (continuous
+play mode) do not</p></li>
+<li><p>Uses low priority processing to avoid slowing down other processes</p>
+<ul>
+<li><p>Can be toggled via “Options/Low priority” menu when using as normal
+executable for background Borg play</p></li>
+</ul>
+</li>
+<li><p>Uses the normal Heroband installation’s <code class="docutils literal notranslate"><span class="pre">angband.ini</span></code> for screen layout,
+graphics, and sound settings</p></li>
+<li><p>Can be used as a normal Heroband executable by renaming to <code class="docutils literal notranslate"><span class="pre">angband.exe</span></code></p></li>
+</ul>
+</section>
+<section id="known-limitations">
+<h3>Known Limitations<a class="headerlink" href="#known-limitations" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>No preview in Windows Display Properties</p></li>
+<li><p>Password protection not implemented</p></li>
+<li><p>Configuration requires manual <code class="docutils literal notranslate"><span class="pre">ini</span></code> file editing</p></li>
+<li><p>“Show scores” while Borg is running may cause crashes</p></li>
+<li><p>Cannot run the same savefile simultaneously (e.g., normal game
+and screensaver)</p></li>
+<li><p>Info window sizes may increase when exiting pseudo-screensaver mode from
+options menu</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../a-quick-demo.html">A quick demonstration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heroband.html">Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">A Player Guide to Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../birth.html">Creating a Character</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dungeon.html">Exploring the Dungeon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../attack.html">Attacking monsters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playing.html">Playing the Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command.html">Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../option.html">Option Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customize.html">Customising the game</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Meta</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">Version Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../copying.html">Copying and licence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thanks.html">Credits</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">For Developers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modifying.html">Modifying Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmake.html">CMake Hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">Debug Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-it-works.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadoc.html">Documentation on documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Borg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heroband.html">Heroband Development</a></li>
+</ul>
+
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Borg</a><ul>
+<li><a class="reference internal" href="#running-the-borg">Running The Borg</a></li>
+<li><a class="reference internal" href="#borg-command-interface">Borg Command Interface</a><ul>
+<li><a class="reference internal" href="#main-commands">Main Commands</a></li>
+<li><a class="reference internal" href="#map-information">Map Information</a></li>
+<li><a class="reference internal" href="#flag-commands">Flag Commands</a></li>
+<li><a class="reference internal" href="#borg-has-commands">Borg_has Commands</a></li>
+<li><a class="reference internal" href="#search-mode">Search Mode</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#customizing-the-borg">Customizing The Borg</a><ul>
+<li><a class="reference internal" href="#configuration-options">Configuration Options</a><ul>
+<li><a class="reference internal" href="#adjusting-borg-speed">Adjusting Borg Speed</a></li>
+<li><a class="reference internal" href="#worships">Worships</a></li>
+<li><a class="reference internal" href="#play-style">Play Style</a></li>
+<li><a class="reference internal" href="#item-management">Item Management</a></li>
+<li><a class="reference internal" href="#respawn-and-continuous-play">Respawn and Continuous Play</a></li>
+<li><a class="reference internal" href="#dynamic-formulas">Dynamic Formulas</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-official-builds">Using Official Builds</a></li>
+<li><a class="reference internal" href="#compiling-yourself">Compiling Yourself</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#borg-logging">Borg Logging</a><ul>
+<li><a class="reference internal" href="#window-configuration">Window Configuration</a></li>
+<li><a class="reference internal" href="#verbose-mode">Verbose Mode</a><ul>
+<li><a class="reference internal" href="#via-flag-command">Via Flag Command</a></li>
+<li><a class="reference internal" href="#via-configuration">Via Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#log-snapshot">Log Snapshot</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#borg-screensaver">Borg Screensaver</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#technical-details">Technical Details</a></li>
+<li><a class="reference internal" href="#known-limitations">Known Limitations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Heroband and Angband developers past and present.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/hacking/borg.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

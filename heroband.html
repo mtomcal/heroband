@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Heroband &#8212; The Heroband Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=8fc57837"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A Player Guide to Heroband" href="guide.html" />
+    <link rel="prev" title="A quick demonstration" href="a-quick-demo.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<header id="pageheader">
+    <div>
+        <div style="display: flex; align-items: baseline;">
+            <h1>The Heroband Manual</h1>
+            <span class="version">vheroband-0.1.0-1-gcc578f3d8-dirty</span>
+        </div>
+        <nav class="manual-nav" aria-label="Primary">
+            <a href="index.html">Home</a>
+            <a href="#">Heroband</a>
+            <a href="birth.html">Classes</a>
+            <a href="command.html">Commands</a>
+            <a href="hacking/heroband.html">Developers</a>
+        </nav>
+    </div>
+    <img src="_static/att.svg" style="height: 4rem;">
+</header>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="heroband">
+<h1>Heroband<a class="headerlink" href="#heroband" title="Link to this heading">¶</a></h1>
+<p>Heroband is a morally heroic fork of Angband 4.2.6.  The central rule is:
+the player may fight evil, but may not wield evil.</p>
+<p>Demons, undead, corruption, Morgoth, Sauron, and other evil forces remain as
+enemies and dangers.  Enemy-only evil is part of the good-against-evil
+atmosphere.  Player-facing corrupt power is removed, blocked, or replaced with
+clean heroic alternatives.</p>
+<section id="heroic-classes">
+<h2>Heroic Classes<a class="headerlink" href="#heroic-classes" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>General</dt><dd><p>The General replaces the old Necromancer player slot.  Generals lead through
+discipline, morale, and battlefield command.  Their field manuals teach
+orders that call temporary living soldiers, rally courage, strengthen a shield
+wall, expose enemy openings, and withdraw in good order.  They do not draw
+power from spirits, undeath, blood, shadow, demons, or occult ritual.</p>
+</dd>
+<dt>Vanguard</dt><dd><p>The Vanguard replaces the old Blackguard player slot.  Vanguards are armored
+frontline champions who rely on courage, discipline, armor mastery,
+battlefield drills, and heroic resolve.  Their powers are martial orders and
+clean tactics, not bloodlust, shadow magic, demonic power, curse benefits, or
+forbidden arts.</p>
+</dd>
+</dl>
+</section>
+<section id="corruption">
+<h2>Corruption<a class="headerlink" href="#corruption" title="Link to this heading">¶</a></h2>
+<p>Some evil artifacts and Morgul weapons are corrupt.  Heroband warns before you
+equip or activate corrupt power.  If you confirm that use, corruption is
+recorded on the character, can bring hostile consequences, and can doom a final
+victory.</p>
+<p>Corruption is not a class path, a safe optimization, or a renamed heroic power.
+It is a moral failure state attached to dangerous objects.</p>
+</section>
+<section id="downloads">
+<h2>Downloads<a class="headerlink" href="#downloads" title="Link to this heading">¶</a></h2>
+<p>The current public prerelease is <a class="reference external" href="https://github.com/mtomcal/heroband/releases/tag/heroband-0.1.0">Heroband 0.1.0</a>.</p>
+<dl class="simple">
+<dt>Linux x86_64</dt><dd><p>Download <code class="docutils literal notranslate"><span class="pre">heroband-0.1.0-linux-x86_64.tar.gz</span></code>, extract it, and run
+<code class="docutils literal notranslate"><span class="pre">./angband</span></code> from the extracted directory.  The archive includes the
+executable, runtime data, and the built HTML manual.</p>
+</dd>
+<dt>Source package</dt><dd><p>Download <code class="docutils literal notranslate"><span class="pre">heroband-0.1.0-source.tar.gz</span></code> to build from source.  The archive
+includes generated autotools files, including <code class="docutils literal notranslate"><span class="pre">configure</span></code> and
+<code class="docutils literal notranslate"><span class="pre">src/autoconf.h.in</span></code>, along with the CMake build files.</p>
+</dd>
+<dt>Checksums</dt><dd><p>Download <code class="docutils literal notranslate"><span class="pre">heroband-0.1.0-checksums.txt</span></code> and verify the release assets with
+<code class="docutils literal notranslate"><span class="pre">sha256sum</span> <span class="pre">-c</span> <span class="pre">heroband-0.1.0-checksums.txt</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="compatibility-notes">
+<h2>Compatibility Notes<a class="headerlink" href="#compatibility-notes" title="Link to this heading">¶</a></h2>
+<p>Some internal class-slot identifiers still use old Angband names for parser,
+save, and data compatibility.  Those identifiers are implementation plumbing
+unless they expose forbidden player-facing content.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="a-quick-demo.html">A quick demonstration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide.html">A Player Guide to Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="birth.html">Creating a Character</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dungeon.html">Exploring the Dungeon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attack.html">Attacking monsters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="playing.html">Playing the Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command.html">Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="option.html">Option Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customize.html">Customising the game</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Meta</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="version.html">Version Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copying.html">Copying and licence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thanks.html">Credits</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">For Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hacking/modifying.html">Modifying Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/compiling.html">Compiling Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/cmake.html">CMake Hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/debug.html">Debug Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/how-it-works.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/metadoc.html">Documentation on documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/borg.html">Borg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hacking/heroband.html">Heroband Development</a></li>
+</ul>
+
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Heroband</a><ul>
+<li><a class="reference internal" href="#heroic-classes">Heroic Classes</a></li>
+<li><a class="reference internal" href="#corruption">Corruption</a></li>
+<li><a class="reference internal" href="#downloads">Downloads</a></li>
+<li><a class="reference internal" href="#compatibility-notes">Compatibility Notes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Heroband and Angband developers past and present.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/heroband.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

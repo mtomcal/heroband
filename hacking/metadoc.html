@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Documentation on documentation &#8212; The Heroband Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=8fc57837"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Borg" href="borg.html" />
+    <link rel="prev" title="How It Works" href="how-it-works.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<header id="pageheader">
+    <div>
+        <div style="display: flex; align-items: baseline;">
+            <h1>The Heroband Manual</h1>
+            <span class="version">vheroband-0.1.0-1-gcc578f3d8-dirty</span>
+        </div>
+        <nav class="manual-nav" aria-label="Primary">
+            <a href="../index.html">Home</a>
+            <a href="../heroband.html">Heroband</a>
+            <a href="../birth.html">Classes</a>
+            <a href="../command.html">Commands</a>
+            <a href="heroband.html">Developers</a>
+        </nav>
+    </div>
+    <img src="../_static/att.svg" style="height: 4rem;">
+</header>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="documentation-on-documentation">
+<h1>Documentation on documentation<a class="headerlink" href="#documentation-on-documentation" title="Link to this heading">¶</a></h1>
+<p>Documentation is now written in ReStructuredText, a lightweight and
+readable markup language designed for Python.</p>
+<section id="conventions">
+<h2>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h2>
+<p>ReStructuredText leaves much freedom in the syntax - in our help files we
+try to stick to consistent conventions as in the following.</p>
+<section id="markup-for-sectioning">
+<h3>Markup for sectioning<a class="headerlink" href="#markup-for-sectioning" title="Link to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==============</span>
+<span class="n">Document</span> <span class="n">title</span>
+<span class="o">==============</span>
+
+<span class="n">Section</span> <span class="n">title</span>
+<span class="o">=============</span>
+
+<span class="n">Subsection</span> <span class="n">title</span>
+<span class="o">----------------</span>
+
+<span class="n">Sub</span><span class="o">-</span><span class="n">subsection</span> <span class="n">title</span>
+<span class="o">********************</span>
+</pre></div>
+</div>
+</section>
+<section id="blank-and-spaces">
+<h3>Blank and spaces<a class="headerlink" href="#blank-and-spaces" title="Link to this heading">¶</a></h3>
+<p>One blank line before and after every paragraph.
+Two-char indent in definition lists.</p>
+</section>
+</section>
+<section id="inline-help-parser-syntax">
+<h2>Inline help parser syntax<a class="headerlink" href="#inline-help-parser-syntax" title="Link to this heading">¶</a></h2>
+<p>As to the time when this documentation was last updated, the online help
+parser programmed into Angband does the following:</p>
+<ul class="simple">
+<li><p>ignore colons (<code class="docutils literal notranslate"><span class="pre">|</span></code>)</p></li>
+<li><p>ignore paragraphs starting with <code class="docutils literal notranslate"><span class="pre">..</span></code> (including their trailing blank
+line)</p></li>
+<li><p>recognize link targets (<code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">_something</span></code>) and be
+able to open a file to the right position using them.</p></li>
+<li><p>recognize “menu” links for the online help navigation. Links are given
+with the following format (<code class="docutils literal notranslate"><span class="pre">g</span></code> is the hotkey here):</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">menu</span><span class="p">::</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="n">option</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</section>
+<section id="tricks">
+<h2>Tricks<a class="headerlink" href="#tricks" title="Link to this heading">¶</a></h2>
+<p>Sometimes it is tricky to get a thing to display in the correct way in both
+the online help and the compiled RST. This is often due to the complex
+interaction between backslashes and backticks in RST. In particular, in
+several places we need to use in RST a syntax such as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>``D``\isarm
+</pre></div>
+</div>
+<p>If this appeared directly in the help file, then the online help parser
+would display a spurious backslash character <code class="docutils literal notranslate"><span class="pre">\</span></code> before the <code class="docutils literal notranslate"><span class="pre">i</span></code> letter.
+It would be quite complicated to instruct it to parse backslashes using the
+full RST syntax. Instead, we adopt the following workaround: we write</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>this is a paragraph containing the word |``D``isarm| just in the middle
+</pre></div>
+</div>
+<p>and later in the file we define a substitution directive</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.. |``D``isarm| replace:: ``D``\isarm
+</pre></div>
+</div>
+<p>Magically this works, since the online help parser <em>skips</em> pipes.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../a-quick-demo.html">A quick demonstration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heroband.html">Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">A Player Guide to Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../birth.html">Creating a Character</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dungeon.html">Exploring the Dungeon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../attack.html">Attacking monsters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playing.html">Playing the Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command.html">Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../option.html">Option Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customize.html">Customising the game</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Meta</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">Version Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../copying.html">Copying and licence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thanks.html">Credits</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">For Developers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modifying.html">Modifying Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmake.html">CMake Hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">Debug Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-it-works.html">How It Works</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation on documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="borg.html">Borg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heroband.html">Heroband Development</a></li>
+</ul>
+
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Documentation on documentation</a><ul>
+<li><a class="reference internal" href="#conventions">Conventions</a><ul>
+<li><a class="reference internal" href="#markup-for-sectioning">Markup for sectioning</a></li>
+<li><a class="reference internal" href="#blank-and-spaces">Blank and spaces</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#inline-help-parser-syntax">Inline help parser syntax</a></li>
+<li><a class="reference internal" href="#tricks">Tricks</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Heroband and Angband developers past and present.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/hacking/metadoc.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

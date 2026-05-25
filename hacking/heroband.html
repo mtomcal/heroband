@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Heroband Development &#8212; The Heroband Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=8fc57837"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Borg" href="borg.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+<header id="pageheader">
+    <div>
+        <div style="display: flex; align-items: baseline;">
+            <h1>The Heroband Manual</h1>
+            <span class="version">vheroband-0.1.0-1-gcc578f3d8-dirty</span>
+        </div>
+        <nav class="manual-nav" aria-label="Primary">
+            <a href="../index.html">Home</a>
+            <a href="../heroband.html">Heroband</a>
+            <a href="../birth.html">Classes</a>
+            <a href="../command.html">Commands</a>
+            <a href="#">Developers</a>
+        </nav>
+    </div>
+    <img src="../_static/att.svg" style="height: 4rem;">
+</header>
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="heroband-development">
+<h1>Heroband Development<a class="headerlink" href="#heroband-development" title="Link to this heading">¶</a></h1>
+<p>Heroband keeps Angband’s core structure and compatibility where practical, but
+adds a moral design rule for player-facing content: the player may fight evil,
+but may not wield evil.</p>
+<p>When changing gameplay, first classify suspicious content as player-accessible,
+enemy-only, harmless, or ambiguous.  Enemy-only evil can remain.  Player-facing
+power from demons, undead, blood, shadow, necromancy, soul pacts, curse
+benefits, or occult ritual must be removed, blocked, or replaced with a clean
+heroic source.</p>
+<section id="recent-compatibility-notes">
+<h2>Recent Compatibility Notes<a class="headerlink" href="#recent-compatibility-notes" title="Link to this heading">¶</a></h2>
+<p>General and Vanguard use old Angband class slots internally so parser and save
+compatibility stay stable.  Treat legacy internal names as plumbing unless they
+surface in player-facing text or mechanics.</p>
+<p>Corrupt artifacts and Morgul weapons are intentionally still present as dangers.
+They warn before use, record corruption when confirmed, can trigger hostile
+consequences, and can prevent a clean final victory.  Do not turn corruption
+into a class feature or optimization path.</p>
+</section>
+<section id="validation-workflow">
+<h2>Validation Workflow<a class="headerlink" href="#validation-workflow" title="Link to this heading">¶</a></h2>
+<p>For ordinary buildable checkpoints, use the configured CMake build and tests:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>-j2
+cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>alltests<span class="w"> </span>-j2
+</pre></div>
+</div>
+<p>For player-facing gameplay, birth flow, class powers, stores, inventory, spells,
+save/load, or moral-restriction changes, use the repo-local Heroband playtest
+workflow.  Start with a written test contract, then run deterministic tests and
+a terminal playtest when appropriate.</p>
+<p>Preferred wrapper commands:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>scripts/heroband-playtest<span class="w"> </span>start<span class="w"> </span>--contract<span class="w"> </span>/path/to/TEST_CONTRACT.md
+scripts/heroband-playtest<span class="w"> </span>capture<span class="w"> </span>--state-dir<span class="w"> </span>/tmp/heroband-playtest.xxxxxx
+scripts/heroband-playtest<span class="w"> </span>send<span class="w"> </span>--state-dir<span class="w"> </span>/tmp/heroband-playtest.xxxxxx<span class="w"> </span>Space
+scripts/heroband-playtest<span class="w"> </span>stop<span class="w"> </span>--state-dir<span class="w"> </span>/tmp/heroband-playtest.xxxxxx
+</pre></div>
+</div>
+<p>When adding or changing gameplay, class-power, birth, store, save/load,
+scenario-save, or moral-restriction tests, also run the Heroband test-quality
+verifier.  It checks that tests exercise player-visible behavior instead of
+bypassing setup, relying on weak assertions, or only checking renamed text.</p>
+</section>
+<section id="scenario-saves">
+<h2>Scenario Saves<a class="headerlink" href="#scenario-saves" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">scripts/heroband-corruption-scenario-save</span></code> helper creates focused
+scenario saves for corruption checks.  Use scenario saves to exercise real
+equipment, activation, consequence, and victory behavior when unit tests alone
+would be too indirect.</p>
+</section>
+<section id="release-packaging">
+<h2>Release Packaging<a class="headerlink" href="#release-packaging" title="Link to this heading">¶</a></h2>
+<p>Heroband releases are published from GitHub Releases.  Heroband 0.1.0 includes
+a Linux x86_64 playable archive, a source archive, and SHA-256 checksums.</p>
+<p>The attached source archive is prepared from tracked files and then runs
+<code class="docutils literal notranslate"><span class="pre">./autogen.sh</span></code> before packaging.  That means the release source tarball
+contains generated autotools files such as <code class="docutils literal notranslate"><span class="pre">configure</span></code> and
+<code class="docutils literal notranslate"><span class="pre">src/autoconf.h.in</span></code> and does not require release users to have <code class="docutils literal notranslate"><span class="pre">aclocal</span></code> for
+the initial configure-based build.  Maintainers who regenerate that source
+archive need automake and autoconf installed:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>automake<span class="w"> </span>autoconf
+</pre></div>
+</div>
+<p>After replacing any release asset, also regenerate and replace the checksum
+manifest so it matches the downloadable files:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>sha256sum<span class="w"> </span>heroband-0.1.0-source.tar.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>heroband-0.1.0-linux-x86_64.tar.gz<span class="w"> </span>&gt;<span class="w"> </span>heroband-0.1.0-checksums.txt
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../a-quick-demo.html">A quick demonstration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heroband.html">Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">A Player Guide to Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">The Manual</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../birth.html">Creating a Character</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dungeon.html">Exploring the Dungeon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../attack.html">Attacking monsters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../playing.html">Playing the Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command.html">Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../option.html">Option Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../customize.html">Customising the game</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Meta</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">Version Information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../copying.html">Copying and licence information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thanks.html">Credits</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">For Developers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modifying.html">Modifying Heroband</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiling.html">Compiling Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmake.html">CMake Hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">Debug Command Descriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-it-works.html">How It Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadoc.html">Documentation on documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="borg.html">Borg</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Heroband Development</a></li>
+</ul>
+
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Heroband Development</a><ul>
+<li><a class="reference internal" href="#recent-compatibility-notes">Recent Compatibility Notes</a></li>
+<li><a class="reference internal" href="#validation-workflow">Validation Workflow</a></li>
+<li><a class="reference internal" href="#scenario-saves">Scenario Saves</a></li>
+<li><a class="reference internal" href="#release-packaging">Release Packaging</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Heroband and Angband developers past and present.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.0.4</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/hacking/heroband.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
