@@ -1,7 +1,9 @@
-Welcome to Angband
-==================
+Welcome to Heroband
+===================
 
-Angband is a complex single player dungeon simulation. A player (you!) creates a character, choosing from a variety of races and classes, and then plays that character over a period of days, weeks, even months.
+Heroband is a morally heroic fork of Angband 4.2.6. A player (you!) creates a character, choosing from a variety of races and classes, and then plays that character over a period of days, weeks, even months.
+
+The central Heroband rule is: the player may fight evil, but may not wield evil. Enemy-only evil remains as danger and opposition, while player-facing corrupt power is removed, blocked, or replaced with clean heroic alternatives.
 
 The player will begin their adventure on the town level where they may acquire supplies, weapons, armor, and magical devices by buying from various shop owners. Then the player can descend into the Pits of Angband, where they will explore the many levels of the dungeon, gaining experience by killing fierce creatures, collecting powerful objects and valuable treasure, and returning to town occasionally to buy supplies. Eventually, as the player grows more experienced, they may attempt to win the game by defeating Morgoth, the Lord of Darkness, who resides far below the surface.
 
@@ -16,6 +18,7 @@ Angband is a very complex game, and it may be difficult to grasp everything at f
    :caption: Getting Started
 
    a-quick-demo
+   heroband
    guide
    faq
 
