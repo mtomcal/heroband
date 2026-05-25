@@ -4144,7 +4144,7 @@ int borg_calculate_attack_effectiveness(int attack_type)
     case BF_SPELL_MAIM_FOE:
         return (borg_attack_aux_maim_foe());
 
-    /* spell - Howl of the Damned */
+    /* spell - Horn of Defiance */
     case BF_SPELL_HOWL_OF_THE_DAMNED:
         dam = borg.trait[BI_CLEVEL];
         return (borg_attack_aux_spell_dispel(

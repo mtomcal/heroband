@@ -34,27 +34,27 @@ monster:<player>:0x83:0xcf
 ?:[AND [EQU $CLASS Warrior] [EQU $RACE Kobold] ]
 monster:<player>:0x83:0xd7
 
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Human] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Human] ]
 monster:<player>:0x83:0x87
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Half-Elf] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Half-Elf] ]
 monster:<player>:0x83:0x8f
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Elf] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Elf] ]
 monster:<player>:0x83:0x97
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Hobbit] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Hobbit] ]
 monster:<player>:0x83:0x9f
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Gnome] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Gnome] ]
 monster:<player>:0x83:0xc7
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Dwarf] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Dwarf] ]
 monster:<player>:0x83:0xaf
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Half-Orc] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Half-Orc] ]
 monster:<player>:0x83:0xb7
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Half-Troll] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Half-Troll] ]
 monster:<player>:0x83:0xbf
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Dunadan] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Dunadan] ]
 monster:<player>:0x83:0xa7
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE High-Elf] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE High-Elf] ]
 monster:<player>:0x83:0xcf
-?:[AND [EQU $CLASS Blackguard] [EQU $RACE Kobold] ]
+?:[AND [EQU $CLASS Vanguard] [EQU $RACE Kobold] ]
 monster:<player>:0x83:0xd7
 
 ?:[AND [EQU $CLASS Mage] [EQU $RACE Human] ]

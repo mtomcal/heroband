@@ -25,7 +25,8 @@ bool player_class_is_playable(const struct player_class *c)
 	/*
 	 * Heroband keeps Angband data stable where possible, but gates classes
 	 * that grant player-accessible evil power.  General replaces the old
-	 * Necromancer slot with clean heroic command.
+	 * Necromancer slot with clean heroic command, and Vanguard replaces the
+	 * old Blackguard slot with clean martial discipline.
 	 */
 	return c && !streq(c->name, "Necromancer") && !streq(c->name, "Blackguard");
 }

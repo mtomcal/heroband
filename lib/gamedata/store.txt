@@ -143,11 +143,9 @@ turnover:0
 always:prayer book
 always:magic book
 always:nature book
-always:shadow book
 buy:magic book
 buy:prayer book
 buy:nature book
-buy:shadow book
 
 # Alchemist
 store:STORE_ALCHEMY

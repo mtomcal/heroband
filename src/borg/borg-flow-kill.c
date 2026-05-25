@@ -1958,7 +1958,7 @@ static bool borg_has_distance_attack(void)
     /* not lining up Priests (OOD has area of effect, will line up more
      * naturally) */
     /* or Druids (Stinking cloud is area of effect again) */
-    /* Blackguards should be doing HTH */
+    /* Vanguards should be doing HTH */
 
     return false;
 }

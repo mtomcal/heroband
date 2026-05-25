@@ -68,14 +68,29 @@ Use tier 2 by default for player-facing changes. Use tier 3 for mechanics and mo
 
 Scenario saves are temporary playtest artifacts, not checked-in user saves. Keep them under the playtest state directory and launch them with the same isolated `user`, `save`, `panic`, and `archive` paths used by `start`.
 
-When a test needs a high-level or hard-floor situation, prefer a generated scenario save over manual grinding. The scenario setup should record:
+When a test needs a high-level, hard-floor, class-power, equipment, store, spellbook, monster-pressure, or save/load-continuity situation, prefer a generated scenario save over manual grinding or hand-driven wizard setup. The save must then be loaded through normal GCU gameplay so the final pass still observes the human-visible game, not only a unit harness.
+
+Scenario generation should be generic. It must support any class and level combination needed by the contract, not only the current feature under development. A scenario setup should record:
 
 - character race, class, level, stats, equipment, inventory, and learned powers
 - dungeon depth, relevant terrain, monsters, and starting position
 - the mechanic under test and the expected risk pressure
 - whether the save should be reused for observation only or regenerated each run
 
-Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. A future wrapper command such as `scripts/heroband-playtest prepare-save` should create the isolated save and write a small manifest next to it so the direct gameplay pass can report exactly what state was loaded.
+Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. A future wrapper command such as `scripts/heroband-playtest prepare-save` or `scripts/heroband-playtest prepare-scenario` should create the isolated save and write a manifest next to it so the direct gameplay pass can report exactly what state was loaded.
+
+The scenario command should accept parameters or named presets for:
+
+- race and class
+- character level, experience, stats, hit points, mana, and gold
+- dungeon depth and optional seed
+- inventory, equipment, books, and learned spells/orders/powers
+- terrain fixtures, starting position, and nearby monsters
+- expected pressure and verification notes
+
+The generated manifest should include the exact scenario inputs, the save path, the executable/build used, any seed or setup commands, the expected invariant, and which GCU actions must be performed after loading.
+
+If a generated save cannot be produced yet, use the closest deterministic `src/tests/game/...` or `tests/...` scenario to exercise the behavior and explicitly report the missing save-generation hook. Do not describe that fallback as equivalent to a loaded-save GCU playtest.
 
 ## GCU Build
 
@@ -149,6 +164,23 @@ Always inspect with `tmux capture-pane` after sending keys. Seeing a key command
 
 When possible, use `scripts/heroband-playtest send` instead of raw `tmux send-keys`; it sends the key and immediately captures the resulting pane state.
 
+## Tmux Control Keys and Chords
+
+Control keys in GCU must be verified by game state, not by assuming tmux accepted the key name. `tmux send-keys` supports named keys such as `C-a`, `C-w`, `Escape`, and `C-m`, and supports literal input with `-l`, but the target application, terminal mode, and Angband keymaps still determine what happens.
+
+For wizard/debug setup or any control-key sequence:
+
+1. Send the named key through the wrapper when possible, for example `scripts/heroband-playtest send --state-dir "$STATE" C-a`.
+2. Capture immediately and verify that the expected prompt, mode, message, or screen state appeared.
+3. If the key did not work, try direct tmux send-keys against the session from `playtest.env`.
+4. If Angband keymaps may be involved, try bypassing keymaps with `\` before the command.
+5. For escape-like input, try both `Escape` and `C-[`; terminals commonly treat control-left-bracket as escape.
+6. For submit/return-like input, try both `Enter` and `C-m`.
+7. For wizard setup, prefer launch-time wizard mode (`-w`) or a generated scenario save when that is cleaner than interactive debug commands.
+8. If a chord remains unreliable, stop using hand-driven setup for that contract and switch to a generated scenario save or deterministic scenario test. Report the limitation and preserved transcript path.
+
+Borrow the verification discipline from `$tmux-agent-orchestration`: seeing text or sending a key is not proof. Inspect the pane and confirm the target application changed state.
+
 ## Evidence Standard
 
 Report direct gameplay evidence in the final answer:
@@ -170,3 +202,5 @@ If a tmux session reveals or validates behavior that should not regress, promote
 - Use `tests/...` when `src/main-test.c` can express the scenario.
 - Use `src/tests/...` when parser or core logic can be tested directly.
 - Keep a transcript only when automation is not yet practical, and identify the missing hook.
+
+For new or changed gameplay/class/moral-restriction tests, run `$heroband-test-quality-verifier` before final handoff when available. The verifier should check that deterministic tests do not merely reward-hack the implementation and that GCU evidence still covers the player-visible path.

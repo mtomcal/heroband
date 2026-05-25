@@ -195,21 +195,19 @@ static borg_spell_rating borg_spell_ratings_RANGER[] =
 };
 static borg_spell_rating borg_spell_ratings_BLACKGUARD[] =
 {
-    { "Seek Battle", 55, SEEK_BATTLE },
-    { "Berserk Strength", 95, BERSERK_STRENGTH },
+    { "Assess the Field", 55, SEEK_BATTLE },
+    { "Stand Firm", 95, BERSERK_STRENGTH },
     { "Whirlwind Attack", 85, WHIRLWIND_ATTACK },
     { "Shatter Stone", 95, SHATTER_STONE },
-    { "Leap into Battle", 65, LEAP_INTO_BATTLE },
-    { "Grim Purpose", 65, GRIM_PURPOSE },
-    { "Maim Foe", 75, MAIM_FOE },
-    { "Howl of the Damned", 55, HOWL_OF_THE_DAMNED },
-    { "Relentless Taunting", 5, RELENTLESS_TAUNTING }, /* seems to dangerous for borg right now */
-    { "Venom", 55, VENOM },
-    { "Werewolf Form", 5, WEREWOLF_FORM }, // !FIX !TODO shapechange
-    { "Bloodlust", 5, BLOODLUST }, /* seems to dangerous for borg right now */
-    { "Unholy Reprieve", 95, UNHOLY_REPRIEVE },
+    { "Breakthrough", 65, LEAP_INTO_BATTLE },
+    { "Combat Discipline", 65, GRIM_PURPOSE },
+    { "Staggering Blow", 75, MAIM_FOE },
+    { "Horn of Defiance", 55, HOWL_OF_THE_DAMNED },
+    { "Defend the Weak", 5, RELENTLESS_TAUNTING },
+    { "Unbroken", 5, WEREWOLF_FORM },
+    { "Last Stand", 95, BLOODLUST },
     { "Forceful Blow", 5, FORCEFUL_BLOW }, // !FIX !TODO need to code this 
-    { "Quake", 95, QUAKE }
+    { "Brace for Impact", 95, QUAKE }
 };
 
 /*

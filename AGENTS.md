@@ -18,6 +18,8 @@ Prefer small, buildable patches. Preserve Angband behavior unless it conflicts w
 
 Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for player-facing gameplay, terminal UI, birth flow, class power, store, inventory, spell, save/load, or Heroband moral-restriction changes. That skill requires a written test contract before tmux gameplay begins, then validates with deterministic tests plus a direct GCU/tmux gameplay pass when appropriate.
 
+Use `$heroband-test-quality-verifier` from `.agents/skills/heroband-test-quality-verifier/SKILL.md` when adding or changing gameplay, class-power, birth, store, save/load, scenario-save, or moral-restriction tests. This repo-specific verifier checks for reward-hacking, setup that bypasses the behavior under test, and weak moral-compliance assertions.
+
 Preferred wrapper:
 
 ```sh
@@ -227,11 +229,13 @@ If a machine uses local, non-system dependencies, keep those paths outside commi
 ## Current Heroband Notes
 
 - General has a first draft implemented in the old Necromancer class slot. It uses tactics, morale, field commands, and temporary living allies rather than undead, spirits, demons, soul magic, necromancy, blood magic, shadow magic, or occult power.
-- Blackguard is currently gated out of playable character creation.
+- Vanguard has a first draft implemented in the old Blackguard class slot. It uses courage, discipline, armor mastery, battlefield tactics, and heroic resolve rather than blood, shadow, demonic, necromantic, curse-benefit, life-drain, or occult power.
 - The old class-slot identifiers may still use `CLASS_NECROMANCER` internally for parser/class-ID stability; treat that as compatibility plumbing unless it exposes forbidden player-facing content.
+- The old Blackguard slot may still use legacy internal identifiers in source or save plumbing; treat those as compatibility details unless they expose forbidden player-facing content.
 - Shadow, nether, bloodlust, undead/demon summoning, and related player-beneficial mechanics still require follow-up review.
-- General still needs high-level scenario testing once scenario save fixtures or equivalent setup exists. Evaluate ally survival, command duration, pathing, archer usefulness, no-drop behavior, and continued compliance with the central Heroband moral rule.
-- Future Blackguard replacement direction: a clean martial class such as `Vanguard`, `Champion`, or `Knight-Errant`, powered by courage, tactics, stamina, armor mastery, and heroic resolve.
+- General still needs high-level scenario testing once generic scenario-save fixtures exist. Evaluate ally survival, command duration, pathing, archer usefulness, no-drop behavior, and continued compliance with the central Heroband moral rule.
+- Vanguard still needs loaded-save GCU scenario testing once generic scenario-save fixtures exist. Evaluate deep-floor book access, learned orders, frontline pressure, `Unbroken`, active `Last Stand`, and continued non-access to bloodlust, shadow, nether, life-drain, curse-benefit, demonic, necromantic, or occult player power.
+- A true passive low-health `Last Stand` mechanic is deferred until it can be implemented and tested without incentivizing intentional self-harm.
 
 ## Appendix
 

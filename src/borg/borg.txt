@@ -124,7 +124,7 @@ borg_cheat_death = FALSE
 #       5 Dwarf                         5 Paladin
 #       6 Half Orc                      6 Rogue
 #       7 Half Troll                    7 Ranger
-#       8 Dunadan                       8 Blackguard
+#       8 Dunadan                       8 Vanguard
 #       9 High Elf
 #	   10 Kobold
 #
@@ -479,9 +479,9 @@ Power
 	condition((value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin)) and value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 255);
 	condition((value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin)) and !value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 155);
 
-	condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue))): reward(value(trait, int index) * 500);
-	condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue)) and value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 255);
-	condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue)) and !value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 155);
+	condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue))): reward(value(trait, int index) * 500);
+	condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue)) and value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 255);
+	condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue)) and !value(config, worships_mana)): reward((value(trait, sp adj) / 2) * 155);
 
 # dex bonus
 	condition(value(trait, dex index) <= 37): reward(value(trait, dex index) * 120);
@@ -833,9 +833,9 @@ Power
 	value(trait, amt teleport level): range(1, 5): condition(value(trait, clevel) >= 15): reward(5000);
 
 # Healing 
-	value(trait, amt heal): range(1, 15): condition(value(class, warrior) or value(class, rogue) or value(class, blackguard)): reward(8000);
+	value(trait, amt heal): range(1, 15): condition(value(class, warrior) or value(class, rogue) or value(class, vanguard)): reward(8000);
 # These guys need to carry the rods more, town runs low on supply.
-	value(rod, healing): range(1, 6): condition(value(class, warrior) or value(class, rogue) or value(class, blackguard)): reward(20000);
+	value(rod, healing): range(1, 6): condition(value(class, warrior) or value(class, rogue) or value(class, vanguard)): reward(20000);
 
 	value(trait, amt heal): range(1, 10): condition(value(class, ranger) or value(class, paladin) or value(class, necromancer) or value(class, mage)): reward(4000);
 
@@ -955,13 +955,13 @@ Power
 	condition(value(trait, cur dex) >= 118): reward(50000);
 	condition(value(trait, cur con) >= 118): reward(50000);
 
-	condition(value(trait, cur int) >= 118 and (value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue))): reward(50000);
+	condition(value(trait, cur int) >= 118 and (value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue))): reward(50000);
 	condition(value(trait, cur wis) >= 118 and (value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin))): reward(50000);
 
 # Reward stat potions
 	condition((value(potion, strength) + value(potion, augmentation)) and value(trait, cur str) < 118): reward(550000);
 	condition((value(potion, intelligence) + value(potion, augmentation)) and value(trait, cur int) < 118): reward(520000);
-	condition((value(potion, intelligence) + value(potion, augmentation)) and value(trait, cur int) < 118 and (value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue))): reward(575000);
+	condition((value(potion, intelligence) + value(potion, augmentation)) and value(trait, cur int) < 118 and (value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue))): reward(575000);
 	condition((value(potion, wisdom) + value(potion, augmentation)) and value(trait, cur wis) < 118): reward(520000);
 	condition((value(potion, wisdom) + value(potion, augmentation)) and value(trait, cur wis) < 118 and (value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin))): reward(575000);
 	condition((value(potion, dexterity) + value(potion, augmentation)) and value(trait, cur dex) < 118): reward(550000);
@@ -999,8 +999,8 @@ Depth Requirement
 
 	depth(2): condition(value(trait, max hp) < 30 and !value(config, plays_risky));
 
-	depth(3): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max hp) < 50 and !value(config, plays_risky));
-	depth(3): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max clevel) < 4 and !value(config, plays_risky));
+	depth(3): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max hp) < 50 and !value(config, plays_risky));
+	depth(3): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max clevel) < 4 and !value(config, plays_risky));
 	depth(3): condition(value(class, rogue) and value(trait, max hp) < 50 and !value(config, plays_risky));
 	depth(3): condition(value(class, rogue) and value(trait, max clevel) < 8 and !value(config, plays_risky));
 	depth(3): condition((value(class, priest) or value(class, druid)) and value(trait, max hp) < 40 and !value(config, plays_risky));
@@ -1012,8 +1012,8 @@ Depth Requirement
 
 	depth(3): condition(value(trait, max clevel) < 30 and (value(trait,  amt potion clw) + value(trait,  amt potion csw) + value(trait,  amt potion ccw)) < 2);
 
-	depth(5): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max hp) < 60 and !value(config, plays_risky));
-	depth(5): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max clevel) < 6 and !value(config, plays_risky));
+	depth(5): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max hp) < 60 and !value(config, plays_risky));
+	depth(5): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max clevel) < 6 and !value(config, plays_risky));
 	depth(5): condition(value(class, rogue) and value(trait, max hp) < 60 and !value(config, plays_risky));
 	depth(5): condition(value(class, rogue) and value(trait, max clevel) < 10 and !value(config, plays_risky));
 	depth(5): condition((value(class, priest) or value(class, druid)) and value(trait, max hp) < 60 and !value(config, plays_risky));
@@ -1026,7 +1026,7 @@ Depth Requirement
 	depth(5): condition(value(trait, recall) < 1);
 
 # skipping these because they seem redundant given the "go no deeper than your char level" check earlier
-#	depth(10): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max clevel) < (value(range, n) - 4) and value(range, n) <= 19 and !value(config, plays_risky));
+#	depth(10): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max clevel) < (value(range, n) - 4) and value(range, n) <= 19 and !value(config, plays_risky));
 #	depth(10): condition(value(class, rogue) and value(trait, max clevel) < value(range, n) and value(range, n) <= 19 and !value(config, plays_risky));
 #	depth(10): condition((value(class, priest) or value(class, druid)) and value(trait, max clevel) < value(range, n) and value(range, n) <= 19 and !value(config, plays_risky));
 #	depth(10): condition((value(class, paladin) or value(class, ranger)) and value(trait, max clevel) < value(range, n) and value(range, n) <= 19 and !value(config, plays_risky));
@@ -1042,12 +1042,12 @@ Depth Requirement
 
 	depth(21): condition(value(trait, cur str) < 7);
 	depth(21): condition((value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin)) and value(trait, cur wis) < 7);
-	depth(21): condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue)) and value(trait, cur int) < 7);
+	depth(21): condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue)) and value(trait, cur int) < 7);
 	depth(21): condition(value(trait, cur dex) < 7);
 	depth(21): condition(value(trait, cur con) < 7);
 
 # skipping these because they seem redundant given the "go no deeper than your char level" check earlier
-#	depth(21): condition((value(class, warrior) or value(class, blackguard)) and value(trait, max clevel) < (value(range, n) - 5) and value(trait, max clevel) <= 38 and !value(config, plays_risky));
+#	depth(21): condition((value(class, warrior) or value(class, vanguard)) and value(trait, max clevel) < (value(range, n) - 5) and value(trait, max clevel) <= 38 and !value(config, plays_risky));
 #	depth(21): condition(value(class, rogue) and value(trait, max clevel) < value(range, n) + 10 and value(trait, max clevel) <= 46 and !value(config, plays_risky));
 #	depth(21): condition((value(class, priest) or value(class, druid)) and value(trait, max clevel) < value(range, n) + 13 and value(trait, max clevel) <= 46 and !value(config, plays_risky));
 #	depth(21): condition(value(class, paladin) and value(trait, max clevel) < value(range, n) + 7 and value(trait, max clevel) <= 40 and !value(config, plays_risky));
@@ -1068,7 +1068,7 @@ Depth Requirement
 	depth(40): condition(!value(trait, resist conf with swap));
 	depth(40): condition(value(trait, str) < 16);
 	depth(40): condition((value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin)) and value(trait, wis) < 16);
-	depth(40): condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue)) and value(trait, int) < 16);
+	depth(40): condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue)) and value(trait, int) < 16);
 	depth(40): condition(value(trait, dex) < 16);
 	depth(40): condition(value(trait, con) < 16);
 
@@ -1077,7 +1077,7 @@ Depth Requirement
 	depth(46): condition(value(trait, max hp) < 500 and !value(config, plays_risky));
 	depth(46): condition(value(trait, str) < (18+40));
 	depth(46): condition((value(class, priest) or value(class, druid) or value(class, ranger) or value(class, paladin)) and value(trait, wis) < 18+100);
-	depth(46): condition((value(class, mage) or value(class, necromancer) or value(class, blackguard) or value(class, rogue)) and value(trait, int) < 18+100);
+	depth(46): condition((value(class, mage) or value(class, necromancer) or value(class, vanguard) or value(class, rogue)) and value(trait, int) < 18+100);
 	depth(46): condition(value(trait, dex) < (18+60));
 	depth(46): condition(value(trait, con) < (18+60));
 	depth(46): condition(!value(trait, hold life with swap) and value(trait, max clevel) < 50);

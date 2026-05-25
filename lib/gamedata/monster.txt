@@ -4595,7 +4595,7 @@ friends-base:50:1d5:orc:servant
 friends-base:50:1d5:orc:servant
 desc:An armoured orc with an air of authority.
 
-name:blackguard
+name:fallen vanguard
 base:person
 color:s
 speed:115
@@ -7637,7 +7637,7 @@ flags:OPEN_DOOR
 flags:NO_CONF | NO_SLEEP
 friends:50:1d1:Master thief
 friends:50:1d1:Mage
-friends:50:1d1:blackguard
+friends:50:1d1:fallen vanguard
 desc:A man of Harad clothed in black who moves with blinding speed.
 
 name:memory moss
@@ -8097,7 +8097,7 @@ desc: Morgoth or faces you in combat for some other reason is not clear; all
 desc: you know is that it stands before you, its eyes ablaze as it prepares its
 desc: next volley of spells.
 
-name:troll blackguard
+name:fallen troll vanguard
 base:troll
 color:U
 speed:110
@@ -8166,7 +8166,7 @@ flags:OPEN_DOOR | TAKE_ITEM
 innate-freq:10
 spell-freq:6
 spells:SHOT | BLINK | TRAPS
-friends:50:1d1:blackguard
+friends:50:1d1:fallen vanguard
 friends:50:1d1:Mage
 friends:50:1d1:southron assassin
 desc:Cool and confident, fast and lithe; protect your possessions quickly!
