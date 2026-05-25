@@ -24,12 +24,16 @@
 | **Evidence Plan** | The planned captures, messages, or screen states that will prove whether the invariant held. | Logging, screenshots |
 | **Feedback Loop** | The cycle of building, launching, driving a scenario, observing behavior, diagnosing, patching, and repeating. | Test cycle, iteration |
 | **Promotion Rule** | The rule that repeatable direct-play discoveries should become deterministic tests when practical. | Follow-up, automation idea |
+| **Scenario Save Fixture** | A temporary, isolated generated save used to place a character into a specific class, level, depth, equipment, spell, monster, or terrain state for direct gameplay testing. | User save, checked-in savefile |
+| **Deep-Floor Playtest** | A direct gameplay pass that starts from a scenario save or equivalent setup on a dangerous dungeon floor to judge mechanics under realistic pressure. | High-level smoke test |
 
 ## Relationships
 
 - A **Direct Gameplay Pass** must begin with a **Test Contract**.
 - A **Test Contract** contains exactly one or more **Invariants** and one **Evidence Plan**.
 - A **Feedback Loop** can include both **Deterministic Tests** and a **Direct Gameplay Pass**.
+- A **Deep-Floor Playtest** should use a **Scenario Save Fixture** when manual setup would be slow or unreliable.
+- A **Scenario Save Fixture** is a temporary playtest artifact unless explicitly promoted into a documented fixture format.
 - **Player-Accessible Evil Power** violates the **Central Design Rule**.
 - **Enemy-Only Evil Content** can remain when it is clearly antagonistic.
 - A **Replacement Class** must use **Clean Heroic Power**, not a renamed forbidden mechanic.

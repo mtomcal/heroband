@@ -226,10 +226,11 @@ If a machine uses local, non-system dependencies, keep those paths outside commi
 
 ## Current Heroband Notes
 
-- Necromancer and Blackguard are currently gated out of playable character creation.
-- Their raw class data still exists in `lib/gamedata/class.txt` for parser/class-ID stability and later replacement work.
+- General has a first draft implemented in the old Necromancer class slot. It uses tactics, morale, field commands, and temporary living allies rather than undead, spirits, demons, soul magic, necromancy, blood magic, shadow magic, or occult power.
+- Blackguard is currently gated out of playable character creation.
+- The old class-slot identifiers may still use `CLASS_NECROMANCER` internally for parser/class-ID stability; treat that as compatibility plumbing unless it exposes forbidden player-facing content.
 - Shadow, nether, bloodlust, undead/demon summoning, and related player-beneficial mechanics still require follow-up review.
-- Future Necromancer replacement direction: `General`, powered by natural leadership, lawful command, battlefield discipline, and living comrades.
+- General still needs high-level scenario testing once scenario save fixtures or equivalent setup exists. Evaluate ally survival, command duration, pathing, archer usefulness, no-drop behavior, and continued compliance with the central Heroband moral rule.
 - Future Blackguard replacement direction: a clean martial class such as `Vanguard`, `Champion`, or `Knight-Errant`, powered by courage, tactics, stamina, armor mastery, and heroic resolve.
 
 ## Appendix

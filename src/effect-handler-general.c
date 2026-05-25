@@ -2328,6 +2328,80 @@ bool effect_handler_SUMMON(effect_handler_context_t *context)
 }
 
 /**
+ * Call a temporary living ally for the General.
+ *
+ * Heroband intentionally replaces Angband's player-facing necromancy with
+ * clean heroic command.  These are living soldiers answering orders, not
+ * summoned spirits or conjured monsters.
+ */
+bool effect_handler_CALL_ALLY(effect_handler_context_t *context)
+{
+	const char *race_name = NULL;
+	struct monster_race *race = NULL;
+	struct monster *mon = NULL;
+	struct monster_group_info info = { 0, 0 };
+	struct loc near = player->grid;
+	int duration = effect_calculate_value(context, false);
+	int d;
+
+	context->ident = true;
+
+	if (player->upkeep->arena_level) {
+		msg("No soldiers can reach you here.");
+		return true;
+	}
+
+	if (player->timed[TMD_COMMAND]) {
+		msg("You are already directing an ally.");
+		return false;
+	}
+
+	switch (context->subtype) {
+		case 1:
+			race_name = "Heroband infantry";
+			break;
+		case 2:
+			race_name = "Heroband archer";
+			break;
+		default:
+			msg("No such ally answers your command.");
+			return false;
+	}
+
+	race = lookup_monster(race_name);
+	if (!race) {
+		msg("No soldier answers your command.");
+		return false;
+	}
+
+	for (d = 1; d < 5; ++d) {
+		if (scatter_ext(cave, &near, 1, player->grid, d, true,
+				square_allows_summon) > 0) {
+			break;
+		}
+	}
+
+	if (d == 5 || !place_new_monster(cave, near, race, false, false, info, 0)) {
+		msg("No soldier can reach your position.");
+		return true;
+	}
+
+	mon = square_monster(cave, near);
+	assert(mon);
+
+	mflag_on(mon->mflag, MFLAG_CALLED_ALLY);
+	monster_wake(mon, false, 100);
+	mon->energy = 0;
+
+	player_set_timed(player, TMD_COMMAND, MAX(duration, 0), false, false);
+	mon_inc_timed(mon, MON_TMD_COMMAND, MAX(duration, 0), 0);
+	health_track(player->upkeep, mon);
+
+	msg("A %s answers your command.", race->name);
+	return true;
+}
+
+/**
  * Delete all non-unique monsters of a given "type" from the level
  * -------
  * Warning - this function assumes that the entered monster symbol is an ASCII

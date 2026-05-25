@@ -38,62 +38,6 @@
 #include "borg.h"
 
 /*
- * Check to see if the surrounding dungeon should be darkened
- * This is only done for necromancers 
- */
-static bool borg_check_dark_only(void)
-{
-    /* Only necromancers like the dark */
-    if (borg.trait[BI_CLASS] != CLASS_NECROMANCER)
-        return false;
-
-    /** Work out if there's any reason to call darkness */
-
-    /* Don't bother because we only just did it */
-    /* necromancers borrow the call light counter for darkness */
-    if (borg.when_call_light != 0 && (borg_t - borg.when_call_light) < 7)
-        return false;
-    int x, y;
-    int floors = 0;
-
-    /*
-     * Scan the surrounding 5x5 area for lit tiles.
-     */
-    for (y = borg.c.y - 2; y <= borg.c.y + 2; y++) {
-        for (x = borg.c.x - 2; x <= borg.c.x + 2; x++) {
-            borg_grid *ag;
-
-            /* Bounds check */
-            if (!square_in_bounds_fully(cave, loc(x, y)))
-                continue;
-
-            /* Get grid */
-            ag = &borg_grids[y][x];
-
-            /* Must be a glowing floor grid */
-            if (borg_cave_floor_grid(ag) 
-                && square_isglow(cave, loc(x, y))) {
-                floors++;
-            }
-        }
-    }
-
-    /* Don't bother unless there are enough unlit floors */
-    /* 11 is the empirical cutoff point for sensible behaviour here */
-    if (floors < 11)
-        return false;
-
-    if (borg_spell_fail(CREATE_DARKNESS, 40)) {
-        borg_note("# Calling Darkness in the dungeon");
-        borg.when_call_light = borg_t;
-        return true;
-    }
-
-    return false;
-}
-
-
-/*
  * Check to see if the surrounding dungeon should be illuminated, and if
  * it should, do it.
  *
@@ -125,10 +69,6 @@ bool borg_check_light_only(void)
             return true;
         }
     }
-
-    /* necromancers like the dark */
-    if (borg.trait[BI_CLASS] == CLASS_NECROMANCER)
-        return borg_check_dark_only();
 
     /** Work out if there's any reason to light */
 
@@ -608,10 +548,6 @@ enum borg_need borg_maintain_light(void)
     borg_item *current_light = &borg_items[INVEN_LIGHT];
 
     if (of_has(current_light->flags, OF_NO_FUEL))
-        return BORG_NO_NEED;
-
-    /* necromancers like the dark */
-    if (borg.trait[BI_CLASS] == CLASS_NECROMANCER)
         return BORG_NO_NEED;
 
     /*  current torch */

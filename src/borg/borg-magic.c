@@ -138,32 +138,14 @@ static borg_spell_rating borg_spell_ratings_PRIEST[] =
 };
 static borg_spell_rating borg_spell_ratings_NECROMANCER[] =
 {
-    { "Nether Bolt", 95, NETHER_BOLT },
-    { "Sense Invisible", 85, SENSE_INVISIBLE },
-    { "Create Darkness", 5, CREATE_DARKNESS }, 
-    { "Bat Form", 5, BAT_FORM }, // !FIX !TODO shapechange
-    { "Read Minds", 85, READ_MINDS },
-    { "Tap Unlife", 85, TAP_UNLIFE },
-    { "Crush", 95, CRUSH },
-    { "Sleep Evil", 85, SLEEP_EVIL },
-    { "Shadow Shift", 95, SHADOW_SHIFT },
-    { "Disenchant", 25, DISENCHANT },
-    { "Frighten", 85, FRIGHTEN },
-    { "Vampire Strike", 75, VAMPIRE_STRIKE },
-    { "Dispel Life", 65, DISPEL_LIFE },
-    { "Dark Spear", 65, DARK_SPEAR },
-    { "Warg Form", 5, WARG_FORM }, // !FIX !TODO shapechange
-    { "Banish Spirits", 65, BANISH_SPIRITS },
-    { "Annihilate", 95, ANNIHILATE },
-    { "Grond's Blow", 85, GRONDS_BLOW },
-    { "Unleash Chaos", 85, UNLEASH_CHAOS },
-    { "Fume of Mordor", 75, FUME_OF_MORDOR },
-    { "Storm of Darkness", 65, STORM_OF_DARKNESS },
-    { "Power Sacrifice", 5, POWER_SACRIFICE },  /* not sure if this is borg happy. */
-    { "Zone of Unmagic", 5, ZONE_OF_UNMAGIC },  // !FIX !TODO defense?  not sure how to code. 
-    { "Vampire Form", 5, VAMPIRE_FORM }, // !FIX !TODO shapechange
-    { "Curse", 65, CURSE },
-    { "Command", 5, COMMAND } // !FIX !TODO defense?  not sure how to code. 
+    { "Call Infantry", 5, COMMAND },
+    { "Rally", 75, HEROISM },
+    { "Shield Wall", 75, BLESS },
+    { "Call Archer", 5, COMMAND },
+    { "Hold the Line", 75, BLESS },
+    { "Expose Weakness", 65, SLOW_MONSTER },
+    { "Banner of Courage", 75, HEROISM },
+    { "Tactical Withdrawal", 85, PHASE_DOOR }
 };
 static borg_spell_rating borg_spell_ratings_PALADIN[] =
 {
@@ -525,14 +507,6 @@ int borg_spell_fail_rate(const enum borg_spells spell)
     if (!player_has(player, PF_ZERO_FAIL)) {
         if (minfail < 5)
             minfail = 5;
-    }
-
-    /* Necromancers are punished by being on lit squares */
-    /* necromancers like the dark */
-    if (borg.trait[BI_CLASS] == CLASS_NECROMANCER &&
-        borg_grids[borg.c.y][borg.c.x].info & BORG_LIGHT) {
-        chance += 25;
-
     }
 
     /* Minimum failure rate and max */

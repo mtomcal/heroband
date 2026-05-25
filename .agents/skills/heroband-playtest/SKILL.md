@@ -60,8 +60,22 @@ For player-facing or gameplay changes, direct gameplay is required unless GCU ca
 
 - Tier 2, town/dungeon smoke: create or load a character, enter gameplay, move, inspect relevant inventory/equipment/spell/help/store commands, and verify messages and screen state.
 - Tier 3, targeted scenario: set up the specific mechanic under test, then exercise the changed class, power, spell, store behavior, item, combat interaction, save/load case, or moral restriction.
+- Tier 4, scenario save: generate or load an isolated save fixture that places a character at a chosen depth or hard-floor situation, then exercise mechanics that cannot be judged from town or early-dungeon play.
 
-Use tier 2 by default for player-facing changes. Use tier 3 for mechanics and moral restrictions.
+Use tier 2 by default for player-facing changes. Use tier 3 for mechanics and moral restrictions. Use tier 4 when the behavior depends on depth, monster pressure, equipment, learned powers, save/load continuity, or other state that would be slow or unreliable to set up by hand.
+
+## Scenario Save Fixtures
+
+Scenario saves are temporary playtest artifacts, not checked-in user saves. Keep them under the playtest state directory and launch them with the same isolated `user`, `save`, `panic`, and `archive` paths used by `start`.
+
+When a test needs a high-level or hard-floor situation, prefer a generated scenario save over manual grinding. The scenario setup should record:
+
+- character race, class, level, stats, equipment, inventory, and learned powers
+- dungeon depth, relevant terrain, monsters, and starting position
+- the mechanic under test and the expected risk pressure
+- whether the save should be reused for observation only or regenerated each run
+
+Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. A future wrapper command such as `scripts/heroband-playtest prepare-save` should create the isolated save and write a small manifest next to it so the direct gameplay pass can report exactly what state was loaded.
 
 ## GCU Build
 

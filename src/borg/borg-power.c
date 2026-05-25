@@ -230,11 +230,8 @@ static int32_t borg_power_equipment(void)
 
     /*** Reward various things ***/
 
-    /* Reward light radius */
-    /* necromancers like the dark */
-    if (borg.trait[BI_CLASS] == CLASS_NECROMANCER)
-        value -= ((borg.trait[BI_LIGHT] - 1) * 10000L);
-    else if (borg.trait[BI_LIGHT] <= 3)
+    /* Reward light radius.  General does not inherit Necromancer darkness. */
+    if (borg.trait[BI_LIGHT] <= 3)
         value += (borg.trait[BI_LIGHT] * 10000L);
     else if (borg.trait[BI_LIGHT] > 3)
         value += (30000L) + (borg.trait[BI_LIGHT] * 1000);

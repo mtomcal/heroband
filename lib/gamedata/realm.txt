@@ -30,3 +30,9 @@ stat:INT
 verb:perform
 spell-noun:ritual
 book-noun:shadow book
+
+name:tactics
+stat:WIS
+verb:issue
+spell-noun:order
+book-noun:field manual

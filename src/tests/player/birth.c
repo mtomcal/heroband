@@ -43,11 +43,13 @@ static int test_generate0(void *state) {
 }
 
 static int test_forbidden_classes_unplayable(void *state) {
+	struct player_class general = { .name = "General" };
 	struct player_class warrior = { .name = "Warrior" };
 	struct player_class necromancer = { .name = "Necromancer" };
 	struct player_class blackguard = { .name = "Blackguard" };
 
 	eq(player_class_is_playable(NULL), false);
+	eq(player_class_is_playable(&general), true);
 	eq(player_class_is_playable(&warrior), true);
 	eq(player_class_is_playable(&necromancer), false);
 	eq(player_class_is_playable(&blackguard), false);

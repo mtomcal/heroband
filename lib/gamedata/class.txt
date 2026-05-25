@@ -952,264 +952,94 @@ desc:Casts a radius 4 ball of strong light, and then bathes the entire area
 desc: in light doing 100 damage to every light-sensitive creature.
 
 
-############### NECROMANCER ###############
-name:Necromancer
-stats:-3:3:0:0:-2
-skill-disarm-phys:30:10
-skill-disarm-magic:35:12
-skill-device:36:13
-skill-save:30:9
-skill-stealth:2:0
-skill-search:10:12
-skill-melee:35:25
-skill-shoot:20:15
-skill-throw:20:15
+############### GENERAL ###############
+name:General
+stats:0:0:2:0:1
+skill-disarm-phys:28:10
+skill-disarm-magic:25:8
+skill-device:28:9
+skill-save:32:10
+skill-stealth:1:0
+skill-search:12:8
+skill-melee:42:28
+skill-shoot:32:22
+skill-throw:25:15
 skill-dig:0:0
-hitdie:2
-max-attacks:4
+hitdie:6
+max-attacks:5
 min-weight:35
-strength-multiplier:3
+strength-multiplier:4
 equip:food:Ration of Food:1:3:none
 equip:sword:Main Gauche:1:1:none
 equip:scroll:Word of Recall:1:1:birth_no_recall
-player-flags:ZERO_FAIL | CHOOSE_SPELLS | UNLIGHT | EVIL
-title:Acolyte
-title:Curser
-title:Dark Student
-title:Initiate
-title:Slavemaster
-title:Summoner
-title:Controller
+player-flags:CHOOSE_SPELLS | BRAVERY_30
+title:Cadet
+title:Sergeant
+title:Lieutenant
+title:Captain
+title:Major
 title:Commander
-title:Dark Master
-title:Night Lord
+title:Colonel
+title:General
+title:Marshal
+title:High Marshal
 
-magic:1:300:5
+magic:1:350:2
 
-book:shadow book:town:[Into the Shadows]:5:shadow
-book-graphics:?:P
+book:magic book:town:[Field Commands]:4:tactics
+book-graphics:?:G
 book-properties:25:40:1 to 100
-equip:shadow book:[Into the Shadows]:1:1:none
+equip:magic book:[Field Commands]:1:1:none
 
-spell:Nether Bolt:1:1:22:2
-effect:BOLT:NETHER
-dice:$Dd4
-expr:D:PLAYER_LEVEL:/ 4 + 3
-desc:Fires a bolt of nether magic.
+spell:Call Infantry:1:2:25:2
+effect:CALL_ALLY:1
+dice:20+d10
+desc:Calls a living infantryman to your side for a short battlefield command.
+desc:  The soldier is not conjured and falls back when released.
 
-spell:Sense Invisible:2:4:25:3
-effect:TIMED_INC:SINVIS
-dice:24+d24
-desc:Enables you to see invisible monsters for 24+1d24 turns.
+spell:Rally:3:3:25:4
+effect:CURE:AFRAID
+effect:TIMED_INC:HERO
+dice:20+d20
+desc:Rallies your courage, curing fear and granting temporary heroism.
 
-spell:Create Darkness:3:3:10:4
-effect:DARKEN_AREA
-effect:SPHERE:DARK_WEAK:1:10
-dice:1
-desc:Darkens all squares in a level-dependent area.  If you are in a room,
-desc: the entire room will be darkened as well.
+spell:Shield Wall:5:5:30:8
+effect:TIMED_INC:SHIELD
+dice:20+d20
+desc:Orders a disciplined defensive stance, temporarily improving protection.
 
-spell:Bat Form:3:4:20:10
-effect:SHAPECHANGE:bat
-desc:Changes you into the shape of a bat, weak but with excellent senses.
-desc:  While shapechanged you cannot use items.
+spell:Call Archer:7:5:35:12
+effect:CALL_ALLY:2
+dice:15+d10
+desc:Calls a living archer to your side for a short battlefield command.
+desc:  The archer is not conjured and falls back when released.
 
-spell:Read Minds:4:4:10:6
-effect:DETECT_SOUL
-effect-yx:22:40
-effect:READ_MINDS
-dice:$Dd$S
-expr:D:PLAYER_LEVEL:/ 10
-expr:S:PLAYER_LEVEL:/ 10 + 1
-desc:Detects all monsters which have a spirit in the immediate area,
-desc: and then maps in a region around them, increasing in size with
-desc: character level.
-
-book:shadow book:town:[Dark Rituals]:5:shadow
-book-graphics:?:P
+book:magic book:town:[Battlefield Tactics]:4:tactics
+book-graphics:?:G
 book-properties:400:40:10 to 100
 
-spell:Tap Unlife:7:0:50:3
-effect:TAP_UNLIFE
-dice:$Dd6
-expr:D:PLAYER_LEVEL:/ 4 + 2
-desc:Targets the nearest undead monster and damages it to gain player mana.
+spell:Hold the Line:10:7:40:20
+effect:TIMED_INC:BLESSED
+dice:25+d25
+desc:Steadies your fighting line, improving your armor and accuracy briefly.
 
-spell:Crush:10:6:40:5
-effect:PROJECT_LOS:MON_CRUSH
-dice:$B
-expr:B:PLAYER_LEVEL:* 4
-effect:DAMAGE
-dice:d$S
-expr:S:PLAYER_LEVEL:* 2
-desc:Instantly kill any monster in line-of-sight with less than four times the
-desc: player's level in hitpoints, also hurting the player.  Other monsters are
-desc: unharmed.
+spell:Expose Weakness:15:8:45:30
+effect:BOLT_STATUS:MON_SLOW
+dice:20+d20
+desc:Directs attention to a target's opening, attempting to slow one foe.
 
-spell:Sleep Evil:12:5:50:5
-effect:PROJECT_LOS:SLEEP_EVIL
-dice:$B
-expr:B:PLAYER_LEVEL:* 10 + 500
-desc:Attempts to put to sleep each evil monster within line of sight.
-desc:  Monsters that resist confusion are not affected.
+spell:Banner of Courage:20:12:50:60
+effect:CURE:AFRAID
+effect:TIMED_INC:HERO
+dice:40+d40
+effect:TIMED_INC:BLESSED
+dice:40+d40
+desc:Raises morale under a visible banner, granting courage and discipline.
 
-spell:Shadow Shift:15:10:50:10
+spell:Tactical Withdrawal:25:15:55:80
 effect:TELEPORT
 dice:30
-effect:DAMAGE
-dice:2d5
-effect-msg:shadow shifting
-desc:Displaces your spirit a short distance, hurting your body as it is
-desc: dragged along.
-
-spell:Disenchant:16:12:50:15
-effect:BOLT:DISEN
-dice:2d$S
-expr:S:PLAYER_LEVEL:* 2 + 10
-desc:Casts a bolt which wounds, and makes spellcasting monsters less successful
-desc: in casting spells.
-
-book:shadow book:town:[Fear and Torment]:5:shadow
-book-graphics:?:P
-book-properties:1600:20:30 to 100
-
-spell:Frighten:17:4:40:12
-effect:BOLT_AWARE:TURN_ALL
-dice:$B
-expr:B:PLAYER_LEVEL:+ 0
-desc:Attempts to scare a single monster for a level-dependent duration.
-desc:  Monsters that resist fear are not affected.
-
-spell:Vampire Strike:20:5:50:10
-effect:JUMP_AND_BITE
-dice:$B
-expr:B:PLAYER_LEVEL:* 2
-desc:Teleports you to the nearest living monster and drains its hitpoints
-desc: to heal and nourish you.  The number of hitpoints drained is twice your
-desc: level or one more than the monster's current hitpoints, whichever is
-desc: smaller.
-
-spell:Dispel Life:22:20:50:10
-effect:PROJECT_LOS_AWARE:MON_DRAIN
-dice:d$S
-expr:S:PLAYER_LEVEL:* 3
-desc:Inflicts unresistable damage on each living monster within line of sight.
-
-spell:Dark Spear:25:10:60:12
-effect:LINE:DARK
-dice:2d$S
-expr:S:PLAYER_LEVEL:* 2
-desc:Fires a beam of darkness.
-
-spell:Warg Form:28:20:60:80
-effect:SHAPECHANGE:warg
-desc:Changes you into the form of a warg, and gives you temporary berserk
-desc: strength, at the cost of some hitpoints.
-
-
-book:shadow book:dungeon:[Deadly Powers]:6:shadow
-book-graphics:?:p
-book-properties:30000:15:40 to 100
-
-spell:Banish Spirits:25:25:80:25
-effect:PROJECT_LOS_AWARE:AWAY_SPIRIT
-dice:100
-desc:Teleports away each monster with a spirit within line of sight.
-
-spell:Annihilate:30:20:75:25
-effect:BOLT:MON_DRAIN
-dice:$B
-expr:B:PLAYER_LEVEL:* 4
-desc:Inflicts damage equal to four times player level on a single monster that
-desc: is not undead, an elemental, a golem, or a vortex.
-
-spell:Grond's Blow:35:35:80:115
-effect:DESTRUCTION:DARK:15
-desc:Destroys everything in a 15-square radius circle around you.
-desc:  All monsters, objects, and terrain features in the area of
-desc: effect are destroyed, except stairs and permanent walls.
-desc:  You will also be blinded for 10+1d10 turns, unless you
-desc: have resistance to blindness or dark.
-desc:  This ritual has no effect when used in the town.
-
-spell:Unleash Chaos:38:15:90:100
-effect:RANDOM
-dice:3
-effect:BEAM:CHAOS
-dice:8d$S
-expr:S:PLAYER_LEVEL:+ 0
-effect:ARC:CHAOS:0:10
-dice:8d$S
-expr:S:PLAYER_LEVEL:+ 0
-effect:BALL:CHAOS:3
-dice:8d$S
-expr:S:PLAYER_LEVEL:+ 0
-effect:WAKE
-effect:PROJECT_LOS:TURN_ALL
-dice:$B
-expr:B:PLAYER_LEVEL:+ 0
-desc:Fires a chaos beam, arc or ball in the chosen direction, wakes everything
-desc: in the area, and attempts to frighten everything in line of sight.
-
-spell:Fume of Mordor:40:50:80:150
-effect:DARKEN_LEVEL
-dice:1
-desc:Darkens, maps out, and detects all objects on the complete current
-desc: dungeon level.
-
-spell:Storm of Darkness:43:16:80:200
-effect:BALL:DARK:4
-dice:4d$S
-expr:S:PLAYER_LEVEL:* 2
-desc:Invokes a radius-4 darkness ball.
-
-
-book:shadow book:dungeon:[Corruption of Spirit]:5:shadow
-book-graphics:?:p
-book-properties:50000:10:60 to 100
-
-spell:Power Sacrifice:27:0:20:20
-effect:DAMAGE
-dice:50
-effect-msg:self sacrifice
-effect:RESTORE_MANA
-dice:50
-desc:Exchanges 50 hitpoints for 50 mana.
-
-spell:Zone of Unmagic:32:16:60:110
-effect:SPOT:DISEN:4
-dice:$B
-expr:B:PLAYER_LEVEL:* 3
-desc:Produces a zone of disenchantment affecting the player and monsters
-desc: within radius 4.
-
-spell:Vampire Form:37:20:60:140
-effect:SHAPECHANGE:vampire
-effect:JUMP_AND_BITE
-dice:$B
-expr:B:PLAYER_LEVEL:+ 0
-desc:Allows you to assume the form of a vampire at the cost of half your
-desc: current hitpoints, than teleports you to the nearest living monster
-desc: and drains a level-dependent number of hitpoints, healing and nourishing
-desc: you.  When first transformed you will temporarily be able
-desc: to take hitpoints from living monsters with your bite attack.
-
-spell:Curse:40:50:60:180
-effect:DAMAGE
-dice:100
-effect-msg:performing a curse
-effect:CURSE
-dice:$Dd$S
-expr:D:PLAYER_LEVEL:/ 12 + 1
-expr:S:MONSTER_PERCENT_HP_GONE:+ 50
-desc:Deals direct damage to a single monster, more the more damaged the monster
-desc: is already, at the cost of 100 hitpoints.
-
-spell:Command:45:40:60:250
-effect:COMMAND
-dice:5+1d10
-desc:Allows you to take control of a monster, and move it instead of yourself.
-desc:  Possible actions are move, stand still, 'd'rop, 'm'agic, or 'r'elease.
+desc:Executes an orderly withdrawal to a nearby position.
 
 ############### PALADIN ###############
 name:Paladin
@@ -1606,7 +1436,6 @@ hitdie:8
 max-attacks:5
 min-weight:100
 strength-multiplier:5
-equip:shadow book:[Into the Shadows]:1:1:none
 equip:food:Ration of Food:1:3:none
 equip:light:Wooden Torch:1:3:none
 equip:sword:Tulwar:1:1:none
@@ -1629,6 +1458,7 @@ title:Tyrant
 magic:1:600:3
 
 book:shadow book:town:[Into the Shadows]:6:shadow
+equip:shadow book:[Into the Shadows]:1:1:none
 
 spell:Seek Battle:1:1:15:2
 effect:DETECT_FEARFUL_MONSTERS

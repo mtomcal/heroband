@@ -19,6 +19,7 @@
 #include "angband.h"
 #include "mon-desc.h"
 #include "mon-lore.h"
+#include "mon-make.h"
 #include "mon-msg.h"
 #include "mon-predicate.h"
 #include "mon-spell.h"
@@ -221,6 +222,15 @@ static bool mon_set_timed(struct monster *mon,
 			player->upkeep->redraw |= (PR_HEALTH);
 
 		player->upkeep->redraw |= (PR_MONLIST);
+	}
+
+	if (update && effect_type == MON_TMD_COMMAND && timer == 0 &&
+			mflag_has(mon->mflag, MFLAG_CALLED_ALLY)) {
+		char m_name[80];
+
+		monster_desc(m_name, sizeof(m_name), mon, MDESC_CAPITAL);
+		msg("%s falls back to their unit.", m_name);
+		delete_monster_idx(cave, mon->midx);
 	}
 
 	return !resisted;
