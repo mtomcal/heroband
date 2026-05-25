@@ -1,6 +1,6 @@
 # Player, Birth, Classes, and Timed Effects
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Overview
 
@@ -15,7 +15,7 @@ This system depends on:
 - Data parsing and gamedata for race, class, realm, spell, timed-effect, ability, body, history, starting equipment, and constants definitions.
 - Core game engine for world initialization, turn lifecycle, event signaling, level changes, object knowledge, stores, and quest state.
 - Turn engine and command dispatch for birth commands, ordinary player commands, forced upkeep turns, energy use, repeated commands, and command-mode remapping.
-- Monsters, command mode, AI, and combat for temporary living allies and commanded-monster state.
+- Monsters, command mode, AI, and combat for temporary living allies, commanded-monster state, formation effects, and banner zones.
 - Objects, equipment, stores, and corruption gates for starting kits, item knowledge, equipment slots, corrupt object warnings, and object-derived player properties.
 - Save/load and runtime user state for quickstart data, character names, persisted options, lore, and compatibility with legacy internal identifiers.
 - Front ends and terminal/UI input for birth menus, prompts, display, help, and command acquisition.
@@ -41,6 +41,9 @@ This system depends on:
 - Timed effect grade maxima must be strictly ascending after the implicit off grade. Rationale: grade lookup must be deterministic and status transitions must not produce ambiguous messages.
 - A nonstacking timed effect must not extend while already active. Rationale: effects such as paralysis should not be indefinitely extended by repeated applications that are meant to be blocked.
 - General ally call duration is determined by the relevant field-command dice expression. Rationale: ally command time must scale by the authored tactical power rather than by monster summoning rules.
+- General temporary ally tier is determined by player level, not dungeon depth. Rationale: the General's command authority should scale with character progression rather than creating out-of-depth soldier spikes.
+- General formation effects scale from player level expressions and may become stronger when a temporary ally is active. Rationale: late General power should come from leadership, tactics, and morale without requiring multiple controllable allies.
+- General banner zones have authored radius and duration and remain fixed to their planted dungeon location until expiration. Rationale: Marshal's Banner should provide area control without becoming teleportation, terrain mutation, or a permanent object.
 - Vanguard drill durations and blow counts are determined by their authored dice expressions and player-level expressions. Rationale: martial powers should scale predictably with level while remaining clean heroic tactics.
 
 ## Data Structures
@@ -55,6 +58,8 @@ This system depends on:
 - Player upkeep record: accumulates pending redraws, recalculations, command working state, energy use, inventory/quiver arrays, tracked health target, and level-transition requests.
 - Player knowledge record: stores object, rune, flavor, artifact, monster, and innate knowledge visible to the player.
 - Temporary ally state: uses ordinary monster state plus a player command timer and an ally marker to represent a living soldier currently under battlefield command.
+- Formation state: uses timed tactical effects, projectable effects, or anchored area state to represent supporting soldiers without creating additional controllable monsters.
+- Banner zone state: stores the location, radius, duration, and tactical effects of an active Marshal's Banner.
 
 ## Behavior
 
@@ -68,6 +73,8 @@ This system depends on:
 - General and Vanguard must be playable heroic replacements, even if compatibility plumbing still uses legacy internal class slots. Test scenario: P-MORAL-002.
 - Player-facing class powers must not grant demonic, necromantic, blood, corrupt shadow, soul-pact, or forbidden occult power. Test scenario: P-MORAL-003.
 - Enemy-only evil, including evil monsters and evil monster powers, may remain as antagonistic content and must not be removed merely because it is evil-themed. Test scenario: P-MORAL-004.
+- General powers must use clean heroic tactics, morale, field command, formations, living temporary allies, and banner-led battlefield control. Test scenario: P-GENERAL-001.
+- General powers must not use literal teleportation as the class mobility identity; orderly movement and survival should be expressed through Fighting Withdrawal, defensive timed effects, monster disruption, or ally cover. Test scenario: P-GENERAL-002.
 - Birth menus must display only playable classes and must submit canonical class choices, not visible row numbers. Test scenario: P-BIRTH-007.
 - Random class completion must select only playable classes and must submit the selected canonical class identity. Test scenario: P-BIRTH-008.
 - Point-based birth must start all intrinsic stats at base 10, spend from the point budget, disallow invalid stat choices, disallow buying above base 18, disallow selling below base 10, and recalculate displayed derived values after accepted changes. Test scenario: P-BIRTH-009.
@@ -86,12 +93,18 @@ This system depends on:
 - Nonstacking timed effects must refuse duration increases while already active, including increases that bypass ordinary failure checks. Test scenario: P-TIMED-006.
 - Timed effect start and end transitions must execute their authored transition effects in order. Test scenario: P-TIMED-007.
 - Player command mode must maintain exactly one currently commanded ally or monster from the player's perspective. Test scenario: P-COMMAND-001.
-- Calling a General ally must create a living infantry or archer ally near the player when space allows, wake it, mark it as command-controlled, set both player and ally command timers, track its health, and report the ally's arrival. Test scenario: P-COMMAND-002.
+- Calling a General ally must create the appropriate player-level tier of living infantry or archer ally near the player when space allows, wake it, mark it as command-controlled, set both player and ally command timers, track its health, and report the ally's arrival. Test scenario: P-COMMAND-002.
 - Calling a General ally must fail without consuming command control if the player is already directing an ally, if no valid ally subtype exists, if the ally race is unavailable, if no soldier can reach the player, or if the arena blocks assistance. Test scenario: P-COMMAND-003.
 - Command mode must release the controlled monster when the player uses the release command, when the controlled monster leaves line of sight, when the monster is deleted, when its command timer expires, or when the player leaves the level. Test scenario: P-COMMAND-004.
 - A called ally whose command expires must leave play as falling back to its unit, not as a corpse, hostile monster, or loot source. Test scenario: P-COMMAND-005.
 - While command mode is active, ordinary player intent must be remapped to commanded-monster actions, but forced upkeep commands such as paralysis and knockout sleep must still consume the player's turn. Test scenario: P-COMMAND-006.
 - Commanded-monster invalid actions must report why they failed and must not consume player energy. Test scenario: P-COMMAND-007.
+- Formation effects must remain usable without a temporary ally at reduced strength when authored that way, and must apply their stronger ally-present mode only when the player currently controls a valid temporary ally. Test scenario: P-GENERAL-003.
+- Formation effects may represent multiple supporting soldiers in messages or spell descriptions, but must not create additional controlled monsters, corpses, drops, or experience sources. Test scenario: P-GENERAL-004.
+- Arrow Volley must be a control-first formation effect: it may deal modest area missile damage, but its primary scaling value is slowing, disrupting, or pressuring enemies, with improved effect when an archer-line temporary ally is active. Test scenario: P-GENERAL-005.
+- Fighting Withdrawal must replace teleport-style General mobility with defensive tactical withdrawal: it spends ordinary action energy, grants defensive benefit, may reposition the player by legal non-teleport movement when implemented, and may improve ally cover when a temporary ally is active. Test scenario: P-GENERAL-006.
+- Glorious Charge must be an offensive commitment power, not an escape tool: it grants short heroic combat benefits and may disrupt nearby non-unique enemies, with improved effect when a melee-line temporary ally is active. Test scenario: P-GENERAL-007.
+- Marshal's Banner must create a temporary banner zone with authored radius and duration. The zone must grant morale or formation benefits to the player and temporary ally within it, may disrupt enemies in its area, and must expire without leaving an object, terrain feature, corpse, or permanent map state. Test scenario: P-GENERAL-008.
 
 ## Error Handling
 
@@ -103,8 +116,11 @@ This system depends on:
 - Setting a timed effect to its current value must be a no-op and must not disturb the player.
 - Attempting to increase a resisted timed effect must fail cleanly and may teach relevant resistance knowledge.
 - Attempting to call an ally in blocked situations must report the specific player-facing reason and must not leave stale command state.
+- Attempting to create a formation or banner zone in a blocked situation must report the specific player-facing reason and must not leave stale area state.
 - Deleting or losing a commanded monster must clear player command state.
+- Expiring a banner zone must clear its area state even if the player, temporary ally, or monsters have left the area.
 - Leaving a level must clear command state before post-level processing continues.
+- Leaving a level must clear banner zones and formation state before post-level processing continues.
 - Forced player upkeep while command mode is active must not enter a no-energy loop.
 
 ## Implementation Notes
@@ -116,6 +132,10 @@ This system depends on:
 - Keep timed effect definitions data-driven, but treat their names and ordering as compatibility-sensitive.
 - Treat command mode as a temporary control overlay, not as a second player character.
 - Treat called General allies as living soldiers under command, not summoned spirits, undead, demons, or conjured monsters.
+- Use in-world military names for General ally monster races rather than project labels in player-visible names.
+- Prefer distinct monster race tiers for General temporary allies over hidden runtime mutation of a single race's stats.
+- Treat formations as tactical effects and messages, not fake map monsters. If a formation appears on the map, it must use a real inspectable mechanic with explicit rules.
+- Treat Marshal's Banner as a temporary battlefield zone before considering a real object or terrain implementation.
 - Player-facing documentation, help, class tables, spell descriptions, and tests must remain consistent with playable behavior.
 
 ## Test Scenarios
@@ -137,6 +157,8 @@ This system depends on:
 - P-MORAL-002: Verify General and Vanguard are playable and documented as heroic classes.
 - P-MORAL-003: Audit player spells and class descriptions for forbidden power sources and verify any replacements use discipline, courage, command, tactics, healing, light, or other clean heroic sources.
 - P-MORAL-004: Verify evil monsters, undead, demons, and enemy spell summons can remain enemy-only without granting player access to their evil power.
+- P-GENERAL-001: Audit General spells, descriptions, books, help, and messages and verify they use tactics, morale, lawful command, formations, living temporary allies, or banner-led battlefield control.
+- P-GENERAL-002: Inspect General mobility powers and verify they do not use literal teleportation as the General class identity.
 - P-PROGRESS-001: Gain and lose experience around level thresholds and verify level, maximum level, stat restoration, history, and redraw behavior.
 - P-PROGRESS-002: Increase stats below 18, between 18 and 18/99, at 18/99, and at 18/100; verify current and maximum stat results.
 - P-PROGRESS-003: Temporarily and permanently drain stats at low, normal, and high values; verify floors, maximum changes, and recalculation flags.
@@ -154,7 +176,16 @@ This system depends on:
 - P-COMMAND-005: Let a called ally expire and verify it falls back, disappears, and leaves no player-beneficial corpse or drops.
 - P-COMMAND-006: While command mode is active, process ordinary movement as monster command and forced sleep as player energy use.
 - P-COMMAND-007: While command mode is active, attempt invalid movement, casting without target, casting without spells, dropping without held objects, and invalid commands; verify messages and no energy use.
+- P-GENERAL-003: Use a formation with and without a temporary ally and verify reduced solo behavior and stronger ally-present behavior.
+- P-GENERAL-004: Use formation powers and verify no additional controllable monsters, drops, corpses, or experience sources are created.
+- P-GENERAL-005: Use Arrow Volley against multiple enemies with and without an archer-line temporary ally and verify modest area damage plus control-first disruption.
+- P-GENERAL-006: Use Fighting Withdrawal when retreat space exists and when blocked; verify action energy, defensive benefit, no literal teleport, and clean fallback behavior.
+- P-GENERAL-007: Use Glorious Charge while advancing into danger and verify short heroic benefits, enemy disruption, and no escape-style teleport behavior.
+- P-GENERAL-008: Plant Marshal's Banner and verify banner zone radius, duration, player and ally benefits, enemy disruption, expiration cleanup, and no object or terrain residue.
 
 ## Changelog
 
+- 1.1.0: Added the planned Marshal of the West direction for General: level-tiered
+  temporary allies, formation effects, Fighting Withdrawal, Glorious Charge, and
+  Marshal's Banner banner zones.
 - 1.0.0: Fully authored brownfield specification for player lifecycle, birth, playable classes, timed effects, and command-mode player restrictions.

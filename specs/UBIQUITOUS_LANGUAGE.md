@@ -1,6 +1,6 @@
 # Ubiquitous Language
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Overview
 
@@ -61,11 +61,15 @@ turn engine specs.
 
 | Term | Definition | Aliases To Avoid |
 | --- | --- | --- |
-| **General** | A playable heroic class using tactics, morale, field commands, and temporary living allies. | Necromancer, summoner |
+| **General** | A playable heroic class using tactics, morale, field commands, temporary living allies, formation effects, and banner-led battlefield control. | Necromancer, summoner |
 | **Vanguard** | A playable heroic class using courage, discipline, armor mastery, battlefield drills, and heroic resolve. | Blackguard, blood warrior |
 | **Class Slot** | A stable compatibility identity that may differ from the player-facing class name. | Class when discussing visible choices |
 | **Realm** | A grouped source of learnable powers or books for classes. | Book type when discussing power source |
 | **Temporary Ally** | A living soldier temporarily directed by the player through command mode. | Summon, minion, spirit, undead |
+| **Marshal of the West** | The high-level design identity for the General as a battlefield commander with living troops, formation tactics, and morale control. | Necromancer replacement, pet class |
+| **Formation** | A short-lived tactical effect representing supporting living soldiers without creating additional controllable monster instances. | Extra summons, fake monsters, minions |
+| **Marshal's Banner** | A high-level General power that plants a temporary morale zone with area benefits and enemy disruption. | Magic glyph, teleport anchor, summoned banner |
+| **Banner Zone** | The temporary area of effect created by Marshal's Banner at a fixed dungeon location. | Aura when location matters, terrain, object |
 
 ### Turns, Commands, And State
 
@@ -168,6 +172,8 @@ turn engine specs.
   legacy **Class Slot** for compatibility.
 - **General** and **Vanguard** are **Clean Heroic Power** classes and must not
   expose their legacy class-slot aliases as playable identities.
+- **Marshal of the West** is a design identity for **General**, not a separate
+  playable class.
 - **Player-Accessible Power** must be either **Clean Heroic Power** or explicit
   **Corruption** with warning and consequence.
 - **Enemy-Only Evil** may use monsters, spells, curses, traps, lore, and hostile
@@ -180,6 +186,11 @@ turn engine specs.
   Order**.
 - **Command Mode** controls at most one **Monster** or **Temporary Ally** from
   the **Player** perspective.
+- A **Formation** may imply multiple supporting soldiers in player-facing text,
+  but it is not a set of **Monster Instances** and must not create additional
+  commanded actors.
+- **Marshal's Banner** creates one **Banner Zone** whose benefits and enemy
+  disruption are **Formation**-style tactical effects.
 - **Energy Use** is the turn-progress contract connecting the turn engine, core
   loop, player state, and monster processing.
 - **Birth** creates one **Player** with a visible class, **Starting Kit**,
@@ -221,6 +232,12 @@ turn engine specs.
 > **Domain expert:** "No. A **Temporary Ally** is a living soldier and **Clean
 > Heroic Power**; renamed necromancy would still be **Forbidden Power**."
 >
+> **Dev:** "Can **Marshal's Banner** show several soldiers helping the
+> **General**?"
+>
+> **Domain expert:** "Yes, but as a **Formation** and **Banner Zone**, not as
+> extra controllable **Monster Instances**."
+>
 > **Dev:** "Can I use a **Scenario Save** as proof for the release?"
 >
 > **Domain expert:** "Only as validation evidence. The **Release Manifest**
@@ -246,6 +263,11 @@ turn engine specs.
 - "Summon" is not acceptable for **Temporary Ally** behavior unless the mechanic
   is genuinely ordinary assistance rather than undead, demonic, spirit, occult,
   or necromantic power.
+- "Ally" is ambiguous: use **Temporary Ally** for the one commandable living
+  soldier and **Formation** for supporting troops represented by tactical
+  effects.
+- "Banner" is ambiguous: use **Marshal's Banner** for the General power and
+  **Banner Zone** for the fixed area it creates.
 - "Knowledge" can mean **Player Knowledge**, **Monster Lore**, **Object
   Knowledge**, or authored data; use the specific term when save/load or tests
   assert what the player has learned.
@@ -279,7 +301,10 @@ turn engine specs.
   from it, it must be removed, blocked, replaced with a clean heroic source, or
   guarded as corrupt with warning and consequence.
 - General is the canonical player-facing class that uses tactics, morale, field
-  commands, and temporary living allies.
+  commands, temporary living allies, formation effects, and banner-led
+  battlefield control.
+- Marshal of the West is the high-level design identity for General. It MUST NOT
+  become a separate playable class unless explicitly specified elsewhere.
 - Vanguard is the canonical player-facing class that uses courage, discipline,
   armor mastery, battlefield drills, and heroic resolve.
 - General and Vanguard MAY retain legacy class-slot plumbing internally, but
@@ -296,6 +321,12 @@ turn engine specs.
   menu action. Specs MUST qualify the meaning when confusion is possible.
 - Command mode means the player is directing a commanded monster. It MUST NOT be
   confused with general command dispatch or input handling.
+- A formation may describe several supporting soldiers, but it MUST NOT create
+  additional controllable monsters, drops, corpses, experience farming, or
+  permanent map occupants.
+- Marshal's Banner creates a temporary banner zone. It MUST be expressed as
+  clean heroic morale and tactics, not a magical glyph, teleport anchor, or
+  conjured object.
 - Turn means one of player action, monster action, energy-processing step, or
   game-loop iteration. Specs MUST identify which turn type is being constrained.
 - Energy use means the cost consumed by an action to advance actor time. A
@@ -343,8 +374,13 @@ visible name. A renamed forbidden mechanic is still forbidden.
 - Term collision review: when adding a command, turn, or energy requirement,
   verify the spec qualifies whether it refers to input, queue, monster order,
   player action, monster action, or loop progress.
+- General tactics review: when adding a General power, verify whether it creates
+  a **Temporary Ally**, **Formation**, **Marshal's Banner**, or **Banner Zone**,
+  and verify the terminology matches the actor and map-state behavior.
 
 ## Changelog
 
+- 1.1.0: Added Marshal of the West, Formation, Marshal's Banner, and Banner Zone
+  terminology for the General's planned battlefield-control redesign.
 - 1.0.0: Initial glossary extracted from the Heroband design rule, current class
   replacement notes, corruption guidance, and active command/turn terminology.

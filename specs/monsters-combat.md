@@ -1,6 +1,6 @@
 # Monsters, Command Mode, AI, and Combat
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Overview
 
@@ -15,7 +15,7 @@ This system depends on:
 - Data parsing and gamedata for monster races, bases, flags, blows, blow effects, blow methods, monster spells, pain messages, projections, summons, timed monster effects, and allocation constants.
 - Core game engine for dungeon chunks, grids, terrain, traps, line of sight, flow, scent, light, messages, events, turn processing, and level transitions.
 - Turn engine and command dispatch for player and monster energy, command-mode remapping, forced turns, and command validity.
-- Player, birth, classes, and timed effects for player level, stealth, saving throws, armor class, timed statuses, command mode, General allies, Vanguard taunts, and moral access gates.
+- Player, birth, classes, and timed effects for player level, stealth, saving throws, armor class, timed statuses, command mode, General allies, General formation effects, banner zones, Vanguard taunts, and moral access gates.
 - Objects, equipment, stores, and corruption gates for monster-held objects, floor object pickup and destruction, slays, object breakage, player resistances, and corruption distinction.
 - Save/load and runtime user state for persistent monsters, monster lore, unique limits, and command-state cleanup.
 - Front ends and terminal/UI input for targeting, visible messages, monster recall, monster lists, health tracking, and command-mode input.
@@ -61,6 +61,8 @@ This system depends on:
 - Monster critical blows require at least 95 percent of maximum possible damage and either at least 20 damage or a damage-percent chance for weaker blows. Rationale: cuts and stuns from monster blows should occur on exceptional hits, not routine low rolls.
 - Breath damage is current monster hit points divided by the projection divisor and capped by the projection's damage cap. Rationale: wounded breathers should become less dangerous while elemental caps preserve balance.
 - Called ally command duration and ordinary command duration must be mirrored between player state and monster state. Rationale: command mode must have one authoritative gameplay duration from the player's perspective.
+- General formation effects must not create additional monster turns or monster instances. Rationale: the class may imply supporting soldiers without adding pet-swarm AI, drops, corpses, experience, or command routing.
+- General banner zones may affect monsters inside their authored radius for their authored duration. Rationale: Marshal's Banner is battlefield area control, not a monster, terrain, or object lifecycle.
 
 ## Data Structures
 
@@ -76,6 +78,8 @@ This system depends on:
 - Group state: stores leader and role information for packs, escorts, and bodyguards.
 - Flow state: stores shared dungeon noise and scent values used by monsters to track the player when direct sight is unavailable.
 - Commanded monster state: combines a monster command timer, player command timer, target fields, and optional called-ally marker.
+- Formation effect state: represents player-authored tactical pressure, protection, or missile support without adding monster instances to the dungeon.
+- Banner zone state: represents the fixed area where Marshal's Banner applies morale benefits or enemy disruption until expiration.
 
 ## Behavior
 
@@ -95,6 +99,10 @@ This system depends on:
 - Invalid commanded actions must report valid options or the specific failure reason and must not spend player energy. Test scenario: M-COMMAND-003.
 - A commanded monster move must obey immobility, terrain, doors, wall-passing, wall-destruction, monster collision, and monster-versus-monster attack rules. Test scenario: M-COMMAND-004.
 - A commanded monster spell must require a selected monster target and an available spell, then use ordinary monster spell effects and lore updates. Test scenario: M-COMMAND-005.
+- A General formation effect must apply only its authored tactical effects and must not be processed as autonomous monster AI. Test scenario: M-GENERAL-001.
+- A General banner zone must apply authored monster disruption only to monsters inside its current radius, must respect unique and timed-effect resistance rules where relevant, and must expire without deleting or creating monsters. Test scenario: M-GENERAL-002.
+- General temporary ally tiers must be selected from explicit living soldier monster races and must not use player-visible project labels such as "Heroband" in monster names. Test scenario: M-GENERAL-003.
+- General temporary ally race tiers must leave no drops, corpses, or experience farming path when called as temporary allies, regardless of their ordinary monster-race combat strength. Test scenario: M-GENERAL-004.
 - Monster AI must first resolve web restrictions, then rouse group members, then attempt multiplication, then attempt ranged attacks, then choose movement or staggering. Test scenario: M-AI-001.
 - Monsters in webs must pass, destroy, clear, or remain stuck according to their abilities, with clearing consuming the turn. Test scenario: M-AI-002.
 - Monster multiplication must require available adjacent space, must be blocked for unique shapes, must respect breeder caps and arena restrictions, must preserve revealed camouflage state for offspring, and must consume the monster turn only on success. Test scenario: M-AI-003.
@@ -128,6 +136,7 @@ This system depends on:
 - Heroband must allow enemy-only demons, undead, corruption, evil summons, Morgoth, Sauron, and hostile dark powers as antagonistic content. Test scenario: M-MORAL-001.
 - Monster or ally systems must not convert enemy-only evil into player-accessible demonic, undead, blood, corrupt shadow, soul-pact, necromantic, or forbidden occult power. Test scenario: M-MORAL-002.
 - General allies must be living soldiers under temporary command and must not use corpse, undead, spirit, demonic, or occult summoning semantics. Test scenario: M-MORAL-003.
+- General formations and banner zones must represent lawful command, morale, discipline, and supporting living soldiers, not conjured creatures, spirits, undead, demons, occult circles, or corrupt shadow power. Test scenario: M-MORAL-004.
 
 ## Error Handling
 
@@ -136,6 +145,8 @@ This system depends on:
 - A monster with no usable ranged spell after filtering must skip ranged attack and continue to movement.
 - A monster spell with missing required visible, invisible, or miss message must report a bug message rather than producing malformed text.
 - A commanded monster action without a commanded monster is invalid state and must be guarded by command-mode ownership.
+- A formation effect must not be accepted as a commanded monster, target monster, carried monster, group member, or monster lore source.
+- A banner zone with no active duration must be ignored and cleared rather than applying stale monster disruption.
 - Commanded casting without a selected monster target must report that no target monster was selected and must not spend energy.
 - Commanded casting by a monster with no spells must report that the monster has no spells and must not spend energy.
 - Commanded movement into blocked terrain must report that the way is blocked and must not spend energy unless a valid attack or terrain interaction occurred.
@@ -154,6 +165,8 @@ This system depends on:
 - Keep monster allocation, race identity, lore identity, and unique identity stable for compatibility.
 - Treat command mode as a player command overlay that temporarily directs one monster; autonomous monster turns must skip commanded monsters.
 - Called allies are temporary living units and should not drop rewards when their duty ends.
+- Treat General formations as tactical effects layered over ordinary monster processing, not as hidden monsters or noninteractive map actors.
+- Treat Marshal's Banner as fixed-radius area state with explicit expiration rather than a monster, object, terrain feature, or level transition aid.
 - Keep monster AI deterministic enough for tests by isolating random gates behind scenario-controlled seeds where possible.
 - Monster lore should reflect what the player could observe or infer, not omniscient implementation state.
 - Status-effect descriptions in documentation must match actual timed-effect effects, resistance, duration caps, and stacking rules.
@@ -177,6 +190,10 @@ This system depends on:
 - M-COMMAND-003: Issue invalid commanded actions and verify messages and zero player energy use.
 - M-COMMAND-004: Command movement through passable terrain, blocked terrain, permanent wall, destructible wall, closed door, locked door, occupied grid, and target monster.
 - M-COMMAND-005: Command a spell with and without target and with spell-capable and spellless monsters; verify effects and lore.
+- M-GENERAL-001: Apply a General formation effect near monsters and verify only authored tactical effects occur, with no extra monster turns, AI processing, lore races, drops, corpses, or commandable actors.
+- M-GENERAL-002: Apply Marshal's Banner and verify monsters inside and outside the banner zone receive the correct disruption behavior, unique or timed-effect resistance is respected, and expiration leaves monster state coherent.
+- M-GENERAL-003: Call General temporary allies across player-level tier breakpoints and verify explicit living soldier races are selected with in-world names and no player-visible project labels.
+- M-GENERAL-004: Kill, expire, delete, or leave behind called temporary allies from each tier and verify no drops, corpses, experience farming, or stale command state.
 - M-AI-001: Place an active monster with options to multiply, cast, and move; verify priority order.
 - M-AI-002: Place webbed monsters with pass-web, wall-passing, wall-destroying, web-clearing, and no relevant abilities; verify turn outcomes.
 - M-AI-003: Attempt multiplication for ordinary breeders, unique shapes, crowded areas, arena levels, no-space areas, and revealed camouflaged breeders.
@@ -210,7 +227,10 @@ This system depends on:
 - M-MORAL-001: Verify enemy demons, undead, evil summons, corrupt forces, Morgoth, Sauron, and hostile dark powers remain available as antagonists.
 - M-MORAL-002: Audit monster-derived player benefits and verify none grant forbidden evil power.
 - M-MORAL-003: Call General allies and verify they are living temporary soldiers, leave cleanly, and are described without forbidden summoning semantics.
+- M-MORAL-004: Use General formations and Marshal's Banner and verify messages, effects, and monster interactions are lawful command, morale, discipline, and supporting living soldiers rather than forbidden power.
 
 ## Changelog
 
+- 1.1.0: Added monster and command-mode boundaries for General formation
+  effects, banner zones, and level-tiered temporary ally races.
 - 1.0.0: Fully authored brownfield specification for monsters, command mode, AI, combat, lore, and Heroband enemy-only evil boundaries.
