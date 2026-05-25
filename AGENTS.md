@@ -20,10 +20,17 @@ When the user asks to implement an approved plan, treat the plan as an end-to-en
 
 ## Specs
 
-Specs are being extracted from this brownfield codebase. Use `specs/PLAN.md`
-for the extraction order and planned spec boundaries. When touching command
-dispatch, timed effects, command mode, or energy use, prioritize the planned
-turn-engine spec work before broadening guidance in this file.
+Heroband has a first-pass brownfield spec suite in `specs/`. Before making any
+code change, inspect the relevant spec and update the spec first when the
+intended behavior, contract, terminology, or moral-access rule changes. Use
+`specs/PLAN.md` as historical extraction context, not as the primary source of
+truth for current behavior.
+
+When touching command dispatch, timed effects, command mode, or energy use,
+start from `specs/turn-engine.md` before broadening guidance in this file.
+When adding or changing domain terms in any spec, check
+`specs/UBIQUITOUS_LANGUAGE.md` and use `$ubiquitous-language` for glossary
+updates so overloaded terms and aliases stay consistent.
 
 ## Repo-local Skills
 
