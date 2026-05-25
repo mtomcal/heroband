@@ -27,6 +27,7 @@ Recent Heroband changes include:
 
 - **How to Play:** [The Heroband Manual](https://mtomcal.github.io/heroband/)
 - **Compile it yourself:** [Building from source](https://mtomcal.github.io/heroband/hacking/compiling.html)
+- **Developer workflow:** [Heroband development notes](https://mtomcal.github.io/heroband/hacking/heroband.html)
 - **Upstream project:** [Angband](https://angband.github.io/angband/)
 
 Heroband builds on decades of Angband development. See the manual and source
