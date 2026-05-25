@@ -18,6 +18,13 @@ Prefer small, buildable patches. Preserve Angband behavior unless it conflicts w
 
 When the user asks to implement an approved plan, treat the plan as an end-to-end contract. Work through every unchecked slice unless the user explicitly narrows the scope or a real blocker prevents progress. Update the plan checklist as slices complete, run the required deterministic tests and Heroband playtest/verifier gates, and do not hand back after only one slice with remaining unchecked work unless asked to pause.
 
+## Specs
+
+Specs are being extracted from this brownfield codebase. Use `specs/PLAN.md`
+for the extraction order and planned spec boundaries. When touching command
+dispatch, timed effects, command mode, or energy use, prioritize the planned
+turn-engine spec work before broadening guidance in this file.
+
 ## Repo-local Skills
 
 Use `$tdd` from the shared skills before making source changes for bug fixes,

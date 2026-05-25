@@ -189,6 +189,20 @@ For wizard/debug setup or any control-key sequence:
 
 Borrow the verification discipline from `$tmux-agent-orchestration`: seeing text or sending a key is not proof. Inspect the pane and confirm the target application changed state.
 
+## Live Session Recovery
+
+When helping with a live Heroband session that appears wedged, inspect before
+acting: capture the tmux pane, identify the foreground process, and check
+whether the game is waiting for input, paused at `-more-`, or crashed. Prefer
+non-destructive keys first, and verify every key by capturing the pane afterward.
+
+Use the panic-save path only with explicit user approval. For GCU sessions,
+`SIGTERM` is routed through Heroband's panic-save handler; after sending it,
+capture the pane and verify `Panic save succeeded!` before reporting recovery.
+Then locate the panic save, usually under the active build's `lib/panic/`
+directory, and report the exact path. Panic save is for live recovery, not
+normal playtest cleanup.
+
 ## Evidence Standard
 
 Report direct gameplay evidence in the final answer:
