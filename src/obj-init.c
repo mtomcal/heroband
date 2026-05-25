@@ -2461,6 +2461,16 @@ static enum parser_error parse_ego_flags_off(struct parser *p) {
 	return PARSE_ERROR_NONE;
 }
 
+static enum parser_error parse_ego_corrupt(struct parser *p) {
+	struct ego_item *e = parser_priv(p);
+
+	if (!e) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+	e->corrupt = true;
+	return PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_ego_values(struct parser *p) {
 	struct ego_item *e = parser_priv(p);
 	char *s, *t;
@@ -2615,6 +2625,7 @@ struct parser *init_parse_ego(void) {
 	parser_reg(p, "time rand time", parse_ego_time);
 	parser_reg(p, "flags ?str flags", parse_ego_flags);
 	parser_reg(p, "flags-off ?str flags", parse_ego_flags_off);
+	parser_reg(p, "corrupt", parse_ego_corrupt);
 	parser_reg(p, "values str values", parse_ego_values);
 	parser_reg(p, "min-values str min_values", parse_ego_min_val);
 	parser_reg(p, "desc str text", parse_ego_desc);
@@ -2882,6 +2893,16 @@ static enum parser_error parse_artifact_flags(struct parser *p) {
 	return t ? PARSE_ERROR_INVALID_FLAG : PARSE_ERROR_NONE;
 }
 
+static enum parser_error parse_artifact_corrupt(struct parser *p) {
+	struct artifact *a = parser_priv(p);
+
+	if (!a) {
+		return PARSE_ERROR_MISSING_RECORD_HEADER;
+	}
+	a->corrupt = true;
+	return PARSE_ERROR_NONE;
+}
+
 static enum parser_error parse_artifact_act(struct parser *p) {
 	struct artifact *a = parser_priv(p);
 	struct object_kind *k;
@@ -3049,6 +3070,7 @@ struct parser *init_parse_artifact(void) {
 	parser_reg(p, "attack rand hd int to-h int to-d", parse_artifact_attack);
 	parser_reg(p, "armor int ac int to-a", parse_artifact_armor);
 	parser_reg(p, "flags ?str flags", parse_artifact_flags);
+	parser_reg(p, "corrupt", parse_artifact_corrupt);
 	parser_reg(p, "act str name", parse_artifact_act);
 	parser_reg(p, "time rand time", parse_artifact_time);
 	parser_reg(p, "msg str text", parse_artifact_msg);
@@ -3490,4 +3512,3 @@ struct file_parser object_property_parser = {
 	finish_parse_object_property,
 	cleanup_object_property
 };
-

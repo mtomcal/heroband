@@ -105,6 +105,18 @@ static int check_devices(struct object *obj)
 	return 1;
 }
 
+static bool confirm_corrupt_object_use(struct object *obj, const char *action)
+{
+	char o_name[80];
+
+	if (!object_is_corrupt(obj)) {
+		return true;
+	}
+
+	object_desc(o_name, sizeof(o_name), obj, ODESC_PREFIX | ODESC_FULL,
+		player);
+	return get_check(format("Really %s corrupt %s? ", action, o_name));
+}
 
 /**
  * Return the chance of an effect beaming, given a tval.
@@ -284,6 +296,10 @@ void do_cmd_wield(struct command *cmd)
 			/* Filter */ obj_can_wear,
 			/* Choice */ USE_INVEN | USE_FLOOR | USE_QUIVER) != CMD_OK)
 		return;
+
+	if (!confirm_corrupt_object_use(obj, "wield")) {
+		return;
+	}
 
 	/* Get the slot the object wants to go in, and the item currently there */
 	slot = wield_slot(obj);
@@ -884,6 +900,11 @@ void do_cmd_activate(struct command *cmd)
 
 	if (!obj_can_activate(obj)) {
 		msg("That item is still charging.");
+		cmd_set_repeat(0);
+		return;
+	}
+
+	if (!confirm_corrupt_object_use(obj, "activate")) {
 		cmd_set_repeat(0);
 		return;
 	}

@@ -540,6 +540,11 @@ const struct artifact *lookup_artifact_name(const char *name)
 	return a_idx > 0 ? &a_info[a_idx] : NULL;
 }
 
+bool artifact_is_corrupt(const struct artifact *art)
+{
+	return art ? art->corrupt : false;
+}
+
 /**
  * \param name ego type name
  * \param tval object tval
@@ -571,6 +576,17 @@ struct ego_item *lookup_ego_item(const char *name, int tval, int sval)
 	}
 
 	return NULL;
+}
+
+bool ego_is_corrupt(const struct ego_item *ego)
+{
+	return ego ? ego->corrupt : false;
+}
+
+bool object_is_corrupt(const struct object *obj)
+{
+	return obj && (artifact_is_corrupt(obj->artifact) ||
+		ego_is_corrupt(obj->ego));
 }
 
 /**

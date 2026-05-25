@@ -35,6 +35,7 @@ int object_to_dam(const struct object *obj);
 int object_to_ac(const struct object *obj);
 void object_flags(const struct object *obj, bitflag flags[OF_SIZE]);
 void object_flags_known(const struct object *obj, bitflag flags[OF_SIZE]);
+bool object_is_corrupt(const struct object *obj);
 bool object_test(item_tester tester, const struct object *o);
 bool item_test(item_tester tester, int item);
 bool is_unknown(const struct object *obj);
@@ -43,7 +44,9 @@ unsigned check_for_inscrip_with_int(const struct object *obj, const char *insrip
 struct object_kind *lookup_kind(int tval, int sval);
 struct object_kind *objkind_byid(int kidx);
 const struct artifact *lookup_artifact_name(const char *name);
+bool artifact_is_corrupt(const struct artifact *art);
 struct ego_item *lookup_ego_item(const char *name, int tval, int sval);
+bool ego_is_corrupt(const struct ego_item *ego);
 int lookup_sval(int tval, const char *name);
 void object_short_name(char *buf, size_t max, const char *name);
 int compare_items(const struct object *o1, const struct object *o2);

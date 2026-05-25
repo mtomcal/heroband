@@ -4,6 +4,8 @@
 #include "unit-test.h"
 #include "test-utils.h"
 #include "cave.h"
+#include "cmds.h"
+#include "game-input.h"
 #include "effects.h"
 #include "game-world.h"
 #include "generate.h"
@@ -18,6 +20,16 @@
 #include "obj-util.h"
 #include "player-birth.h"
 #include "z-quark.h"
+
+static int corrupt_prompt_count;
+static char corrupt_prompt[160];
+
+static bool deny_corrupt_prompt(const char *prompt)
+{
+	corrupt_prompt_count++;
+	my_strcpy(corrupt_prompt, prompt, sizeof(corrupt_prompt));
+	return false;
+}
 
 static bool find_empty_spot(struct chunk *c, struct player *p)
 {
@@ -208,6 +220,7 @@ int setup_tests(void **state) {
 }
 
 int teardown_tests(void *state) {
+	get_check_hook = NULL;
 	wipe_mon_list(cave, player);
 	cleanup_angband();
 
@@ -237,6 +250,71 @@ static int test_inven_wield_pack_single_empty(void *state) {
 	require(player->upkeep->equip_cnt == 1);
 	require(old_weight == player->upkeep->total_weight);
 	require(pack_slots_used(player) == old_slots - 1);
+	ok;
+}
+
+static int test_do_cmd_wield_corrupt_denied(void *state) {
+	struct object *obj;
+	struct command cmd = { 0 };
+
+	require(empty_gear(player));
+	obj = setup_object(TV_RING, lookup_sval(TV_RING, "Searching"), 1);
+	require(obj != NULL);
+	obj->artifact = lookup_artifact_name("The One Ring");
+	require(object_is_corrupt(obj));
+	gear_insert_end(player, obj);
+	require(object_is_carried(player, obj));
+	player->upkeep->total_weight += object_weight_one(obj);
+
+	corrupt_prompt_count = 0;
+	corrupt_prompt[0] = '\0';
+	get_check_hook = deny_corrupt_prompt;
+	cmd.code = CMD_WIELD;
+	cmd_set_arg_item(&cmd, "item", obj);
+	do_cmd_wield(&cmd);
+	get_check_hook = NULL;
+
+	require(corrupt_prompt_count == 1);
+	require(strstr(corrupt_prompt, "corrupt") != NULL);
+	require(!object_is_equipped(player->body, obj));
+	ok;
+}
+
+static int test_do_cmd_activate_corrupt_denied(void *state) {
+	struct object *obj;
+	const struct artifact *art;
+	struct command cmd = { 0 };
+	int slot;
+
+	require(empty_gear(player));
+	obj = setup_object(TV_RING, lookup_sval(TV_RING, "Searching"), 1);
+	require(obj != NULL);
+	art = lookup_artifact_name("The One Ring");
+	notnull(art);
+	obj->artifact = art;
+	copy_artifact_data(obj, art);
+	require(object_is_corrupt(obj));
+	require(obj_can_activate(obj));
+	gear_insert_end(player, obj);
+	require(object_is_carried(player, obj));
+	player->upkeep->total_weight += object_weight_one(obj);
+	slot = wield_slot(obj);
+	inven_wield(obj, slot);
+	require(object_is_equipped(player->body, obj));
+
+	corrupt_prompt_count = 0;
+	corrupt_prompt[0] = '\0';
+	player->upkeep->energy_use = 0;
+	get_check_hook = deny_corrupt_prompt;
+	cmd.code = CMD_ACTIVATE;
+	cmd_set_arg_item(&cmd, "item", obj);
+	do_cmd_activate(&cmd);
+	get_check_hook = NULL;
+
+	require(corrupt_prompt_count == 1);
+	require(strstr(corrupt_prompt, "corrupt") != NULL);
+	require(player->upkeep->energy_use == 0);
+	require(obj->timeout == 0);
 	ok;
 }
 
@@ -752,6 +830,8 @@ static int test_inven_wield_ring_two(void *state) {
 
 const char *suite_name = "player/inven-wield";
 struct test tests[] = {
+	{ "do_cmd_wield corrupt denied", test_do_cmd_wield_corrupt_denied },
+	{ "do_cmd_activate corrupt denied", test_do_cmd_activate_corrupt_denied },
 	{ "inven_wield pack/single/empty slot", test_inven_wield_pack_single_empty },
 	{ "inven_wield pack/stack/empty slot", test_inven_wield_pack_stack_empty },
 	{ "inven_wield pack/single/filled slot", test_inven_wield_pack_single_filled },

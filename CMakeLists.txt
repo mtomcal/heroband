@@ -862,6 +862,7 @@ set(ANGBAND_TEST_CASE_SOURCES
     monster/monster.c
     object/alloc.c
     object/attack.c
+    object/corruption.c
     object/info.c
     object/pile.c
     object/slays.c

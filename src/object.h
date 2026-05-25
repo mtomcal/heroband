@@ -280,6 +280,8 @@ struct artifact {
 
 	int cost;		/**< Artifact (pseudo-)worth */
 
+	bool corrupt;		/**< Whether this artifact is corrupting to wield */
+
 	bitflag flags[OF_SIZE];			/**< Flags */
 
 	int modifiers[OBJ_MOD_MAX];
@@ -339,6 +341,8 @@ struct ego_item {
 	uint32_t eidx;
 
 	int cost;						/* Ego-item "cost" */
+
+	bool corrupt;					/**< Whether this ego corrupts the wielder */
 
 	bitflag flags[OF_SIZE];			/**< Flags */
 	bitflag flags_off[OF_SIZE];		/**< Flags to remove */

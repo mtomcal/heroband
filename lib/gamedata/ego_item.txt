@@ -492,6 +492,7 @@ alloc:10:10 to 80
 type:sword
 type:polearm
 type:hafted
+corrupt
 flags:SEE_INVIS | AGGRAVATE | HOLD_LIFE | DRAIN_EXP
 brand:POIS_3
 slay:UNDEAD_3

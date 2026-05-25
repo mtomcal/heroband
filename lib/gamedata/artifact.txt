@@ -2241,6 +2241,7 @@ desc: and hidden by the Elves from Sauron.
 name:'The One Ring'
 base-object:ring:Ring of Power
 graphics:=:y
+corrupt
 level:75
 weight:2
 cost:5000000
@@ -2408,6 +2409,7 @@ base-object:hafted:Mighty Hammer
 level:100
 weight:1000
 cost:500000
+corrupt
 alloc:0:100 to 100
 attack:9d9:5:25
 armor:0:10
@@ -2427,6 +2429,7 @@ base-object:crown:Massive Iron Crown
 level:100
 weight:400
 cost:10000000
+corrupt
 alloc:0:100 to 100
 attack:1d1:0:0
 armor:0:0
