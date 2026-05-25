@@ -99,6 +99,41 @@ The generated manifest should include the exact scenario inputs, the save path, 
 
 If a generated save cannot be produced yet, use the closest deterministic `src/tests/game/...` or `tests/...` scenario to exercise the behavior and explicitly report the missing save-generation hook. Do not describe that fallback as equivalent to a loaded-save GCU playtest.
 
+## Audit-Grade Scenario Evidence
+
+Scenario-save playtests are useful only when the active evidence root is clean
+and each reported claim is tied to a transcript, manifest, or deterministic test.
+Before asking a verifier to judge the playtest, do this evidence preflight:
+
+- Use fresh state directories after wrong keys, randomness, frontend prompts, or
+  failed setup. Do not append failed attempts to the active evidence record.
+- Archive failed or retry scenario directories outside the active evidence root.
+- Require every scenario manifest to name the exact GCU actions and exact
+  player-visible success states.
+- Report only claims supported by active transcript, manifest, or deterministic
+  test lines.
+- Treat preloaded scenario state as setup, not live proof. If the report says an
+  action created an ally, banner, effect, or status live, the transcript must
+  show the action or resulting player-visible message.
+- Separate GCU-visible behavior from deterministic assertions. GCU is for menus,
+  messages, status flags, loading, and screen state. Deterministic tests are for
+  exact radius membership, no extra actors, no drops, no teleport, stale timer
+  cleanup, unique resistance, and other mechanics hidden by terminal panes.
+- For spell failure or random outcomes, either rebalance the intended accessible
+  power with tests or regenerate a fresh save. Do not bury failed concentration,
+  consumed mana, or partial attempts in the final transcript.
+- Verify every key by pane state. Numeric movement, direction prompts, and
+  menu-letter drift can differ by context; a direction prompt after input is
+  evidence that the driving sequence failed, not proof of the target behavior.
+
+Use the validator before final reporting:
+
+```sh
+scripts/heroband-playtest validate-evidence \
+  --state-dir "$EVIDENCE_ROOT" \
+  --require general-l15-arrow-volley:'Archers harry the enemy line'
+```
+
 ## Scenario-Save Matrix Template
 
 When planning gameplay, class-power, save/load, birth/UI, store, inventory, or
@@ -158,6 +193,7 @@ scripts/heroband-playtest stop --state-dir "$STATE"
 All scripts live relative to this skill:
 
 - `scripts/heroband-playtest prepare-scenario corruption --state-dir "$STATE"`: generate a corruption scenario save and manifest using the repo scenario helper.
+- `scripts/heroband-playtest validate-evidence --state-dir "$EVIDENCE_ROOT"`: verify that a scenario evidence root has clean active directories, required contracts/manifests/transcripts, report citations, and optional required/forbidden transcript markers.
 - `scripts/start-playtest.sh`: require a contract, configure/build `build-gcu-test`, create isolated state, and launch Angband in tmux.
 - `scripts/capture-playtest.sh`: capture the pane and append a transcript.
 - `scripts/send-playtest-key.sh`: send one or more tmux keys, then immediately capture the pane.

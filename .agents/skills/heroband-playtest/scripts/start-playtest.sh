@@ -10,6 +10,7 @@ Options:
   --state-dir DIR     State/artifact directory. Defaults to mktemp.
   --build-dir DIR     GCU build directory. Defaults to <repo>/build-gcu-test.
   --session NAME      tmux session name. Defaults to heroband-playtest-<timestamp>.
+  --save-name NAME    Load a save from the isolated save directory with -uNAME.
   --no-build          Do not configure or build; require existing executable.
   -h, --help          Show this help.
 EOF
@@ -22,6 +23,7 @@ contract=
 state_dir=
 build_dir="$repo_root/build-gcu-test"
 session="heroband-playtest-$(date +%Y%m%d-%H%M%S)"
+save_name=
 do_build=1
 
 while [ "$#" -gt 0 ]; do
@@ -40,6 +42,10 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--session)
 			session=${2:?"--session requires a name"}
+			shift 2
+			;;
+		--save-name)
+			save_name=${2:?"--save-name requires a name"}
 			shift 2
 			;;
 		--no-build)
@@ -143,10 +149,17 @@ BUILD_DIR=$build_dir
 EXECUTABLE=$exe
 REPO_ROOT=$repo_root
 CONTRACT=$state_dir/TEST_CONTRACT.md
+SAVE_NAME=$save_name
 EOF
 
-tmux new-session -d -s "$session" -c "$repo_root" \
-	"HOME='$state_dir' TERM=xterm-256color '$exe' -duser='$state_dir/user' -dsave='$state_dir/save' -dpanic='$state_dir/panic' -darchive='$state_dir/archive' -mgcu"
+save_arg=
+if [ -n "$save_name" ]; then
+	save_arg="-u'$save_name'"
+fi
+
+tmux new-session -d -x 100 -y 40 -s "$session" -c "$repo_root" \
+	"HOME='$state_dir' TERM=xterm-256color COLUMNS=100 LINES=40 '$exe' -duser='$state_dir/user' -dsave='$state_dir/save' -dpanic='$state_dir/panic' -darchive='$state_dir/archive' $save_arg -mgcu"
+tmux set-option -t "$session" status off >/dev/null
 
 {
 	echo "Started tmux session: $session"

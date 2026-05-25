@@ -1,0 +1,280 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-general-scenario-save PRESET --state-dir DIR [options]
+
+Presets:
+  general-l01-smoke
+  general-l07-archer-withdrawal
+  general-l15-arrow-volley
+  general-l30-charge-banner
+  general-l45-banner-cleanup
+  general-moral-regression
+
+Options:
+  --state-dir DIR     Required isolated playtest state directory.
+  --build-dir DIR     Build directory with unittest-game-general. Defaults to build.
+  --save-name NAME    Savefile basename. Defaults to PRESET.
+  --race NAME         Character race. Defaults to Human.
+  --class NAME        Character class. Defaults to General.
+  --level N           Character level override.
+  --depth N           Dungeon depth override.
+  --monster NAME      Add an extra nearby monster. May be repeated.
+  --banner BOOL       Override active starting banner, 1 or 0.
+  --terrain NAME      Terrain fixture label for the manifest. Defaults to generated.
+  -h, --help          Show this help.
+
+Generates a temporary General scenario save and SCENARIO_MANIFEST.md for GCU
+playtests.
+EOF
+}
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+
+if [ "$#" -lt 1 ]; then
+	usage >&2
+	exit 2
+fi
+
+preset=$1
+shift
+
+case "$preset" in
+	-h|--help|help)
+		usage
+		exit 0
+		;;
+	general-l01-smoke|general-l07-archer-withdrawal|\
+	general-l15-arrow-volley|general-l30-charge-banner|\
+	general-l45-banner-cleanup|general-moral-regression)
+		;;
+	*)
+		echo "Unknown General scenario preset: $preset" >&2
+		usage >&2
+		exit 2
+		;;
+esac
+
+state_dir=
+build_dir="$repo_root/build"
+save_name="$preset"
+race="Human"
+class_name="General"
+level_override=
+depth_override=
+monsters=
+banner_override=
+terrain="generated dungeon"
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--state-dir)
+			state_dir=${2:?"--state-dir requires a directory"}
+			shift 2
+			;;
+		--build-dir)
+			build_dir=${2:?"--build-dir requires a directory"}
+			shift 2
+			;;
+		--save-name)
+			save_name=${2:?"--save-name requires a name"}
+			shift 2
+			;;
+		--race)
+			race=${2:?"--race requires a name"}
+			shift 2
+			;;
+		--class)
+			class_name=${2:?"--class requires a name"}
+			shift 2
+			;;
+		--level)
+			level_override=${2:?"--level requires a number"}
+			shift 2
+			;;
+		--depth)
+			depth_override=${2:?"--depth requires a number"}
+			shift 2
+			;;
+		--monster)
+			if [ -z "$monsters" ]; then
+				monsters=$2
+			else
+				monsters="$monsters,$2"
+			fi
+			shift 2
+			;;
+		--banner)
+			banner_override=${2:?"--banner requires 1 or 0"}
+			shift 2
+			;;
+		--terrain)
+			terrain=${2:?"--terrain requires a label"}
+			shift 2
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		*)
+			echo "Unknown argument: $1" >&2
+			usage >&2
+			exit 2
+			;;
+	esac
+done
+
+if [ -z "$state_dir" ]; then
+	echo "Missing required --state-dir DIR." >&2
+	exit 2
+fi
+
+case "$build_dir" in
+	/*) ;;
+	*) build_dir="$repo_root/$build_dir" ;;
+esac
+
+mkdir -p "$state_dir/save" "$state_dir/user" "$state_dir/panic" "$state_dir/archive"
+
+save_path="$state_dir/save/$save_name"
+generator="$build_dir/unittests/game/general/general"
+
+if [ ! -x "$generator" ]; then
+	cmake --build "$build_dir" -t unittest-game-general -j2
+fi
+
+if [ ! -x "$generator" ]; then
+	echo "Missing scenario generator: $generator" >&2
+	exit 1
+fi
+
+case "$preset" in
+	general-l01-smoke)
+		level=1; depth=1; powers="Call Infantry"; ally="Westfold footman"
+		purpose="birth-visible General identity, low-tier infantry, command expiry, and no drops"
+		gcu_actions="Open Field Commands; cast Call Infantry; release or wait for the temporary ally to expire; capture the map after cleanup."
+		gcu_success="General command menu is visible; \"A Westfold footman answers your command.\" appears; command-mode status is visible; \"Westfold footman is no longer under your control\" or fallback text appears; no floor item remains on the released ally grid."
+		;;
+	general-l07-archer-withdrawal)
+		level=7; depth=7; powers="Call Infantry, Call Archer, Fighting Withdrawal"; ally="Ithilien bowman"
+		purpose="early archer tier and non-teleport Fighting Withdrawal"
+		gcu_actions="Open Battlefield Tactics; cast Fighting Withdrawal; capture the player grid/status; open Field Commands; cast Call Archer; release or wait for the archer to expire."
+		gcu_success="Fighting Withdrawal is visible and succeeds; Shield and Blssd status appear without nonadjacent relocation; \"A Ithilien bowman answers your command.\" appears; archer release/expiry text appears."
+		;;
+	general-l15-arrow-volley)
+		level=15; depth=15; powers="Call Infantry, Call Archer, Arrow Volley"; ally="Ithilien bowman"
+		purpose="solo and archer-line Arrow Volley formation control"
+		gcu_actions="Capture the starting monster fixture; cast Call Archer; cast Arrow Volley while command mode is active; capture affected and unaffected actors."
+		gcu_success="A Ithilien bowman answers; command mode remains visible; \"Archers harry the enemy line.\" appears; in-radius nonunique enemies show slow/disruption messages while the out-of-radius fixture remains classified separately."
+		;;
+	general-l30-charge-banner)
+		level=30; depth=30; powers="Call Infantry, Call Archer, Arrow Volley, Glorious Charge, Marshal's Banner"; ally="Gondor captain / Citadel marksman"
+		purpose="Glorious Charge, banner zone, and unique resistance handling"
+		gcu_actions="Capture the starting grid and unique/nonunique fixture; cast Glorious Charge; cast Marshal's Banner; capture live nonunique disruption and unique pressure; pair exact outside-radius banner behavior with deterministic test evidence."
+		gcu_success="\"You commit to a glorious charge!\" appears; \"You plant the Marshal's Banner.\" appears; in-radius nonunique enemies show slow/disruption messages; the nearby unique remains a visible pressure actor while deterministic tests prove unaffected/resistant and outside-radius behavior."
+		;;
+	general-l45-banner-cleanup)
+		level=45; depth=45; powers="All implemented General powers"; ally="Gondor captain / Citadel marksman"
+		purpose="high-tier allies, banner cleanup, level transition, and stale state checks"
+		gcu_actions="Capture active starting banner state; cast Call Infantry; release or wait for the ally to expire; wait until banner morale status clears; descend the stair; capture the new level."
+		gcu_success="A Gondor captain answers; release/expiry text appears; Hero/Blssd status is absent after waiting out banner cleanup; descending reaches level 46 without stale banner or command status."
+		;;
+	general-moral-regression)
+		level=35; depth=35; powers="All General powers available by level 35"; ally="Gondor captain / Citadel marksman"
+		purpose="clean General power language alongside enemy-only evil content"
+		gcu_actions="Open Field Commands and Battlefield Tactics; capture the General power names alongside the enemy-only skeleton/quasit fixture."
+		gcu_success="General power names are Call Infantry, Call Archer, Hold the Line, Arrow Volley, Glorious Charge, Marshal's Banner, and Fighting Withdrawal; enemy-only evil fixtures remain monsters and are not player power sources."
+		;;
+esac
+
+if [ -n "$level_override" ]; then
+	level=$level_override
+fi
+if [ -n "$depth_override" ]; then
+	depth=$depth_override
+fi
+
+scenario_report="$state_dir/SCENARIO_STATE.md"
+env_prefix="HEROBAND_GENERAL_SCENARIO_ID=\"$preset\" HEROBAND_GENERAL_SCENARIO_SAVE_OUT=\"$save_path\" HEROBAND_GENERAL_SCENARIO_REPORT_OUT=\"$scenario_report\" HEROBAND_GENERAL_RACE=\"$race\" HEROBAND_GENERAL_CLASS=\"$class_name\""
+if [ -n "$level_override" ]; then
+	env_prefix="$env_prefix HEROBAND_GENERAL_LEVEL=\"$level_override\""
+fi
+if [ -n "$depth_override" ]; then
+	env_prefix="$env_prefix HEROBAND_GENERAL_DEPTH=\"$depth_override\""
+fi
+if [ -n "$monsters" ]; then
+	env_prefix="$env_prefix HEROBAND_GENERAL_MONSTERS=\"$monsters\""
+fi
+if [ -n "$banner_override" ]; then
+	env_prefix="$env_prefix HEROBAND_GENERAL_BANNER=\"$banner_override\""
+fi
+
+eval "$env_prefix \"$generator\" -v" > "$state_dir/scenario-generator.log" 2>&1
+
+if [ ! -s "$save_path" ]; then
+	echo "Scenario save was not created: $save_path" >&2
+	exit 1
+fi
+
+cat > "$state_dir/SCENARIO_MANIFEST.md" <<EOF
+# General Scenario Save: $preset
+
+## Generator
+
+- Generated UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+- Repository: $repo_root
+- Build directory: $build_dir
+- Generator command: $env_prefix "$generator" -v
+- Save path: $save_path
+- Save name for GCU launch: $save_name
+- Terrain fixture: $terrain
+- Extra monster override: ${monsters:-none}
+
+## Character State
+
+- Name: Tester
+- Race: $race
+- Class: $class_name
+- Level: $level
+- Depth: $depth
+- Learned powers: $powers
+- Expected temporary ally tier: $ally
+- Expected purpose: $purpose
+- Seed status: generated by the game/general test frontend with normal Angband RNG state; exact state is serialized in the savefile
+
+$(cat "$scenario_report")
+
+## Expected GCU Actions And Success States
+
+- Exact actions: $gcu_actions
+- Exact player-visible success states: $gcu_success
+
+## GCU Launch
+
+\`\`\`sh
+scripts/heroband-playtest start \\
+  --state-dir "$state_dir" \\
+  --contract "$state_dir/TEST_CONTRACT.md" \\
+  --save-name "$save_name"
+\`\`\`
+
+## Expected Invariants
+
+- The GCU frontend loads this save instead of entering birth.
+- The loaded character is a Human General at level $level and depth $depth.
+- General powers use living soldiers, formations, morale, and banner language.
+- No player-accessible General action grants demonic, necromantic, blood,
+  occult, corrupt shadow, or summon-style power.
+- Evidence is captured in TEST_CONTRACT.md, transcript.txt, and capture files.
+EOF
+
+{
+	echo "Scenario state directory: $state_dir"
+	echo "Scenario preset: $preset"
+	echo "Scenario save: $save_path"
+	echo "Manifest: $state_dir/SCENARIO_MANIFEST.md"
+	echo "Generator log: $state_dir/scenario-generator.log"
+} | tee "$state_dir/scenario-save.log"

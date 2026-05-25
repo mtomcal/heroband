@@ -306,10 +306,11 @@ General
   A General leads through discipline, morale, and battlefield command. Generals
   are not occultists and do not draw power from spirits, undeath, blood, shadow,
   or demons. Their field manuals teach orders that call temporary living
-  soldiers to the fight, rally courage, strengthen a shield wall, expose enemy
-  openings, and withdraw in good order. Generals are competent with weapons and
-  missile fire, but their signature strength is control: directing allies and
-  shaping the battle rather than personally overpowering every foe.
+  soldiers to the fight, rally courage, strengthen a shield wall, order arrow
+  volleys, commit to glorious charges, plant marshal banners, and withdraw in
+  good order. Generals are competent with weapons and missile fire, but their
+  signature strength is control: directing allies and shaping the battle rather
+  than personally overpowering every foe.
 
 .. _Vanguard:
 

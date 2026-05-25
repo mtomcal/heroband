@@ -18,6 +18,7 @@
 
 #include "angband.h"
 #include "cmds.h"
+#include "effect-handler-general.h"
 #include "effects.h"
 #include "game-world.h"
 #include "generate.h"
@@ -364,7 +365,7 @@ static void decrease_timeouts(void)
 		}
 	}
 
-	return;
+	general_banner_tick(player);
 }
 
 
@@ -1063,6 +1064,11 @@ void on_new_level(void)
 static void on_leave_level(void) {
 	/* Cancel any command */
 	player_clear_timed(player, TMD_COMMAND, false, false);
+	if (player->general_banner.active) {
+		player_clear_timed(player, TMD_HERO, false, false);
+		player_clear_timed(player, TMD_BLESSED, false, false);
+	}
+	general_banner_clear(player);
 
 	/* Don't allow command repeat if moved away from item used. */
 	cmd_disable_repeat_floor_item();

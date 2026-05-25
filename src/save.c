@@ -506,9 +506,14 @@ void wr_player(void)
 	/* # of turns spent resting */
 	wr_u32b(player->resting_turn);
 
-	/* Future use */
+	/* Heroband persistent player state. */
 	wr_u32b(player->corruption);
-	for (i = 0; i < 7; i++) wr_u32b(0L);
+	wr_u32b(player->general_banner.active ? 1L : 0L);
+	wr_u32b(player->general_banner.grid.y);
+	wr_u32b(player->general_banner.grid.x);
+	wr_u32b(player->general_banner.radius);
+	wr_u32b(player->general_banner.duration);
+	for (i = 0; i < 2; i++) wr_u32b(0L);
 }
 
 

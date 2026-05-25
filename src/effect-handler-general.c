@@ -19,6 +19,7 @@
 
 #include "cave.h"
 #include "effect-handler.h"
+#include "effect-handler-general.h"
 #include "game-input.h"
 #include "game-world.h"
 #include "generate.h"
@@ -54,6 +55,36 @@
  * Set value for a chain of effects
  */
 static int set_value = 0;
+
+struct general_ally_tier {
+	int subtype;
+	int min_level;
+	const char *race_name;
+};
+
+static const struct general_ally_tier general_ally_tiers[] = {
+	{ 1, 1, "Westfold footman" },
+	{ 1, 30, "Gondor captain" },
+	{ 2, 1, "Ithilien bowman" },
+	{ 2, 30, "Citadel marksman" },
+};
+
+struct monster_race *general_ally_race(int subtype, int player_level)
+{
+	struct monster_race *race = NULL;
+	size_t i;
+
+	for (i = 0; i < N_ELEMENTS(general_ally_tiers); ++i) {
+		const struct general_ally_tier *tier = &general_ally_tiers[i];
+
+		if (tier->subtype != subtype || tier->min_level > player_level) {
+			continue;
+		}
+		race = lookup_monster(tier->race_name);
+	}
+
+	return race;
+}
 
 int effect_calculate_value(effect_handler_context_t *context, bool use_boost)
 {
@@ -2336,7 +2367,6 @@ bool effect_handler_SUMMON(effect_handler_context_t *context)
  */
 bool effect_handler_CALL_ALLY(effect_handler_context_t *context)
 {
-	const char *race_name = NULL;
 	struct monster_race *race = NULL;
 	struct monster *mon = NULL;
 	struct monster_group_info info = { 0, 0 };
@@ -2356,19 +2386,7 @@ bool effect_handler_CALL_ALLY(effect_handler_context_t *context)
 		return false;
 	}
 
-	switch (context->subtype) {
-		case 1:
-			race_name = "Heroband infantry";
-			break;
-		case 2:
-			race_name = "Heroband archer";
-			break;
-		default:
-			msg("No such ally answers your command.");
-			return false;
-	}
-
-	race = lookup_monster(race_name);
+	race = general_ally_race(context->subtype, player->lev);
 	if (!race) {
 		msg("No soldier answers your command.");
 		return false;
@@ -2399,6 +2417,142 @@ bool effect_handler_CALL_ALLY(effect_handler_context_t *context)
 
 	msg("A %s answers your command.", race->name);
 	return true;
+}
+
+void general_banner_clear(struct player *p)
+{
+	p->general_banner.active = false;
+	p->general_banner.grid = loc(0, 0);
+	p->general_banner.radius = 0;
+	p->general_banner.duration = 0;
+}
+
+void general_banner_tick(struct player *p)
+{
+	if (!p->general_banner.active) {
+		return;
+	}
+	if (distance(p->grid, p->general_banner.grid) <= p->general_banner.radius) {
+		player_inc_timed(p, TMD_HERO, 2, true, false, true);
+		player_inc_timed(p, TMD_BLESSED, 2, true, false, true);
+	}
+	if (p->general_banner.duration > 0) {
+		--p->general_banner.duration;
+	}
+	if (p->general_banner.duration <= 0) {
+		general_banner_clear(p);
+	}
+}
+
+static bool general_monster_is_formation_target(struct monster *mon)
+{
+	if (!mon || !mon->race) {
+		return false;
+	}
+	if (mflag_has(mon->mflag, MFLAG_CALLED_ALLY)) {
+		return false;
+	}
+	if (monster_is_unique(mon)) {
+		return false;
+	}
+	return true;
+}
+
+static bool general_race_is_archer_line(const struct monster_race *race)
+{
+	return race && (streq(race->name, "Ithilien bowman") ||
+		streq(race->name, "Citadel marksman"));
+}
+
+static bool general_race_is_melee_line(const struct monster_race *race)
+{
+	return race && (streq(race->name, "Westfold footman") ||
+		streq(race->name, "Gondor captain"));
+}
+
+static bool general_commanded_ally_is_archer_line(void)
+{
+	struct monster *mon = get_commanded_monster();
+
+	return mon && mflag_has(mon->mflag, MFLAG_CALLED_ALLY) &&
+		general_race_is_archer_line(mon->race);
+}
+
+static bool general_commanded_ally_is_melee_line(void)
+{
+	struct monster *mon = get_commanded_monster();
+
+	return mon && mflag_has(mon->mflag, MFLAG_CALLED_ALLY) &&
+		general_race_is_melee_line(mon->race);
+}
+
+static int general_apply_monster_disruption(int radius, int duration)
+{
+	int affected = 0;
+	int i;
+
+	for (i = 1; i < cave_monster_max(cave); ++i) {
+		struct monster *mon = cave_monster(cave, i);
+
+		if (!general_monster_is_formation_target(mon)) {
+			continue;
+		}
+		if (distance(player->grid, mon->grid) > radius) {
+			continue;
+		}
+		if (!projectable(cave, player->grid, mon->grid, PROJECT_NONE)) {
+			continue;
+		}
+		if (mon_inc_timed(mon, MON_TMD_SLOW, MAX(duration, 1), 0)) {
+			++affected;
+		}
+	}
+
+	return affected;
+}
+
+bool effect_handler_GENERAL_FORMATION(effect_handler_context_t *context)
+{
+	int duration = effect_calculate_value(context, false);
+	int radius = MAX(context->radius, 1);
+
+	context->ident = true;
+
+	switch (context->subtype) {
+		case GENERAL_FORMATION_ARROW_VOLLEY:
+			if (general_commanded_ally_is_archer_line()) {
+				duration *= 2;
+			}
+			general_apply_monster_disruption(radius, duration);
+			msg("Archers harry the enemy line.");
+			return true;
+		case GENERAL_FORMATION_GLORIOUS_CHARGE:
+			if (general_commanded_ally_is_melee_line()) {
+				duration *= 2;
+			}
+			player_inc_timed(player, TMD_HERO, MAX(duration, 1), true,
+				false, true);
+			player_inc_timed(player, TMD_BLESSED, MAX(duration, 1), true,
+				false, true);
+			general_apply_monster_disruption(radius, duration);
+			msg("You commit to a glorious charge!");
+			return true;
+		case GENERAL_FORMATION_MARSHALS_BANNER:
+			player->general_banner.active = true;
+			player->general_banner.grid = player->grid;
+			player->general_banner.radius = radius;
+			player->general_banner.duration = MAX(duration, 1);
+			player_inc_timed(player, TMD_HERO, MAX(duration, 1), true,
+				false, true);
+			player_inc_timed(player, TMD_BLESSED, MAX(duration, 1), true,
+				false, true);
+			general_apply_monster_disruption(radius, duration);
+			msg("You plant the Marshal's Banner.");
+			return true;
+		default:
+			msg("No such formation answers your command.");
+			return false;
+	}
 }
 
 /**

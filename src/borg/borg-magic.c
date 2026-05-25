@@ -143,9 +143,10 @@ static borg_spell_rating borg_spell_ratings_NECROMANCER[] =
     { "Shield Wall", 75, BLESS },
     { "Call Archer", 5, COMMAND },
     { "Hold the Line", 75, BLESS },
-    { "Expose Weakness", 65, SLOW_MONSTER },
-    { "Banner of Courage", 75, HEROISM },
-    { "Tactical Withdrawal", 85, PHASE_DOOR }
+    { "Arrow Volley", 65, SLOW_MONSTER },
+    { "Glorious Charge", 75, HEROISM },
+    { "Marshal's Banner", 75, HEROISM },
+    { "Fighting Withdrawal", 85, HEROISM }
 };
 static borg_spell_rating borg_spell_ratings_PALADIN[] =
 {

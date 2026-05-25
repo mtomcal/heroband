@@ -852,8 +852,10 @@ set(ANGBAND_TEST_CASE_SOURCES
     effects/chain.c
     effects/destruction.c
     effects/earthquake.c
+    effects/general.c
     effects/info.c
     game/basic.c
+    game/general.c
     game/mage.c
     game/vanguard.c
     message/message.c

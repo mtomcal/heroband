@@ -841,7 +841,7 @@ blow:STING:ACID:1d1
 flags:RAND_50 | BASH_DOOR
 desc:It is about four feet long and carnivorous.
 
-name:Heroband infantry
+name:Westfold footman
 base:person
 color:u
 speed:110
@@ -859,7 +859,25 @@ flags:MALE
 flags:OPEN_DOOR
 desc:A disciplined living infantryman answering a lawful battlefield command.
 
-name:Heroband archer
+name:Gondor captain
+base:person
+color:U
+speed:120
+hit-points:72
+light:2
+hearing:20
+armor-class:56
+sleepiness:0
+depth:30
+rarity:0
+experience:0
+blow:HIT:HURT:2d8
+blow:HIT:HURT:2d8
+flags:MALE
+flags:OPEN_DOOR
+desc:A seasoned living captain answering a lawful battlefield command.
+
+name:Ithilien bowman
 base:person
 color:W
 speed:110
@@ -876,7 +894,26 @@ flags:MALE
 flags:OPEN_DOOR
 innate-freq:4
 spells:ARROW
-desc:A disciplined living archer answering a lawful battlefield command.
+desc:A disciplined living bowman answering a lawful battlefield command.
+
+name:Citadel marksman
+base:person
+color:W
+speed:120
+hit-points:48
+light:2
+hearing:20
+armor-class:32
+sleepiness:0
+depth:30
+rarity:0
+experience:0
+blow:HIT:HURT:1d6
+flags:MALE
+flags:OPEN_DOOR
+innate-freq:4
+spells:ARROW | ARROW
+desc:A veteran living marksman answering a lawful battlefield command.
 
 name:soldier
 base:person

@@ -12,13 +12,17 @@ Commands:
   capture    Capture the playtest pane and append transcript output.
   send       Send tmux keys, then capture the pane.
   stop       Stop or preserve the playtest tmux session.
+  validate-evidence
+             Validate a scenario evidence root before verifier/release reports.
 
 Examples:
   scripts/heroband-playtest prepare-scenario corruption --state-dir /tmp/heroband-playtest.x
+  scripts/heroband-playtest prepare-scenario general-l15-arrow-volley --state-dir /tmp/heroband-playtest.x
   scripts/heroband-playtest start --contract /tmp/heroband-playtest.x/TEST_CONTRACT.md
   scripts/heroband-playtest capture --state-dir /tmp/heroband-playtest.x
   scripts/heroband-playtest send --state-dir /tmp/heroband-playtest.x Space
   scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.x
+  scripts/heroband-playtest validate-evidence --state-dir /tmp/heroband-playtest.x
 EOF
 }
 
@@ -39,12 +43,20 @@ case "$command" in
 		preset=${1:?"prepare-scenario requires a preset, such as corruption"}
 		shift
 		case "$preset" in
+			-h|--help|help)
+				usage
+				;;
 			corruption|corruption-smoke)
 				exec "$repo_root/scripts/heroband-corruption-scenario-save" "$@"
 				;;
+			general-l01-smoke|general-l07-archer-withdrawal|\
+			general-l15-arrow-volley|general-l30-charge-banner|\
+			general-l45-banner-cleanup|general-moral-regression)
+				exec "$repo_root/scripts/heroband-general-scenario-save" "$preset" "$@"
+				;;
 			*)
 				echo "Unknown scenario preset: $preset" >&2
-				echo "Known presets: corruption, corruption-smoke" >&2
+				echo "Known presets: corruption, corruption-smoke, general-l01-smoke, general-l07-archer-withdrawal, general-l15-arrow-volley, general-l30-charge-banner, general-l45-banner-cleanup, general-moral-regression" >&2
 				exit 2
 				;;
 		esac
@@ -60,6 +72,9 @@ case "$command" in
 		;;
 	stop)
 		exec "$skill_scripts/stop-playtest.sh" "$@"
+		;;
+	validate-evidence)
+		exec "$repo_root/scripts/heroband-validate-playtest-evidence" "$@"
 		;;
 	-h|--help|help)
 		usage

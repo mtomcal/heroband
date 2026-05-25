@@ -81,6 +81,7 @@ int setup_tests(void **state) {
 
 int teardown_tests(void *state) {
 	file_delete("Test1");
+	file_delete("GeneralBannerTest");
 	wipe_mon_list(cave, player);
 	cleanup_angband();
 	return 0;
@@ -278,6 +279,58 @@ static int test_command_mode_sleep(void *state) {
 	ok;
 }
 
+static int test_general_banner_savefile_round_trip(void *state) {
+	struct loc banner_grid = loc(12, 9);
+
+	reset_before_load();
+
+	/* Load the saved game */
+	eq(savefile_load("Test1", false), true);
+
+	player->general_banner.active = true;
+	player->general_banner.grid = banner_grid;
+	player->general_banner.radius = 4;
+	player->general_banner.duration = 11;
+	require(savefile_save("GeneralBannerTest"));
+
+	reset_before_load();
+	require(savefile_load("GeneralBannerTest", false));
+	require(player->general_banner.active);
+	require(loc_eq(player->general_banner.grid, banner_grid));
+	eq(player->general_banner.radius, 4);
+	eq(player->general_banner.duration, 11);
+
+	ok;
+}
+
+static int test_level_transition_clears_general_banner(void *state) {
+	reset_before_load();
+
+	/* Load the saved game */
+	eq(savefile_load("Test1", false), true);
+
+	/* Perform normal set up after loading. */
+	require(character_dungeon);
+	on_new_level();
+
+	player->general_banner.active = true;
+	player->general_banner.grid = player->grid;
+	player->general_banner.radius = 3;
+	player->general_banner.duration = 10;
+	player_set_timed(player, TMD_HERO, 10, false, false);
+	player_set_timed(player, TMD_BLESSED, 10, false, false);
+	cmdq_push(CMD_GO_DOWN);
+	run_game_loop();
+	eq(player->depth, 1);
+	require(!player->general_banner.active);
+	eq(player->general_banner.radius, 0);
+	eq(player->general_banner.duration, 0);
+	eq(player->timed[TMD_HERO], 0);
+	eq(player->timed[TMD_BLESSED], 0);
+
+	ok;
+}
+
 const char *suite_name = "game/basic";
 struct test tests[] = {
 	{ "newgame", test_newgame },
@@ -287,5 +340,9 @@ struct test tests[] = {
 	{ "droppickup", test_drop_pickup },
 	{ "dropeat", test_drop_eat },
 	{ "command_mode_sleep", test_command_mode_sleep },
+	{ "general_banner_savefile_round_trip",
+		test_general_banner_savefile_round_trip },
+	{ "level_transition_clears_general_banner",
+		test_level_transition_clears_general_banner },
 	{ NULL, NULL }
 };

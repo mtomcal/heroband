@@ -50,8 +50,16 @@ UI, do not write a generic "run playtest" gate. Include named scenarios with:
 - learned powers, equipment, inventory, HP/SP/gold
 - terrain, monsters, monster state, and pressure
 - expected ally tier, formation mode, banner zone, or moral-access state
-- exact GCU actions and required captured evidence
+- GCU evidence: exact player-visible actions, messages, menus, statuses, loading
+  screens, and map states to capture
+- deterministic assertions: exact mechanics such as radius membership, actor
+  counts, no drops, no teleport, stale timer cleanup, unique resistance, and
+  save/load fields
 - manifest fields and cleanup expectations
+
+Do not require GCU to prove exact mechanics that are clearer and more reliable
+in deterministic tests. Use GCU for the human-visible experience, then cite
+targeted tests for hidden state and edge conditions.
 
 If scenario generation support is missing, add a slice to extend
 `scripts/heroband-playtest prepare-scenario` or explicitly mark the missing hook

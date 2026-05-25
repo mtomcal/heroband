@@ -1,0 +1,225 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-validate-playtest-evidence --state-dir DIR [options]
+
+Options:
+  --report FILE             Report to validate. Defaults to DIR/PLAYTEST_REPORT.md.
+  --scenario NAME           Restrict validation to one scenario directory.
+  --require NAME:PATTERN    Require PATTERN in NAME's transcript or manifest.
+  --forbid NAME:PATTERN     Forbid PATTERN in NAME's transcript or manifest.
+
+The validator checks that an active scenario evidence root contains only clean
+scenario directories, that every scenario has a contract, manifest, and
+transcript, and that the report cites the active scenarios without stale retry
+or archived-attempt paths.
+EOF
+}
+
+state_dir=
+report=
+scenario_filter=
+requires=
+forbids=
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--state-dir)
+			state_dir=${2:?"--state-dir requires a directory"}
+			shift 2
+			;;
+		--report)
+			report=${2:?"--report requires a file"}
+			shift 2
+			;;
+		--scenario)
+			scenario_filter="${scenario_filter}${scenario_filter:+
+}${2:?"--scenario requires a name"}"
+			shift 2
+			;;
+		--require)
+			requires="${requires}${requires:+
+}${2:?"--require requires NAME:PATTERN"}"
+			shift 2
+			;;
+		--forbid)
+			forbids="${forbids}${forbids:+
+}${2:?"--forbid requires NAME:PATTERN"}"
+			shift 2
+			;;
+		-h|--help|help)
+			usage
+			exit 0
+			;;
+		*)
+			echo "Unknown argument: $1" >&2
+			usage >&2
+			exit 2
+			;;
+	esac
+done
+
+if [ -z "$state_dir" ]; then
+	echo "Missing --state-dir" >&2
+	usage >&2
+	exit 2
+fi
+
+if [ ! -d "$state_dir" ]; then
+	echo "Evidence root does not exist: $state_dir" >&2
+	exit 2
+fi
+
+if [ -z "$report" ] && [ -f "$state_dir/PLAYTEST_REPORT.md" ]; then
+	report=$state_dir/PLAYTEST_REPORT.md
+fi
+
+errors=0
+
+fail() {
+	echo "FAIL: $*" >&2
+	errors=$((errors + 1))
+}
+
+has_text() {
+	file=$1
+	pattern=$2
+	if command -v rg >/dev/null 2>&1; then
+		rg -q -- "$pattern" "$file"
+	else
+		grep -Eq -- "$pattern" "$file"
+	fi
+}
+
+contains_line() {
+	lines=$1
+	needle=$2
+	printf '%s\n' "$lines" | grep -Fxq -- "$needle"
+}
+
+stale_attempt_re='(^|/)(.*\.)?(failed|bad|wrong|stuck|prebalance|promptstuck|nodescent|stalestatus|archive|retry)([-_.]|$)'
+
+scenario_names=
+for manifest in "$state_dir"/*/SCENARIO_MANIFEST.md; do
+	[ -e "$manifest" ] || continue
+	name=$(basename "$(dirname "$manifest")")
+	if [ -n "$scenario_filter" ] && ! contains_line "$scenario_filter" "$name"; then
+		continue
+	fi
+	scenario_names="${scenario_names}${scenario_names:+
+}$name"
+done
+
+if [ -z "$scenario_names" ]; then
+	fail "no scenario manifests found under $state_dir"
+fi
+
+for child in "$state_dir"/*; do
+	[ -d "$child" ] || continue
+	name=$(basename "$child")
+	if printf '%s\n' "$name" | grep -Eiq "$stale_attempt_re"; then
+		fail "active evidence root contains stale/retry directory: $name"
+	fi
+done
+
+for name in $scenario_names; do
+	dir=$state_dir/$name
+	for required_file in TEST_CONTRACT.md SCENARIO_MANIFEST.md transcript.txt; do
+		if [ ! -s "$dir/$required_file" ]; then
+			fail "$name missing nonempty $required_file"
+		fi
+	done
+
+	manifest=$dir/SCENARIO_MANIFEST.md
+	if [ -f "$manifest" ]; then
+		for required_text in \
+			'Generated UTC:' \
+			'Save path:' \
+			'Save name for GCU launch:' \
+			'## Expected GCU Actions And Success States' \
+			'Exact actions:' \
+			'Exact player-visible success states:'; do
+			if ! grep -Fq -- "$required_text" "$manifest"; then
+				fail "$name manifest missing: $required_text"
+			fi
+		done
+	fi
+done
+
+if [ -n "$report" ]; then
+	if [ ! -s "$report" ]; then
+		fail "report is missing or empty: $report"
+	else
+		for name in $scenario_names; do
+			if ! grep -Fq -- "$name" "$report"; then
+				fail "report does not cite active scenario: $name"
+			fi
+		done
+		if grep -Eiq "$stale_attempt_re" "$report"; then
+			fail "report references stale/retry/archive evidence"
+		fi
+	fi
+fi
+
+check_pattern_rule() {
+	kind=$1
+	rule=$2
+	name=${rule%%:*}
+	pattern=${rule#*:}
+	if [ "$name" = "$rule" ] || [ -z "$name" ] || [ -z "$pattern" ]; then
+		fail "$kind rule must use NAME:PATTERN: $rule"
+		return
+	fi
+	dir=$state_dir/$name
+	if [ ! -d "$dir" ]; then
+		fail "$kind rule references missing scenario: $name"
+		return
+	fi
+	search_file=$dir/.evidence-search.txt
+	{
+		[ -f "$dir/transcript.txt" ] && cat "$dir/transcript.txt"
+		[ -f "$dir/SCENARIO_MANIFEST.md" ] && cat "$dir/SCENARIO_MANIFEST.md"
+	} > "$search_file"
+	case "$kind" in
+		require)
+			if ! has_text "$search_file" "$pattern"; then
+				fail "$name missing required evidence pattern: $pattern"
+			fi
+			;;
+		forbid)
+			if has_text "$search_file" "$pattern"; then
+				fail "$name contains forbidden evidence pattern: $pattern"
+			fi
+			;;
+	esac
+	rm -f "$search_file"
+}
+
+old_ifs=$IFS
+IFS='
+'
+set -f
+
+if [ -n "$requires" ]; then
+	for rule in $requires; do
+		check_pattern_rule require "$rule"
+	done
+fi
+
+if [ -n "$forbids" ]; then
+	for rule in $forbids; do
+		check_pattern_rule forbid "$rule"
+	done
+fi
+
+set +f
+IFS=$old_ifs
+
+if [ "$errors" -ne 0 ]; then
+	echo "Playtest evidence validation failed with $errors issue(s)." >&2
+	exit 1
+fi
+
+echo "Playtest evidence validation passed: $state_dir"

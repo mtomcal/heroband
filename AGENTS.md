@@ -2,7 +2,7 @@
 
 Repository guidance for AI coding agents working on Heroband.
 
-<!-- TREE-HASH: d93805ff79e344a3a166484103f7157d2f06a8a5dbf310445cf10c17e1fea27c -->
+<!-- TREE-HASH: 2d220a98a78c0e67eadb035f6593dfe21023dcad90824f87a24f9c2c929b7528 -->
 
 ## Project Rule
 
@@ -91,6 +91,9 @@ scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.xxxxxx
 |   |-- gamedata
 |   |-- help
 |   |-- icons
+|   |-- panic
+|   |-- save
+|   |-- scores
 |   |-- screens
 |   |-- sounds
 |   |-- tiles
@@ -108,6 +111,7 @@ scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.xxxxxx
 |-- mk
 |-- screenshots
 |-- scripts
+|-- specs
 |-- src
 |   |-- borg
 |   |-- cmake
@@ -150,6 +154,8 @@ scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.xxxxxx
 |-- tests
 |   |-- birth
 |   |   |-- Dw-Pa
+|   |   |-- Hu-Ge
+|   |   |-- Hu-Va
 |   |   |-- Hu-Wa
 |   |   |-- new-game-0
 |   |   `-- new-game-1
@@ -158,7 +164,7 @@ scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.xxxxxx
 |-- toolchains
 `-- utils
 
-77 directories
+83 directories
 ```
 <!-- TREE-END -->
 
@@ -280,7 +286,7 @@ If a machine uses local, non-system dependencies, keep those paths outside commi
 - The old class-slot identifiers may still use `CLASS_NECROMANCER` internally for parser/class-ID stability; treat that as compatibility plumbing unless it exposes forbidden player-facing content.
 - The old Blackguard slot may still use legacy internal identifiers in source or save plumbing; treat those as compatibility details unless they expose forbidden player-facing content.
 - Shadow, nether, bloodlust, undead/demon summoning, and related player-beneficial mechanics still require follow-up review.
-- General still needs high-level scenario testing once generic scenario-save fixtures exist. Evaluate ally survival, command duration, pathing, archer usefulness, no-drop behavior, and continued compliance with the central Heroband moral rule.
+- General has loaded-save GCU scenario coverage for low-level smoke, archer and Fighting Withdrawal, Arrow Volley, Glorious Charge, Marshal's Banner, banner cleanup across level transition, and moral-language regression. Future General playtests should keep failed/retry state directories outside the active evidence root and run `scripts/heroband-playtest validate-evidence` before verifier review.
 - Vanguard still needs loaded-save GCU scenario testing once generic scenario-save fixtures exist. Evaluate deep-floor book access, learned orders, frontline pressure, `Unbroken`, active `Last Stand`, and continued non-access to bloodlust, shadow, nether, life-drain, curse-benefit, demonic, necromantic, or occult player power.
 - A true passive low-health `Last Stand` mechanic is deferred until it can be implemented and tested without incentivizing intentional self-harm.
 

@@ -833,9 +833,32 @@ int rd_player(void)
 	/* # of turns spent resting */
 	rd_u32b(&player->resting_turn);
 
-	/* Future use */
-	rd_u32b(&player->corruption);
-	strip_bytes(28);
+	/* Heroband persistent player state. */
+	{
+		uint32_t banner_active;
+		uint32_t banner_y;
+		uint32_t banner_x;
+		uint32_t banner_radius;
+		uint32_t banner_duration;
+
+		rd_u32b(&player->corruption);
+		rd_u32b(&banner_active);
+		rd_u32b(&banner_y);
+		rd_u32b(&banner_x);
+		rd_u32b(&banner_radius);
+		rd_u32b(&banner_duration);
+		strip_bytes(8);
+
+		player->general_banner.active = banner_active ? true : false;
+		player->general_banner.grid = loc((int)banner_x, (int)banner_y);
+		player->general_banner.radius = (int)banner_radius;
+		player->general_banner.duration = (int)banner_duration;
+		if (!player->general_banner.active) {
+			player->general_banner.grid = loc(0, 0);
+			player->general_banner.radius = 0;
+			player->general_banner.duration = 0;
+		}
+	}
 
 	return 0;
 }

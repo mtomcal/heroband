@@ -284,6 +284,9 @@ void cmd_release(struct command *cmd);
 /* Return the verb that goes alongside the given command. */
 const char *cmd_verb(cmd_code cmd);
 
+/* Return true if active command mode should redirect this command to an ally. */
+bool cmd_command_mode_redirects_command(const struct command *cmd);
+
 
 /**
  * ------------------------------------------------------------------------

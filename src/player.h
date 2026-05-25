@@ -395,6 +395,13 @@ struct player_history {
 	size_t length;					/**< Current length */
 };
 
+struct general_banner_zone {
+	bool active;
+	struct loc grid;
+	int radius;
+	int duration;
+};
+
 /**
  * All the variable state that changes when you put on/take off equipment.
  * Player flags are not currently variable, but useful here so monsters can
@@ -593,6 +600,7 @@ struct player {
 
 	struct player_options opts;			/* Player options */
 	struct player_history hist;			/* Player history (see player-history.c) */
+	struct general_banner_zone general_banner;	/* Marshal's Banner zone */
 
 	struct player_body body;			/* Equipment slots available */
 	struct player_shape *shape;			/* Current player shape */

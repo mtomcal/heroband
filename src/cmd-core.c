@@ -216,6 +216,21 @@ const char *cmd_verb(cmd_code cmd)
 	return NULL;
 }
 
+bool cmd_command_mode_redirects_command(const struct command *cmd)
+{
+	if (!player->timed[TMD_COMMAND]) {
+		return false;
+	}
+	if (cmd->code == CMD_SLEEP) {
+		return false;
+	}
+	if (cmd->code == CMD_CAST && player->class &&
+			streq(player->class->name, "General")) {
+		return false;
+	}
+	return true;
+}
+
 /**
  * Return the index of the given command in the command array.
  */
@@ -334,7 +349,7 @@ static void process_command(cmd_context ctx, struct command *cmd)
 	 * player is paralyzed or knocked out, and must still consume the
 	 * player's turn while command mode is active.
 	 */
-	int idx = cmd_idx(player->timed[TMD_COMMAND] && cmd->code != CMD_SLEEP ?
+	int idx = cmd_idx(cmd_command_mode_redirects_command(cmd) ?
 		CMD_COMMAND_MONSTER : cmd->code);
 
 	/* Reset so that when selecting items, we look in the default location */
