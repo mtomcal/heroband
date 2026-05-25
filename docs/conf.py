@@ -86,7 +86,7 @@ if (html_theme == "".join(["@", "DOC_HTML_THEME", "@"]) or html_theme == ""):
 html_title = "The Heroband Manual"
 html_short_title = "Home"
 html_sidebars = {
-    "**": ["localtoc.html", "searchbox.html"],
+    "**": ["globaltoc.html", "localtoc.html", "searchbox.html"],
     "index": ["globaltoc.html", "searchbox.html"],
 }
 

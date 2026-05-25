@@ -2,9 +2,18 @@
 
 {% block header %}
 <header id="pageheader">
-    <div style="display: flex; align-items: baseline;">
-        <h1>The Heroband Manual</h1>
-        <span class="version">v{{ release }}</span>
+    <div>
+        <div style="display: flex; align-items: baseline;">
+            <h1>The Heroband Manual</h1>
+            <span class="version">v{{ release }}</span>
+        </div>
+        <nav class="manual-nav" aria-label="Primary">
+            <a href="{{ pathto('index') }}">Home</a>
+            <a href="{{ pathto('heroband') }}">Heroband</a>
+            <a href="{{ pathto('birth') }}">Classes</a>
+            <a href="{{ pathto('command') }}">Commands</a>
+            <a href="{{ pathto('hacking/heroband') }}">Developers</a>
+        </nav>
     </div>
     <img src="{{ pathto('_static/att.svg', 1) }}" style="height: 4rem;">
 </header>
