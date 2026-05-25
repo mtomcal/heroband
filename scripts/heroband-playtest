@@ -1,0 +1,55 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-playtest <command> [args]
+
+Commands:
+  start      Start an isolated GCU/tmux playtest session.
+  capture    Capture the playtest pane and append transcript output.
+  send       Send tmux keys, then capture the pane.
+  stop       Stop or preserve the playtest tmux session.
+
+Examples:
+  scripts/heroband-playtest start --contract /tmp/heroband-playtest.x/TEST_CONTRACT.md
+  scripts/heroband-playtest capture --state-dir /tmp/heroband-playtest.x
+  scripts/heroband-playtest send --state-dir /tmp/heroband-playtest.x Space
+  scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.x
+EOF
+}
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+skill_scripts="$repo_root/.agents/skills/heroband-playtest/scripts"
+
+if [ "$#" -lt 1 ]; then
+	usage >&2
+	exit 2
+fi
+
+command=$1
+shift
+
+case "$command" in
+	start)
+		exec "$skill_scripts/start-playtest.sh" "$@"
+		;;
+	capture)
+		exec "$skill_scripts/capture-playtest.sh" "$@"
+		;;
+	send)
+		exec "$skill_scripts/send-playtest-key.sh" "$@"
+		;;
+	stop)
+		exec "$skill_scripts/stop-playtest.sh" "$@"
+		;;
+	-h|--help|help)
+		usage
+		;;
+	*)
+		echo "Unknown command: $command" >&2
+		usage >&2
+		exit 2
+		;;
+esac

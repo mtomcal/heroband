@@ -1,0 +1,7 @@
+interface:
+  display_name: "Heroband Playtest"
+  short_description: "Validate terminal gameplay with tmux"
+  default_prompt: "Use $heroband-playtest to validate this Heroband change with automated tests and a direct tmux gameplay pass."
+
+policy:
+  allow_implicit_invocation: true

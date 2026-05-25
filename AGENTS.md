@@ -14,6 +14,19 @@ Do not give playable characters power from demons, devils, evil spirits, necroma
 
 Prefer small, buildable patches. Preserve Angband behavior unless it conflicts with Heroband's moral design constraints.
 
+## Repo-local Skills
+
+Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for player-facing gameplay, terminal UI, birth flow, class power, store, inventory, spell, save/load, or Heroband moral-restriction changes. That skill requires a written test contract before tmux gameplay begins, then validates with deterministic tests plus a direct GCU/tmux gameplay pass when appropriate.
+
+Preferred wrapper:
+
+```sh
+scripts/heroband-playtest start --contract /path/to/TEST_CONTRACT.md
+scripts/heroband-playtest capture --state-dir /tmp/heroband-playtest.xxxxxx
+scripts/heroband-playtest send --state-dir /tmp/heroband-playtest.xxxxxx Space
+scripts/heroband-playtest stop --state-dir /tmp/heroband-playtest.xxxxxx
+```
+
 ## Map
 
 <!-- TREE-START -->
