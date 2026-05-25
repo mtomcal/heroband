@@ -67,6 +67,8 @@ Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for pl
 
 Use `$heroband-test-quality-verifier` from `.agents/skills/heroband-test-quality-verifier/SKILL.md` when adding or changing gameplay, class-power, birth, store, save/load, scenario-save, or moral-restriction tests. This repo-specific verifier checks for reward-hacking, setup that bypasses the behavior under test, and weak moral-compliance assertions.
 
+Use `$heroband-release` from `.agents/skills/heroband-release/SKILL.md` when generating, tagging, packaging, uploading, or publishing a Heroband release. It records the release workflow availability check, manual artifact fallback, documentation build dependency on `sphinx-better-theme`, source/Linux/checksum artifact validation, and GitHub release publication steps.
+
 Preferred wrapper:
 
 ```sh

@@ -18,7 +18,9 @@ Heroband's central rule is: the player may fight evil, but may not wield evil. T
 3. Classify setup mutations as legitimate prerequisites or reward-hacking risks.
 4. Check whether the test would fail if the forbidden behavior or old content returned.
 5. Run the smallest targeted test command, then the relevant broader gate when practical.
-6. Produce a structured report with pass/fail, gaps, and concrete fixes.
+6. For scenario-save or GCU evidence, run `scripts/heroband-playtest
+   validate-evidence --state-dir <evidence-root>` before judging transcripts.
+7. Produce a structured report with pass/fail, gaps, and concrete fixes.
 
 ## What Counts As Good Evidence
 
@@ -68,6 +70,17 @@ For generated scenario saves, verify the manifest records:
 - exact invariant and expected pressure
 - save path, executable/build, and launch command
 - what GCU actions and captures prove the scenario
+
+Run the evidence-root validator whenever a playtest evidence root is available:
+
+```sh
+scripts/heroband-playtest validate-evidence --state-dir <evidence-root>
+```
+
+The verifier report must distinguish GCU-visible claims, such as menus,
+messages, status flags, loading, and screen state, from deterministic assertions,
+such as exact radius membership, actor counts, no drops, no teleport, stale
+timer cleanup, unique resistance, and save/load fields.
 
 If a deterministic unit scenario is used because no save generator exists, report that honestly as a fallback, not a full replacement for loaded-save GCU testing.
 
