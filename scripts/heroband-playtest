@@ -6,12 +6,15 @@ usage() {
 Usage: scripts/heroband-playtest <command> [args]
 
 Commands:
+  prepare-scenario
+             Generate an isolated scenario save and manifest for playtesting.
   start      Start an isolated GCU/tmux playtest session.
   capture    Capture the playtest pane and append transcript output.
   send       Send tmux keys, then capture the pane.
   stop       Stop or preserve the playtest tmux session.
 
 Examples:
+  scripts/heroband-playtest prepare-scenario corruption --state-dir /tmp/heroband-playtest.x
   scripts/heroband-playtest start --contract /tmp/heroband-playtest.x/TEST_CONTRACT.md
   scripts/heroband-playtest capture --state-dir /tmp/heroband-playtest.x
   scripts/heroband-playtest send --state-dir /tmp/heroband-playtest.x Space
@@ -32,6 +35,20 @@ command=$1
 shift
 
 case "$command" in
+	prepare-scenario)
+		preset=${1:?"prepare-scenario requires a preset, such as corruption"}
+		shift
+		case "$preset" in
+			corruption|corruption-smoke)
+				exec "$repo_root/scripts/heroband-corruption-scenario-save" "$@"
+				;;
+			*)
+				echo "Unknown scenario preset: $preset" >&2
+				echo "Known presets: corruption, corruption-smoke" >&2
+				exit 2
+				;;
+		esac
+		;;
 	start)
 		exec "$skill_scripts/start-playtest.sh" "$@"
 		;;

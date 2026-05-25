@@ -14,6 +14,10 @@ Do not give playable characters power from demons, devils, evil spirits, necroma
 
 Prefer small, buildable patches. Preserve Angband behavior unless it conflicts with Heroband's moral design constraints.
 
+## Plan Completion Gate
+
+When the user asks to implement an approved plan, treat the plan as an end-to-end contract. Work through every unchecked slice unless the user explicitly narrows the scope or a real blocker prevents progress. Update the plan checklist as slices complete, run the required deterministic tests and Heroband playtest/verifier gates, and do not hand back after only one slice with remaining unchecked work unless asked to pause.
+
 ## Repo-local Skills
 
 Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for player-facing gameplay, terminal UI, birth flow, class power, store, inventory, spell, save/load, or Heroband moral-restriction changes. That skill requires a written test contract before tmux gameplay begins, then validates with deterministic tests plus a direct GCU/tmux gameplay pass when appropriate.

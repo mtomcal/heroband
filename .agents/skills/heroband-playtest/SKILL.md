@@ -70,6 +70,13 @@ Scenario saves are temporary playtest artifacts, not checked-in user saves. Keep
 
 When a test needs a high-level, hard-floor, class-power, equipment, store, spellbook, monster-pressure, or save/load-continuity situation, prefer a generated scenario save over manual grinding or hand-driven wizard setup. The save must then be loaded through normal GCU gameplay so the final pass still observes the human-visible game, not only a unit harness.
 
+Use this setup ladder before touching source solely for a playtest:
+
+1. Use an existing scenario helper through `scripts/heroband-playtest prepare-scenario`.
+2. Use reliable GCU/debug/wizard setup when it can be verified by captured game state.
+3. Add or extend a reusable scenario helper when the need will recur.
+4. Only temporarily edit source as a last resort. Revert those setup-only edits before final handoff unless the scenario generator itself is intentionally being committed.
+
 Scenario generation should be generic. It must support any class and level combination needed by the contract, not only the current feature under development. A scenario setup should record:
 
 - character race, class, level, stats, equipment, inventory, and learned powers
@@ -77,7 +84,7 @@ Scenario generation should be generic. It must support any class and level combi
 - the mechanic under test and the expected risk pressure
 - whether the save should be reused for observation only or regenerated each run
 
-Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. A future wrapper command such as `scripts/heroband-playtest prepare-save` or `scripts/heroband-playtest prepare-scenario` should create the isolated save and write a manifest next to it so the direct gameplay pass can report exactly what state was loaded.
+Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. The wrapper command `scripts/heroband-playtest prepare-scenario <preset>` should create the isolated save and write a manifest next to it so the direct gameplay pass can report exactly what state was loaded.
 
 The scenario command should accept parameters or named presets for:
 
@@ -116,6 +123,7 @@ scripts/heroband-playtest stop --state-dir "$STATE"
 
 All scripts live relative to this skill:
 
+- `scripts/heroband-playtest prepare-scenario corruption --state-dir "$STATE"`: generate a corruption scenario save and manifest using the repo scenario helper.
 - `scripts/start-playtest.sh`: require a contract, configure/build `build-gcu-test`, create isolated state, and launch Angband in tmux.
 - `scripts/capture-playtest.sh`: capture the pane and append a transcript.
 - `scripts/send-playtest-key.sh`: send one or more tmux keys, then immediately capture the pane.
