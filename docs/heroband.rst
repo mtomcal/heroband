@@ -38,6 +38,27 @@ victory.
 Corruption is not a class path, a safe optimization, or a renamed heroic power.
 It is a moral failure state attached to dangerous objects.
 
+Downloads
+=========
+
+The current public prerelease is `Heroband 0.1.0`_.
+
+Linux x86_64
+  Download ``heroband-0.1.0-linux-x86_64.tar.gz``, extract it, and run
+  ``./angband`` from the extracted directory.  The archive includes the
+  executable, runtime data, and the built HTML manual.
+
+Source package
+  Download ``heroband-0.1.0-source.tar.gz`` to build from source.  The archive
+  includes generated autotools files, including ``configure`` and
+  ``src/autoconf.h.in``, along with the CMake build files.
+
+Checksums
+  Download ``heroband-0.1.0-checksums.txt`` and verify the release assets with
+  ``sha256sum -c heroband-0.1.0-checksums.txt``.
+
+.. _Heroband 0.1.0: https://github.com/mtomcal/heroband/releases/tag/heroband-0.1.0
+
 Compatibility Notes
 ===================
 

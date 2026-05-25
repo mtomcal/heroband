@@ -60,3 +60,28 @@ The ``scripts/heroband-corruption-scenario-save`` helper creates focused
 scenario saves for corruption checks.  Use scenario saves to exercise real
 equipment, activation, consequence, and victory behavior when unit tests alone
 would be too indirect.
+
+Release Packaging
+=================
+
+Heroband releases are published from GitHub Releases.  Heroband 0.1.0 includes
+a Linux x86_64 playable archive, a source archive, and SHA-256 checksums.
+
+The attached source archive is prepared from tracked files and then runs
+``./autogen.sh`` before packaging.  That means the release source tarball
+contains generated autotools files such as ``configure`` and
+``src/autoconf.h.in`` and does not require release users to have ``aclocal`` for
+the initial configure-based build.  Maintainers who regenerate that source
+archive need automake and autoconf installed:
+
+.. code-block:: sh
+
+   sudo apt install automake autoconf
+
+After replacing any release asset, also regenerate and replace the checksum
+manifest so it matches the downloadable files:
+
+.. code-block:: sh
+
+   sha256sum heroband-0.1.0-source.tar.gz \
+     heroband-0.1.0-linux-x86_64.tar.gz > heroband-0.1.0-checksums.txt
