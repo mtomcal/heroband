@@ -329,8 +329,12 @@ errr cmdq_push_copy(struct command *cmd)
 static void process_command(cmd_context ctx, struct command *cmd)
 {
 	int oldrepeats = cmd->nrepeats;
-	/* Hack - command a monster */
-	int idx = cmd_idx(player->timed[TMD_COMMAND] ?
+	/*
+	 * Hack - command a monster.  CMD_SLEEP is queued internally when the
+	 * player is paralyzed or knocked out, and must still consume the
+	 * player's turn while command mode is active.
+	 */
+	int idx = cmd_idx(player->timed[TMD_COMMAND] && cmd->code != CMD_SLEEP ?
 		CMD_COMMAND_MONSTER : cmd->code);
 
 	/* Reset so that when selecting items, we look in the default location */

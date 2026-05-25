@@ -259,6 +259,25 @@ static int test_drop_eat(void *state) {
 	ok;
 }
 
+static int test_command_mode_sleep(void *state) {
+	reset_before_load();
+
+	/* Load the saved game */
+	eq(savefile_load("Test1", false), true);
+
+	/* Perform normal set up after loading. */
+	require(character_dungeon);
+	on_new_level();
+
+	player->timed[TMD_COMMAND] = 1;
+	player->upkeep->energy_use = 0;
+	cmdq_push(CMD_SLEEP);
+	eq(cmdq_pop(CTX_GAME), true);
+	eq(player->upkeep->energy_use, z_info->move_energy);
+
+	ok;
+}
+
 const char *suite_name = "game/basic";
 struct test tests[] = {
 	{ "newgame", test_newgame },
@@ -267,5 +286,6 @@ struct test tests[] = {
 	{ "stairs2", test_stairs2 },
 	{ "droppickup", test_drop_pickup },
 	{ "dropeat", test_drop_eat },
+	{ "command_mode_sleep", test_command_mode_sleep },
 	{ NULL, NULL }
 };

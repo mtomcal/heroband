@@ -211,4 +211,11 @@ If a tmux session reveals or validates behavior that should not regress, promote
 - Use `src/tests/...` when parser or core logic can be tested directly.
 - Keep a transcript only when automation is not yet practical, and identify the missing hook.
 
+If a tmux session reveals a bug that leads to source changes, load `$tdd`
+before editing implementation. Create or update the smallest deterministic
+regression first, run it and record the red failure, implement the minimal fix,
+then rerun and record the green pass. Continue with the GCU playtest after the
+deterministic regression is green, unless the bug cannot be expressed outside
+GCU; in that case, state the missing hook and preserve the transcript.
+
 For new or changed gameplay/class/moral-restriction tests, run `$heroband-test-quality-verifier` before final handoff when available. The verifier should check that deterministic tests do not merely reward-hack the implementation and that GCU evidence still covers the player-visible path.

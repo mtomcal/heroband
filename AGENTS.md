@@ -20,6 +20,14 @@ When the user asks to implement an approved plan, treat the plan as an end-to-en
 
 ## Repo-local Skills
 
+Use `$tdd` from the shared skills before making source changes for bug fixes,
+regression fixes, behavior changes, or implementation tasks. This applies even
+when the bug is discovered during investigation or live play. Diagnose and
+stabilize the live situation first when needed, then enter a red/green/refactor
+cycle before editing implementation: write or update the smallest behavior test,
+run it and observe the failure, implement the minimal fix, and rerun the test to
+green.
+
 Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for player-facing gameplay, terminal UI, birth flow, class power, store, inventory, spell, save/load, or Heroband moral-restriction changes. That skill requires a written test contract before tmux gameplay begins, then validates with deterministic tests plus a direct GCU/tmux gameplay pass when appropriate.
 
 Use `$heroband-test-quality-verifier` from `.agents/skills/heroband-test-quality-verifier/SKILL.md` when adding or changing gameplay, class-power, birth, store, save/load, scenario-save, or moral-restriction tests. This repo-specific verifier checks for reward-hacking, setup that bypasses the behavior under test, and weak moral-compliance assertions.
@@ -210,7 +218,7 @@ Mistakes to avoid:
 
 ## Coding Principles
 
-- **Test Methodology**: For buildable checkpoints, run `cmake --build build -j2` and `cmake --build build -t alltests -j2` when the test front end is configured. Use `git diff --check` before handing off code changes.
+- **Test Methodology**: Use `$tdd` for source changes and preserve red/green evidence for each bug fix or behavior change. For buildable checkpoints, run `cmake --build build -j2` and `cmake --build build -t alltests -j2` when the test front end is configured. Use `git diff --check` before handing off code changes.
 - **Design Principles**: Preserve classic Angband gameplay unless it conflicts with Heroband's moral constraints. Replace forbidden player powers with genuinely clean mechanics, not euphemisms.
 - **Code Organization**: Keep C source changes close to the owning subsystem. Birth/class selection belongs in `player-birth`, `player-class`, and `ui-birth`; parser/data changes belong with the related `lib/gamedata` file and parser tests.
 - **Error Handling**: Prefer explicit rejection messages for unavailable player choices. Do not allow invalid class/race IDs to flow deeper into birth or save initialization.
