@@ -553,6 +553,7 @@ bool player_make_simple(const char *nrace, const char *nclass,
 			++ic;
 			++nc;
 		}
+		if (!player_class_is_playable(cc)) return false;
 		while (cc) {
 			cc = cc->next;
 			++nc;
@@ -1057,7 +1058,7 @@ void do_cmd_birth_init(struct command *cmd)
 	 * If there's a quickstart character, store it for later use.
 	 * If not, default to whatever the first of the choices is.
 	 */
-	if (player->ht_birth) {
+	if (player->ht_birth && player_class_is_playable(player->class)) {
 		/* Handle incrementing name suffix */
 		buf = find_roman_suffix_start(player->full_name);
 		if (buf) {
@@ -1105,8 +1106,17 @@ void do_cmd_choose_race(struct command *cmd)
 void do_cmd_choose_class(struct command *cmd)
 {
 	int choice;
+	struct player_class *class;
+
 	cmd_get_arg_choice(cmd, "choice", &choice);
-	player_generate(player, NULL, player_id2class(choice), false);
+	class = player_id2class(choice);
+
+	if (!player_class_is_playable(class)) {
+		msg("That class is not available in Heroband.");
+		return;
+	}
+
+	player_generate(player, NULL, class, false);
 
 	reset_stats(stats, points_spent, points_inc, &points_left, false);
 	generate_stats(stats, points_spent, points_inc, &points_left);

@@ -70,14 +70,4 @@
 ?:[EQU $CLASS Druid]
 %:Druid.prf
 
-?:[EQU $CLASS Necromancer]
-%:Necromancer.prf
-%:Necro.prf
-
-?:[EQU $CLASS Blackguard]
-%:Blackguard.prf
-%:BG.prf
-
-
 ?:1
-

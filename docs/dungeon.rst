@@ -292,11 +292,6 @@ flasks of oil), and it is a good idea to carry extra torches or flasks of
 oil, as appropriate. There are rumours of objects of exceptional power 
 which glow with their own never-ending light.
 
-These last two paragraphs apply to most classes, but not to necromancers.
-Necromancers dislike light, and shroud themselves in darkness.  They are
-usually better off not carrying a light, but also do not gain any of the
-bonuses that may come from magical light sources.
-
 Objects Found In The Dungeon
 ============================
 
@@ -597,9 +592,8 @@ Upon Death and Dying
 ====================
  
 If your character falls below 0 hit points, they have died and cannot be
-restored (with the exception that blackguards can go below zero hit points
-in some circumstances and live to tell tale). A tombstone showing information
-about your character will be displayed. You are also permitted to get a
+restored. A tombstone showing information about your character will be
+displayed. You are also permitted to get a
 record of your character, and all your equipment (identified) either on the
 screen or in a file.
 

@@ -622,6 +622,7 @@ extern const int32_t player_exp[PY_MAX_LEVEL];
 extern struct player *player;
 
 /* player-class.c */
+bool player_class_is_playable(const struct player_class *c);
 struct player_class *player_id2class(guid id);
 
 /* player.c */

@@ -100,7 +100,6 @@ H:The better fed you are, the faster you recover hitpoints.
 H:The food indicator at the bottom of the screen shows how well fed you are.
 H:The light meter at the bottom of the screen shows your light radius.
 H:If stores will not buy your items, check your birth options.
-H:Blackguards can use Rings of Open Wounds without slowing their recovery.
 H:Stunned monsters deal less damage in melee and sometimes miss a turn.
 H:Confused monsters cannot cast spells reliably and may misstep.
 H:Scared monsters suffer penalties and may freeze in terror if cornered!

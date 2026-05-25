@@ -267,7 +267,7 @@ Gain new spells (``G``)
   which you may learn, then you may choose to study that book. Most classes
   may actually choose which spell to study, but if you are a priest or paladin,
   your gods will choose a prayer for you. There are five books of each
-  realm, but hybrid classes - paladins, rogues, rangers and blackguards - can
+  realm, but hybrid classes - paladins, rogues, and rangers - can
   only cast from two or three of these.  Higher level books are normally found
   only in the dungeon. This command takes some energy.
 
@@ -280,8 +280,8 @@ Cast a spell (``m`` in both keysets)
   failure is greatly increased, and whether or not the spell is successfully
   cast, you may wind up paralyzed for several turns or draining your
   constitution. Since you must read the spell from a book, you cannot be blind
-  or confused while casting, and, unless you are a necromancer, there must be
-  some light present. This command takes some energy.
+  or confused while casting, and there must be some light present. This
+  command takes some energy.
 
 Object Manipulation Commands
 ============================
@@ -787,4 +787,3 @@ or 'ESCAPE' which are always ignored as commands in case you type the
 command just after the count expires.	
 
 .. |``)``| replace:: ``)``
-

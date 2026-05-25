@@ -1,0 +1,228 @@
+# AGENTS.md
+
+Repository guidance for AI coding agents working on Heroband.
+
+<!-- TREE-HASH: d93805ff79e344a3a166484103f7157d2f06a8a5dbf310445cf10c17e1fea27c -->
+
+## Project Rule
+
+Heroband is a morally heroic fork of Angband 4.2.
+
+The central design rule is: the player may fight evil, but may not wield evil.
+
+Do not give playable characters power from demons, devils, evil spirits, necromancy, soul pacts, blood magic, dark rituals, forbidden occultism, or morally corrupt shadow/dark power. Enemy-only evil content may remain when it is clearly antagonistic.
+
+Prefer small, buildable patches. Preserve Angband behavior unless it conflicts with Heroband's moral design constraints.
+
+## Map
+
+<!-- TREE-START -->
+```
+.
+|-- docs
+|   |-- _static
+|   |-- _templates
+|   `-- hacking
+|-- lib
+|   |-- customize
+|   |-- fonts
+|   |-- gamedata
+|   |-- help
+|   |-- icons
+|   |-- screens
+|   |-- sounds
+|   |-- tiles
+|   |   |-- adam-bolt
+|   |   |-- gervais
+|   |   |-- nomad
+|   |   |-- old
+|   |   `-- shockbolt
+|   `-- user
+|       |-- archive
+|       |-- panic
+|       |-- save
+|       `-- scores
+|-- m4
+|-- mk
+|-- screenshots
+|-- scripts
+|-- src
+|   |-- borg
+|   |-- cmake
+|   |   |-- macros
+|   |   |-- modules
+|   |   `-- scripts
+|   |-- cocoa
+|   |   |-- Base.lproj
+|   |   `-- en.lproj
+|   |-- doc
+|   |-- nds
+|   |-- sdl2
+|   |-- stats
+|   |-- tests
+|   |   |-- artifact
+|   |   |-- cave
+|   |   |-- command
+|   |   |-- effects
+|   |   |-- game
+|   |   |-- message
+|   |   |-- monster
+|   |   |-- object
+|   |   |-- parse
+|   |   |-- player
+|   |   |-- trivial
+|   |   |-- z-dice
+|   |   |-- z-expression
+|   |   |-- z-file
+|   |   |-- z-quark
+|   |   |-- z-queue
+|   |   |-- z-textblock
+|   |   |-- z-util
+|   |   `-- z-virt
+|   `-- win
+|       |-- dll
+|       |-- include
+|       |   `-- libpng12
+|       |-- lib
+|       `-- vs2019
+|-- tests
+|   |-- birth
+|   |   |-- Dw-Pa
+|   |   |-- Hu-Wa
+|   |   |-- new-game-0
+|   |   `-- new-game-1
+|   `-- trivial
+|       `-- matcher
+|-- toolchains
+`-- utils
+
+77 directories
+```
+<!-- TREE-END -->
+
+## Modules
+
+### `src`
+
+- **Purpose**: Core C game engine, UI, front ends, parsers, player/monster/object systems, effects, generation, save/load, and command handling.
+- **Owns**: Top-level `*.c`/`*.h`, `src/borg`, `src/cmake`, `src/cocoa`, `src/nds`, `src/sdl2`, `src/stats`, `src/win`.
+- **Depends on**: Data definitions in `lib/gamedata`, preferences/assets in `lib`, build configuration in `CMakeLists.txt`.
+- **Rules**: Keep shared mechanics available for monsters/enemy content unless the task specifically removes them. For player-facing moral restrictions, prefer gating player access before deleting shared code or data. Maintain parser and class ID stability unless save/data compatibility has been explicitly audited.
+- **Entry points**: `src/main.c`, front-end mains such as `src/main-x11.c`, `src/main-gcu.c`, `src/main-test.c`, and the `OurCoreLib` / `OurExecutable` targets in `CMakeLists.txt`.
+
+### `lib/gamedata`
+
+- **Purpose**: Data-driven game definitions for classes, races, monsters, objects, spells, effects, realms, stores, terrain, curses, hints, and parser-fed tables.
+- **Owns**: Text data consumed by C parsers at startup.
+- **Depends on**: Parser code in `src/parse*`, initialization in `src/init.c`, gameplay systems throughout `src`.
+- **Rules**: Prefer data edits when removing player-facing content, but do not remove entries that shared parser code, monsters, stores, drops, or save/load assumptions still reference. For Heroband, classify each evil-themed entry as player-accessible, enemy-only, harmless, or ambiguous before changing it.
+- **Entry points**: Data files loaded during game initialization; parser tests under `src/tests/parse`.
+
+### `lib/customize`, `lib/help`, and Assets
+
+- **Purpose**: User preferences, help text, visual/audio assets, screens, tiles, fonts, and runtime user data directories.
+- **Owns**: `lib/customize`, `lib/help`, `lib/fonts`, `lib/icons`, `lib/screens`, `lib/sounds`, `lib/tiles`, `lib/user`.
+- **Depends on**: UI and preference loading code in `src`.
+- **Rules**: Keep player-facing text consistent with playable content. Do not document removed classes or powers as available. Do not edit generated user save/archive/panic/score files unless the task is explicitly about runtime state.
+- **Entry points**: Preference loading, help browser, tile/font/sound front-end loading.
+
+### `docs`
+
+- **Purpose**: Sphinx documentation for player manual and developer-facing notes.
+- **Owns**: `docs/*.rst`, `docs/hacking`, Sphinx static/template folders.
+- **Depends on**: Current gameplay rules and player-facing features.
+- **Rules**: Documentation must match actual playable behavior. Historical notes may mention old Angband behavior, but manuals and class descriptions must not present removed Heroband powers as player choices.
+- **Entry points**: Sphinx build via CMake when `BUILD_DOC` is enabled and Sphinx is available.
+
+### `src/tests`
+
+- **Purpose**: C unit tests for parsers, player logic, objects, monsters, effects, utility libraries, and low-level systems.
+- **Owns**: Unit test source files listed in `ANGBAND_TEST_CASE_SOURCES` in `CMakeLists.txt`.
+- **Depends on**: `OurCoreLib`, `OurUnitTestLib`, test utilities in `src/tests/test-utils.c`.
+- **Rules**: Add or update focused tests when behavior changes cross parser, birth, effects, or player/object/monster boundaries. Keep tests data-aware rather than relying on menu row numbers when class IDs or visible lists can diverge.
+- **Entry points**: `cmake --build build -t allunittests -j2` or `cmake --build build -t alltests -j2`.
+
+### `tests`
+
+- **Purpose**: End-to-end test scripts and fixtures run through the test front end.
+- **Owns**: `tests/birth`, `tests/trivial`, `tests/run-test`, root `run-tests`.
+- **Depends on**: `SUPPORT_TEST_FRONTEND=ON`, `src/main-test.c`, built executable and copied runtime data.
+- **Rules**: Update these tests when birth flow, UI prompts, startup flow, or command scripting changes. These tests exercise the built game, so keep them aligned with player-visible behavior.
+- **Entry points**: `cmake --build build -t alltests -j2`.
+
+### Build System
+
+- **Purpose**: CMake, legacy make fragments, autotools support, scripts, and toolchains.
+- **Owns**: `CMakeLists.txt`, `src/cmake`, `mk`, `m4`, `scripts`, `toolchains`, platform makefiles.
+- **Depends on**: Compiler, platform front-end dependencies, optional Sphinx, optional SDL/X11/ncurses/statistics dependencies.
+- **Rules**: Keep build changes minimal and cross-platform. Do not assume top-level `make` works before configuration. CMake is the preferred validation path for this workspace.
+- **Entry points**: `cmake -G Ninja -B build -DSUPPORT_TEST_FRONTEND=ON`, `cmake --build build -j2`, `cmake --build build -t alltests -j2`.
+
+## Dependency Rules
+
+Architectural boundaries and forbidden shortcuts:
+
+- **Data before source when feasible**: If a Heroband restriction can be enforced safely in `lib/gamedata` or player-facing text, prefer that before changing core engine behavior.
+- **Do not delete shared evil content blindly**: Demons, undead, curses, Morgoth, Sauron, and corruption may remain as enemy-only content. Remove or replace player-accessible evil power, not all evil references.
+- **Birth UI must map displayed choices to actual IDs**: If filtering classes/races/options, keep an explicit displayed-choice-to-data-ID mapping. Angband data order and linked-list order may not match visible menu order.
+- **Parser stability matters**: Data files are parsed into indexed structures used throughout C. Removing entries can shift IDs or break tests; gate access first unless the compatibility impact has been audited.
+- **Docs must follow behavior**: Whenever player choices, classes, spells, or commands change, update `docs`, `lib/help`, `lib/customize`, and hints in the same patch when practical.
+- **Front ends are optional**: Changes in common UI or core systems must not assume one front end. The test front end is the validation path for automated behavior.
+
+## Anti-patterns
+
+Mistakes to avoid:
+
+- **Pattern**: Renaming evil player powers without changing the mechanic.
+  - **Why wrong**: Heroband forbids whitewashed necromancy, demonic pacts, blood sacrifice, occult ritual, and corrupt shadow power.
+  - **Right way**: Replace the power source and mechanic with clean heroic equivalents, such as discipline, courage, craft, lawful command, healing, light, music, tactics, nature, or heroic resolve.
+
+- **Pattern**: Removing monster or object data because a string sounds evil.
+  - **Why wrong**: Enemy-only evil is allowed and is part of the good-vs-evil atmosphere.
+  - **Right way**: Determine whether the content is player-beneficial, enemy-only, ambient lore, or ambiguous before editing.
+
+- **Pattern**: Filtering a visible menu by list position and returning that position as the data ID.
+  - **Why wrong**: It can silently select the wrong class or race when hidden entries exist.
+  - **Right way**: Maintain a mapping from visible row to canonical data ID and use the canonical ID for selection.
+
+- **Pattern**: Making a large thematic rewrite before a buildable checkpoint.
+  - **Why wrong**: Angband has many data/code cross-references; wide changes are hard to validate.
+  - **Right way**: Make narrow patches, build after each, and leave explicit follow-up lists for remaining references.
+
+## Coding Principles
+
+- **Test Methodology**: For buildable checkpoints, run `cmake --build build -j2` and `cmake --build build -t alltests -j2` when the test front end is configured. Use `git diff --check` before handing off code changes.
+- **Design Principles**: Preserve classic Angband gameplay unless it conflicts with Heroband's moral constraints. Replace forbidden player powers with genuinely clean mechanics, not euphemisms.
+- **Code Organization**: Keep C source changes close to the owning subsystem. Birth/class selection belongs in `player-birth`, `player-class`, and `ui-birth`; parser/data changes belong with the related `lib/gamedata` file and parser tests.
+- **Error Handling**: Prefer explicit rejection messages for unavailable player choices. Do not allow invalid class/race IDs to flow deeper into birth or save initialization.
+- **Mutation Rules**: Do not revert user changes. Do not edit generated build outputs, local dependency caches, or runtime user files unless specifically asked.
+- **Naming Conventions**: Follow existing Angband C naming and file organization. New Heroband replacements should use morally clear names that identify the actual clean power source.
+- **Review Gates**: For Heroband moral edits, search code, gamedata, docs, help, birth UI, tests, and customization files for old class/power names before finalizing.
+
+## Local Validation Notes
+
+In this workspace, full validation was performed with local non-root dependencies and Ninja:
+
+```sh
+cmake -G Ninja -B build -DSUPPORT_TEST_FRONTEND=ON
+cmake --build build -j2
+cmake --build build -t alltests -j2
+```
+
+If a machine uses local, non-system dependencies, keep those paths outside committed files or pass them through environment variables / CMake cache options locally. The `build` directory and local dependency caches should not be committed.
+
+## Current Heroband Notes
+
+- Necromancer and Blackguard are currently gated out of playable character creation.
+- Their raw class data still exists in `lib/gamedata/class.txt` for parser/class-ID stability and later replacement work.
+- Shadow, nether, bloodlust, undead/demon summoning, and related player-beneficial mechanics still require follow-up review.
+- Future Necromancer replacement direction: `General`, powered by natural leadership, lawful command, battlefield discipline, and living comrades.
+- Future Blackguard replacement direction: a clean martial class such as `Vanguard`, `Champion`, or `Knight-Errant`, powered by courage, tactics, stamina, armor mastery, and heroic resolve.
+
+## Appendix
+
+The structure scan was produced by:
+
+The structure scan was produced with the `create-agents-md` skill's `detect-structure.sh --json` helper.
+
+The detector reported no package manager and limited dependency inference, so this file intentionally uses repository-specific CMake and Angband/Heroband knowledge rather than treating every subdirectory as a separate module.

@@ -189,6 +189,7 @@ typedef void (*browse_f) (int oid, void *db, const region *l);
 struct birthmenu_data 
 {
 	const char **items;
+	int *choice_ids;
 	const char *hint;
 	bool allow_random;
 	enum birth_stage stage_inout;
@@ -304,7 +305,9 @@ static void race_help(int i, void *db, const region *l)
 static void class_help(int i, void *db, const region *l)
 {
 	int j;
-	struct player_class *c = player_id2class(i);
+	struct birthmenu_data *data = db;
+	int choice = data && data->choice_ids ? data->choice_ids[i] : i;
+	struct player_class *c = player_id2class(choice);
 	const struct player_race *r = player->race;
 	int len = (STAT_MAX + 1) / 2;
 
@@ -513,6 +516,7 @@ static void init_birth_menu(struct menu *menu, int n_choices,
 
 	/* Allocate sufficient space for our own bits of menu information. */
 	menu_data = mem_alloc(sizeof *menu_data);
+	menu_data->choice_ids = NULL;
 
 	/* Allocate space for an array of menu item texts and help texts
 	   (where applicable) */
@@ -540,7 +544,7 @@ static void init_birth_menu(struct menu *menu, int n_choices,
 
 static void setup_menus(void)
 {
-	int i, n;
+	int i, j, n, n_total;
 	struct player_class *c;
 	struct player_race *r;
 
@@ -566,15 +570,28 @@ static void setup_menus(void)
 
 	/* Count the classes */
 	n = 0;
-	for (c = classes; c; c = c->next) n++;
+	n_total = 0;
+	for (c = classes; c; c = c->next) {
+		n_total++;
+		if (player_class_is_playable(c)) n++;
+	}
 
 	/* Class menu similar to race. */
-	init_birth_menu(&class_menu, n, player->class ? player->class->cidx : 0,
+	init_birth_menu(&class_menu, n, 0,
 	                &class_region, true, class_help);
 	mdata = class_menu.menu_data;
+	mdata->choice_ids = mem_alloc(n * sizeof *mdata->choice_ids);
 
-	for (i = 0, c = classes; c; c = c->next, i++)
-		mdata->items[c->cidx] = c->name;
+	for (i = 0, j = 0; i < n_total; i++) {
+		c = player_id2class(i);
+		if (!c) continue;
+		if (!player_class_is_playable(c)) continue;
+		if (player->class && player->class->cidx == c->cidx)
+			class_menu.cursor = j;
+		mdata->items[j] = c->name;
+		mdata->choice_ids[j] = c->cidx;
+		j++;
+	}
 	mdata->hint = "Class affects stats, skills, and other character traits.";
 		
 	/* Roller menu straightforward */
@@ -595,6 +612,7 @@ static void free_birth_menu(struct menu *menu)
 
 	if (data) {
 		mem_free((char**)data->items);
+		mem_free(data->choice_ids);
 		mem_free(data);
 	}
 }
@@ -692,13 +710,21 @@ static void finish_with_random_choices(enum birth_stage current)
 		struct player_class *pc;
 		int n, i;
 
-		for (pc = classes, n = 0; pc; pc = pc->next, ++n) {}
+		for (pc = classes, n = 0; pc; pc = pc->next) {
+			if (player_class_is_playable(pc)) n++;
+		}
 		i = randint0(n);
+		for (pc = classes; pc; pc = pc->next) {
+			if (!player_class_is_playable(pc)) continue;
+			if (i == 0) break;
+			i--;
+		}
+		assert(pc);
 
 		assert(ncmd < (int)N_ELEMENTS(cmds));
 		cmds[ncmd].code = CMD_CHOOSE_CLASS;
 		cmds[ncmd].arg_name = "choice";
-		cmds[ncmd].arg_choice = i;
+		cmds[ncmd].arg_choice = pc->cidx;
 		cmds[ncmd].arg_is_choice = true;
 		++ncmd;
 	}
@@ -830,8 +856,13 @@ static enum birth_stage menu_question(enum birth_stage current,
 					next = current + 1;
 				}
 			} else {
+				struct birthmenu_data *data = menu_priv(current_menu);
+				int choice = data->choice_ids ?
+					data->choice_ids[current_menu->cursor] :
+					current_menu->cursor;
+
 				cmdq_push(choice_command);
-				cmd_set_arg_choice(cmdq_peek(), "choice", current_menu->cursor);
+				cmd_set_arg_choice(cmdq_peek(), "choice", choice);
 				next = current + 1;
 			}
 		} else if (cx.type == EVT_SWITCH) {
@@ -839,9 +870,14 @@ static enum birth_stage menu_question(enum birth_stage current,
 		} else if (cx.type == EVT_KBRD) {
 			/* '*' chooses an option at random from those the game's provided */
 			if (cx.key.code == '*' && menu_data->allow_random) {
+				int choice;
+
 				current_menu->cursor = randint0(current_menu->count);
+				choice = menu_data->choice_ids ?
+					menu_data->choice_ids[current_menu->cursor] :
+					current_menu->cursor;
 				cmdq_push(choice_command);
-				cmd_set_arg_choice(cmdq_peek(), "choice", current_menu->cursor);
+				cmd_set_arg_choice(cmdq_peek(), "choice", choice);
 
 				menu_refresh(current_menu, false);
 				next = current + 1;
@@ -1787,4 +1823,3 @@ void ui_init_birthstate_handlers(void)
 	event_add_handler(EVENT_ENTER_BIRTH, ui_enter_birthscreen, NULL);
 	event_add_handler(EVENT_LEAVE_BIRTH, ui_leave_birthscreen, NULL);
 }
-

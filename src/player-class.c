@@ -18,6 +18,12 @@
 
 
 #include "player.h"
+#include "z-util.h"
+
+bool player_class_is_playable(const struct player_class *c)
+{
+	return c && !streq(c->name, "Necromancer") && !streq(c->name, "Blackguard");
+}
 
 struct player_class *player_id2class(guid id)
 {
