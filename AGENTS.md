@@ -18,6 +18,22 @@ Prefer small, buildable patches. Preserve Angband behavior unless it conflicts w
 
 When the user asks to implement an approved plan, treat the plan as an end-to-end contract. Work through every unchecked slice unless the user explicitly narrows the scope or a real blocker prevents progress. Update the plan checklist as slices complete, run the required deterministic tests and Heroband playtest/verifier gates, and do not hand back after only one slice with remaining unchecked work unless asked to pause.
 
+If an approved plan includes subagent verification passes, ask the user whether
+subagents are authorized before starting implementation or before the first
+subagent-dependent gate. Use a direct prompt such as: `This plan includes
+subagent verification passes. Are subagents authorized for this implementation
+run?` If subagents are not authorized, convert those gates into local/manual
+review steps or ask the user to revise the plan.
+
+## Plan Lifecycle
+
+Use one active implementation plan per feature. Plans should state their status
+in the header (`PLANNING`, `IMPLEMENTING`, `PAUSED`, `COMPLETED`,
+`SUPERSEDED`, or `ARCHIVED`) and name any plan they replace. When implementation
+finishes, update the checklist and either mark the plan completed, archive it,
+or summarize the durable outcome into specs/docs so root-level plan files do not
+accumulate without clear ownership.
+
 ## Specs
 
 Heroband has a first-pass brownfield spec suite in `specs/`. Before making any
@@ -33,6 +49,11 @@ When adding or changing domain terms in any spec, check
 updates so overloaded terms and aliases stay consistent.
 
 ## Repo-local Skills
+
+Use `$heroband-create-plan` from `.agents/skills/heroband-create-plan/SKILL.md`
+when creating or updating Heroband implementation plans. It layers spec-first
+planning, moral-access classification, scenario-save playtest matrices, subagent
+authorization gates, and plan lifecycle cleanup onto the shared TDD plan shape.
 
 Use `$tdd` from the shared skills before making source changes for bug fixes,
 regression fixes, behavior changes, or implementation tasks. This applies even

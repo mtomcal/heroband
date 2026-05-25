@@ -99,6 +99,40 @@ The generated manifest should include the exact scenario inputs, the save path, 
 
 If a generated save cannot be produced yet, use the closest deterministic `src/tests/game/...` or `tests/...` scenario to exercise the behavior and explicitly report the missing save-generation hook. Do not describe that fallback as equivalent to a loaded-save GCU playtest.
 
+## Scenario-Save Matrix Template
+
+When planning gameplay, class-power, save/load, birth/UI, store, inventory, or
+moral-restriction changes that depend on character level, dungeon depth, learned
+powers, monster pressure, terrain, or saved state, include a scenario-save matrix
+before implementation begins. A matrix prevents a vague final "run playtest"
+gate from missing deep or stateful behavior.
+
+Use this shape in implementation plans and test contracts:
+
+```md
+### Scenario <ID>: <Name>
+
+- Save name: `<stable-slug>`.
+- Character: <race>, <class>, level <N>, experience/stats/HP/SP/gold as needed.
+- Depth: <town or dungeon depth> with <terrain fixture and pressure summary>.
+- Learned powers/inventory: <books, spells/orders, equipment, consumables>.
+- Monster setup: <names/counts>, <awake/asleep>, <unique/resistant/grouped>,
+  <inside/outside radius or LOS state>.
+- Expected mode: <ally tier, formation mode, banner zone, store state,
+  corruption/moral state, or save/load state>.
+- Purpose: <one sentence naming the behavior this save proves>.
+- Required GCU evidence: <exact captures/messages/screens before and after the
+  key actions>.
+- Cleanup/reporting: <session stop, manifest path, transcript path, stale state
+  checks>.
+```
+
+Every generated scenario manifest should record the exact helper command, build
+path, save path, seed, inputs, expected invariant, and GCU actions. If a scenario
+needs support the helper lacks, extend `scripts/heroband-playtest
+prepare-scenario` or list the missing hook as a real blocker; do not replace the
+loaded-save pass with undocumented wizard setup.
+
 ## GCU Build
 
 Use a separate build directory for terminal playtests so the normal `build` validation path stays intact:
