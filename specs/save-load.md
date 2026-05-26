@@ -1,6 +1,6 @@
 # Save, Load, and Runtime User State
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Overview
 
@@ -68,6 +68,9 @@ This specification depends on these systems:
   be recoverable, while repeated interrupts indicate intent or a stuck process.
 - Corruption save width: 32-bit unsigned character state. Rationale: corruption
   must survive save/load, support saturation, and remain compact.
+- Vanguard resolve pressure save policy: pressure charges may persist only when
+  the saved or loaded state still has valid active-combat context. Rationale:
+  Heroic Resolve is enemy-pressure state, not a banked pre-buff.
 
 ## Data Structures
 
@@ -77,7 +80,8 @@ This specification depends on these systems:
 - Description block: a short summary used by save selection without loading the
   whole game.
 - Player block: persistent player identity, status, options, energy, timed
-  effects, turns, corruption, death status, and related character state.
+  effects, turns, corruption, Vanguard resolve pressure state, death status,
+  and related character state.
 - Gear and object blocks: carried, equipped, floor, and known object state.
 - Store block: town store and home inventories, owners, and known stock state.
 - Dungeon and chunk blocks: current level, generated level data, traps,
@@ -128,8 +132,12 @@ This specification depends on these systems:
   way rather than continuing to request player commands. Test scenarios: T21.
 - B14. Save/load must preserve Heroband corruption across a full cleanup,
   reinitialization, and reload cycle. Test scenarios: T22.
-- B15. Runtime user files are generated state and must not be treated as source
-  truth for gameplay rules. Test scenarios: T23.
+- B15. Save/load must conditionally preserve Vanguard resolve pressure when a
+  game is saved during active hostile pressure, must clear or rapidly decay that
+  pressure in safe contexts, and must always recalculate the Last Stand Tier
+  from current hit points after load. Test scenarios: T23, T24.
+- B16. Runtime user files are generated state and must not be treated as source
+  truth for gameplay rules. Test scenarios: T25.
 
 ## Error Handling
 
@@ -166,6 +174,12 @@ This specification depends on these systems:
   interruption to avoid lock, score, or partial-save damage.
 - Do not remove corruption, forbidden-access state, or moral consequences during
   load migration.
+- Do not treat saved Vanguard resolve pressure as durable power. If active
+  combat cannot be validated after load, clear pressure charges and leave the
+  visible Heroic Resolve Meter to be derived from current hit points and future
+  enemy pressure.
+- Keep Last Stand Tier derived rather than saved as an independent durable
+  value.
 
 ## Test Scenarios
 
@@ -196,10 +210,17 @@ This specification depends on these systems:
 - T20. Closing a dead game saves the dead character state.
 - T21. A disconnect signal stops command input and proceeds to orderly close.
 - T22. A saved game with nonzero corruption reloads with the same corruption.
-- T23. Deleting generated lore or preference output does not change core
+- T23. A Vanguard saved during active hostile pressure reloads with valid
+  resolve pressure only when hostile combat context remains valid.
+- T24. A Vanguard saved or loaded in town, safe rest, after level transition, or
+  without active hostile context reloads without banked resolve pressure, while
+  Last Stand Tier is recalculated from current hit points.
+- T25. Deleting generated lore or preference output does not change core
   gameplay rules after reinitialization.
 
 ## Changelog
 
+- 1.1.0: Added conditional save/load requirements for Vanguard Heroic Resolve
+  pressure and derived Last Stand Tier.
 - 1.0.0: Authored full brownfield behavior specification for save, load, panic
   recovery, and runtime user state.

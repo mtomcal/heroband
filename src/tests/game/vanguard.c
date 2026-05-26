@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "cave.h"
+#include "effects.h"
 #include "game-event.h"
 #include "game-world.h"
 #include "generate.h"
@@ -107,6 +108,22 @@ static bool cast_until_active(const char *name, int timed_effect)
 	return false;
 }
 
+static bool effect_chain_timed_inc(const struct effect *effect, int timed)
+{
+	const struct effect *e;
+
+	for (e = effect; e; e = e->next) {
+		if (e->index != EF_TIMED_INC) {
+			continue;
+		}
+		if (e->subtype == timed) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 static int assert_order_list_is_clean(void)
 {
 	static const char *expected[] = {
@@ -144,6 +161,8 @@ static int assert_order_list_is_clean(void)
 				require(strstr(spell->text, forbidden[j]) == NULL);
 			}
 		}
+		require(!effect_chain_timed_inc(spell->effect, TMD_BLOODLUST));
+		require(!effect_chain_timed_inc(spell->effect, TMD_ATT_VAMP));
 	}
 
 	return 0;

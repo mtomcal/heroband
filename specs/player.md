@@ -1,6 +1,6 @@
 # Player, Birth, Classes, and Timed Effects
 
-Version: 1.1.0
+Version: 1.3.0
 
 ## Overview
 
@@ -45,6 +45,12 @@ This system depends on:
 - General formation effects scale from player level expressions and may become stronger when a temporary ally is active. Rationale: late General power should come from leadership, tactics, and morale without requiring multiple controllable allies.
 - General banner zones have authored radius and duration and remain fixed to their planted dungeon location until expiration. Rationale: Marshal's Banner should provide area control without becoming teleportation, terrain mutation, or a permanent object.
 - Vanguard drill durations and blow counts are determined by their authored dice expressions and player-level expressions. Rationale: martial powers should scale predictably with level while remaining clean heroic tactics.
+- Vanguard Heroic Resolve Meter tiers are derived from temporary resolve pressure charges plus the current Last Stand Tier. Rationale: the player sees one coherent resolve status while implementation can test hostile-pressure and low-health contributions separately.
+- Vanguard resolve pressure charges are gained only from qualifying enemy pressure while active combat is present. Rationale: the class should reward enduring hostile danger, not self-harm, safe attrition, or corrupt-power loops.
+- Active combat for Vanguard resolve is present when a hostile monster is visible or qualifying hostile damage was received recently. Rationale: the first implementation should use player-legible and testable combat context rather than hidden pathing assumptions.
+- Vanguard resolve pressure charges decay quickly outside active combat, decay more slowly during active combat, and clear on level transition or safe rest-to-full. Rationale: resolve should be a fight-local resource, not a banked pre-buff.
+- Vanguard Last Stand Tier is recalculated from current hit point percentage. Rationale: healing should naturally reduce the low-health contribution without erasing valid recent enemy pressure.
+- Vanguard Armor Mastery enhances defensive orders when the player uses a shield or heavy armor, but it is not required for the Heroic Resolve Meter. Rationale: armor mastery should be mechanically real without making the class engine gear-locked.
 
 ## Data Structures
 
@@ -60,6 +66,9 @@ This system depends on:
 - Temporary ally state: uses ordinary monster state plus a player command timer and an ally marker to represent a living soldier currently under battlefield command.
 - Formation state: uses timed tactical effects, projectable effects, or anchored area state to represent supporting soldiers without creating additional controllable monsters.
 - Banner zone state: stores the location, radius, duration, and tactical effects of an active Marshal's Banner.
+- Heroic Resolve Meter state: stores Vanguard resolve pressure charges, recent qualifying enemy-pressure timing, active-combat context needed for decay and save/load validation, and a derived display tier that also includes current hit point percentage.
+- Last Stand Tier state: derives from current hit point percentage and contributes to the Heroic Resolve Meter without being independently banked or spent.
+- Armor Mastery state: derives from currently equipped shield and armor category when scaling defensive Vanguard orders.
 
 ## Behavior
 
@@ -75,6 +84,16 @@ This system depends on:
 - Enemy-only evil, including evil monsters and evil monster powers, may remain as antagonistic content and must not be removed merely because it is evil-themed. Test scenario: P-MORAL-004.
 - General powers must use clean heroic tactics, morale, field command, formations, living temporary allies, and banner-led battlefield control. Test scenario: P-GENERAL-001.
 - General powers must not use literal teleportation as the class mobility identity; orderly movement and survival should be expressed through Fighting Withdrawal, defensive timed effects, monster disruption, or ally cover. Test scenario: P-GENERAL-002.
+- Vanguard powers must use clean heroic courage, discipline, armor mastery, battlefield drills, and heroic resolve while preserving the aggressive armored melee bruiser niche. Test scenario: P-VANGUARD-001.
+- Vanguard resolve powers, including Unbroken and Last Stand, must grant clean defensive or martial timed benefits and must not grant bloodlust, vampirism, life drain, corrupt shadow, curse-benefit, demonic, necromantic, soul-pact, or forbidden occult power. Test scenario: P-VANGUARD-002.
+- Vanguard low-health strength must represent duty, endurance, and heroic last-stand resolve, not rage, blood hunger, pain empowerment, darkness, self-harm, or evil empowerment. Test scenario: P-VANGUARD-003.
+- Vanguard has a player-visible Heroic Resolve Meter with named tiers such as Steady, Tested, Resolute, Unbroken, and Last Stand. The meter combines resolve pressure from qualifying enemy pressure with the live Last Stand Tier from current hit point percentage. Test scenario: P-VANGUARD-004.
+- Qualifying enemy pressure must be tied to hostile combat: hostile monster damage always qualifies, and ongoing damage qualifies only when it was inflicted by a hostile source or active combat context remains valid. Self-damage, starvation, safe rest attrition, friendly fire, gear abuse, corrupt object use, and intentionally farmable non-hostile damage must not build resolve pressure. Test scenario: P-VANGUARD-005.
+- Heroic Resolve Meter tiers grant modest always-on passive benefits and passively scale combat, defense, and control orders. Utility orders such as Assess the Field and Shatter Stone must remain predictable and must not scale from resolve. Test scenario: P-VANGUARD-006.
+- Vanguard orders scale from the Heroic Resolve Meter without spending resolve. Resolve is pressure state, not a consumable resource. Test scenario: P-VANGUARD-007.
+- Healing immediately reduces the Last Stand Tier if hit points cross a threshold, but healing does not erase valid resolve pressure charges while active combat remains. Test scenario: P-VANGUARD-008.
+- Heroic Resolve Meter decay must be fight-local: pressure charges decay faster out of combat, slower in combat, and clear on level transition or safe rest-to-full. Test scenario: P-VANGUARD-009.
+- Armor Mastery must enhance defensive orders such as Stand Firm, Unbroken, Brace for Impact, and possibly Defend the Weak when the player has a shield or heavy armor. It must not require cursed or corrupt gear, must not reward ordinary curses, and must never be a hard requirement for basic resolve benefits. Test scenario: P-VANGUARD-010.
 - Birth menus must display only playable classes and must submit canonical class choices, not visible row numbers. Test scenario: P-BIRTH-007.
 - Random class completion must select only playable classes and must submit the selected canonical class identity. Test scenario: P-BIRTH-008.
 - Point-based birth must start all intrinsic stats at base 10, spend from the point budget, disallow invalid stat choices, disallow buying above base 18, disallow selling below base 10, and recalculate displayed derived values after accepted changes. Test scenario: P-BIRTH-009.
@@ -117,6 +136,9 @@ This system depends on:
 - Attempting to increase a resisted timed effect must fail cleanly and may teach relevant resistance knowledge.
 - Attempting to call an ally in blocked situations must report the specific player-facing reason and must not leave stale command state.
 - Attempting to create a formation or banner zone in a blocked situation must report the specific player-facing reason and must not leave stale area state.
+- Attempting to gain Vanguard resolve pressure from nonqualifying damage must leave the Heroic Resolve Meter unchanged and must not display misleading resolve messages.
+- If active-combat context is unavailable or ambiguous during load, safe rest, or level transition, Vanguard resolve pressure must clear rather than persist as banked power.
+- If armor or shield state is missing, cursed, corrupt, or incompatible, Armor Mastery scaling must fall back to the ordinary order behavior without granting curse or corruption benefits.
 - Deleting or losing a commanded monster must clear player command state.
 - Expiring a banner zone must clear its area state even if the player, temporary ally, or monsters have left the area.
 - Leaving a level must clear command state before post-level processing continues.
@@ -136,6 +158,10 @@ This system depends on:
 - Prefer distinct monster race tiers for General temporary allies over hidden runtime mutation of a single race's stats.
 - Treat formations as tactical effects and messages, not fake map monsters. If a formation appears on the map, it must use a real inspectable mechanic with explicit rules.
 - Treat Marshal's Banner as a temporary battlefield zone before considering a real object or terrain implementation.
+- Treat the Vanguard as the Last Line Champion: enemy pressure can reveal discipline and endurance, but the player must not be rewarded for self-harm, rage, pain empowerment, blood hunger, corrupt shadow, life-drain, curse-benefit, or forbidden occult power.
+- Treat the Heroic Resolve Meter as one player-facing concept with separately testable internal contributors: resolve pressure from qualifying enemy pressure and Last Stand Tier from current hit point percentage.
+- Treat Vanguard resolve as passive scaling state rather than a spendable resource for the first full pass.
+- Keep Armor Mastery bounded and non-magical. Shields and heavy armor may improve defensive orders, but corrupt or cursed gear must not provide special Vanguard benefits.
 - Player-facing documentation, help, class tables, spell descriptions, and tests must remain consistent with playable behavior.
 
 ## Test Scenarios
@@ -159,6 +185,18 @@ This system depends on:
 - P-MORAL-004: Verify evil monsters, undead, demons, and enemy spell summons can remain enemy-only without granting player access to their evil power.
 - P-GENERAL-001: Audit General spells, descriptions, books, help, and messages and verify they use tactics, morale, lawful command, formations, living temporary allies, or banner-led battlefield control.
 - P-GENERAL-002: Inspect General mobility powers and verify they do not use literal teleportation as the General class identity.
+- P-VANGUARD-001: Audit Vanguard class data, books, spell names, spell descriptions, help, and birth documentation and verify they use courage, discipline, armor mastery, battlefield drills, heroic resolve, and frontline melee pressure.
+- P-VANGUARD-002: Cast Vanguard resolve powers and inspect their effects; verify Unbroken, Last Stand, and related orders do not increment bloodlust, vampirism, life-drain, corrupt shadow, curse-benefit, demonic, necromantic, soul-pact, or forbidden occult timed effects.
+- P-VANGUARD-003: Inspect Vanguard low-health and last-stand wording and verify it frames pressure scaling as duty and endurance rather than self-harm, pain empowerment, rage, blood hunger, darkness, or evil empowerment.
+- P-VANGUARD-004: Damage a Vanguard under active hostile pressure and verify the visible Heroic Resolve Meter advances through named tiers; separately verify low hit points contribute to the displayed tier.
+- P-VANGUARD-005: Attempt to gain resolve pressure from self-damage, starvation, safe resting while injured, corrupt object use, friendly fire, and non-hostile attrition; verify no resolve pressure charges are gained.
+- P-VANGUARD-006: At several resolve tiers, verify modest passive defensive or martial benefits and stronger combat/defense/control orders, while Assess the Field and Shatter Stone remain unchanged.
+- P-VANGUARD-007: Use multiple Vanguard orders while resolve is active and verify orders scale from the meter but do not spend or decrement resolve pressure charges.
+- P-VANGUARD-008: Heal across low-hit-point thresholds during active combat and verify the Last Stand Tier contribution drops while valid resolve pressure charges remain.
+- P-VANGUARD-009: Let time pass with visible hostile monsters, then without active combat, then through level transition and safe rest-to-full; verify the expected slow decay, fast decay, and clear behavior.
+- P-VANGUARD-010: Compare defensive orders with shield/heavy armor, without shield, and in light armor; verify Armor Mastery enhances defensive orders only and does not require or reward cursed or corrupt gear.
+- P-VANGUARD-011: Load mid-level and deep scenario saves with hostile pressure and verify GCU-visible resolve tier, order messages, low-health state, and moral language match the deterministic assertions.
+- P-VANGUARD-012: Save and reload a Vanguard during active hostile pressure and in safe context; verify resolve pressure conditionally persists only when active combat remains valid and the Last Stand Tier is recalculated from current hit points.
 - P-PROGRESS-001: Gain and lose experience around level thresholds and verify level, maximum level, stat restoration, history, and redraw behavior.
 - P-PROGRESS-002: Increase stats below 18, between 18 and 18/99, at 18/99, and at 18/100; verify current and maximum stat results.
 - P-PROGRESS-003: Temporarily and permanently drain stats at low, normal, and high values; verify floors, maximum changes, and recalculation flags.
@@ -185,6 +223,10 @@ This system depends on:
 
 ## Changelog
 
+- 1.3.0: Added the full Vanguard Heroic Resolve Meter direction: enemy-pressure
+  charges, Last Stand Tier, non-spending order scaling, Armor Mastery, decay,
+  healing, abuse-prevention, scenario-save, and save/load requirements.
+- 1.2.0: Added Vanguard clean heroic identity and resolve-power requirements.
 - 1.1.0: Added the planned Marshal of the West direction for General: level-tiered
   temporary allies, formation effects, Fighting Withdrawal, Glorious Charge, and
   Marshal's Banner banner zones.

@@ -1,6 +1,6 @@
 # Ubiquitous Language
 
-Version: 1.1.0
+Version: 1.2.0
 
 ## Overview
 
@@ -62,11 +62,17 @@ turn engine specs.
 | Term | Definition | Aliases To Avoid |
 | --- | --- | --- |
 | **General** | A playable heroic class using tactics, morale, field commands, temporary living allies, formation effects, and banner-led battlefield control. | Necromancer, summoner |
-| **Vanguard** | A playable heroic class using courage, discipline, armor mastery, battlefield drills, and heroic resolve. | Blackguard, blood warrior |
+| **Vanguard** | A playable heroic class using courage, discipline, armor mastery, battlefield drills, heroic resolve, and last-line endurance under hostile pressure. | Blackguard, blood warrior |
 | **Class Slot** | A stable compatibility identity that may differ from the player-facing class name. | Class when discussing visible choices |
 | **Realm** | A grouped source of learnable powers or books for classes. | Book type when discussing power source |
 | **Temporary Ally** | A living soldier temporarily directed by the player through command mode. | Summon, minion, spirit, undead |
 | **Marshal of the West** | The high-level design identity for the General as a battlefield commander with living troops, formation tactics, and morale control. | Necromancer replacement, pet class |
+| **Last Line Champion** | The high-level design identity for the Vanguard as an armored frontline defender who becomes more resolute under real enemy pressure. | Blood warrior, berserker |
+| **Enemy Pressure** | Qualifying hostile danger from monsters or active combat that can build Vanguard resolve. | Any damage, self-harm trigger |
+| **Heroic Resolve Meter** | The player-visible Vanguard pressure state derived from recent qualifying enemy pressure and current low-health stand tier. | Bloodlust meter, rage meter |
+| **Resolve Pressure** | The temporary charge component of the Heroic Resolve Meter gained from qualifying hostile damage. | Rage charge, pain charge |
+| **Last Stand Tier** | The live low-health component of the Heroic Resolve Meter derived from current hit point percentage. | Bloodlust grade, desperation |
+| **Armor Mastery** | The Vanguard's clean heroic use of shields and heavy armor to strengthen defensive orders. | Curse benefit, dark armor |
 | **Formation** | A short-lived tactical effect representing supporting living soldiers without creating additional controllable monster instances. | Extra summons, fake monsters, minions |
 | **Marshal's Banner** | A high-level General power that plants a temporary morale zone with area benefits and enemy disruption. | Magic glyph, teleport anchor, summoned banner |
 | **Banner Zone** | The temporary area of effect created by Marshal's Banner at a fixed dungeon location. | Aura when location matters, terrain, object |
@@ -172,8 +178,19 @@ turn engine specs.
   legacy **Class Slot** for compatibility.
 - **General** and **Vanguard** are **Clean Heroic Power** classes and must not
   expose their legacy class-slot aliases as playable identities.
+- **Vanguard** is the playable class; **Last Line Champion** is its design
+  identity.
 - **Marshal of the West** is a design identity for **General**, not a separate
   playable class.
+- **Heroic Resolve Meter** combines **Resolve Pressure** and **Last Stand Tier**
+  into one player-visible Vanguard status.
+- **Resolve Pressure** may only be gained from qualifying **Enemy Pressure** and
+  must not be gained from self-harm, safe attrition, corrupt object use, or
+  ordinary **Corruption** consequences.
+- **Last Stand Tier** is recalculated from the **Player**'s current hit points;
+  healing reduces that contribution without erasing valid **Resolve Pressure**.
+- **Armor Mastery** enhances defensive Vanguard orders, but the **Heroic Resolve
+  Meter** must still function without a shield or heavy armor.
 - **Player-Accessible Power** must be either **Clean Heroic Power** or explicit
   **Corruption** with warning and consequence.
 - **Enemy-Only Evil** may use monsters, spells, curses, traps, lore, and hostile
@@ -238,6 +255,12 @@ turn engine specs.
 > **Domain expert:** "Yes, but as a **Formation** and **Banner Zone**, not as
 > extra controllable **Monster Instances**."
 >
+> **Dev:** "Can the **Vanguard** gain **Heroic Resolve Meter** from any damage?"
+>
+> **Domain expert:** "No. **Resolve Pressure** comes from qualifying **Enemy
+> Pressure**. **Last Stand Tier** comes from low hit points, but self-harm,
+> safe attrition, corrupt object use, and ordinary curses do not build resolve."
+>
 > **Dev:** "Can I use a **Scenario Save** as proof for the release?"
 >
 > **Domain expert:** "Only as validation evidence. The **Release Manifest**
@@ -283,6 +306,12 @@ turn engine specs.
 - "Test" can mean **Deterministic Test**, **Scripted Full-Game Test**, **Direct
   Gameplay Pass**, or **Test Contract**; validation reports must state which
   evidence layer was used.
+- "Damage" is too broad for Vanguard resolve; use **Enemy Pressure** when the
+  damage or danger may build **Resolve Pressure**, and use ordinary damage when
+  it must not.
+- "Resolve" is overloaded between the player-facing **Heroic Resolve Meter**,
+  temporary **Resolve Pressure**, and derived **Last Stand Tier**; specs must
+  name the component when persistence, decay, or tests are involved.
 
 ## Behavior
 
@@ -306,7 +335,20 @@ turn engine specs.
 - Marshal of the West is the high-level design identity for General. It MUST NOT
   become a separate playable class unless explicitly specified elsewhere.
 - Vanguard is the canonical player-facing class that uses courage, discipline,
-  armor mastery, battlefield drills, and heroic resolve.
+  armor mastery, battlefield drills, heroic resolve, and last-line endurance
+  under hostile pressure.
+- Last Line Champion is the high-level design identity for Vanguard. It MUST NOT
+  imply rage, self-harm, pain empowerment, blood hunger, corrupt shadow,
+  life-drain, curse-benefit, or forbidden occult power.
+- Heroic Resolve Meter is the player-facing Vanguard pressure state. It combines
+  Resolve Pressure from qualifying Enemy Pressure with Last Stand Tier from
+  current hit point percentage.
+- Resolve Pressure MUST NOT be gained from self-harm, starvation, safe rest
+  attrition, corrupt object use, friendly fire, ordinary curses, or other
+  controllable non-hostile damage loops.
+- Armor Mastery MAY enhance defensive Vanguard orders through shields and heavy
+  armor, but it MUST NOT require cursed or corrupt gear and MUST NOT be the
+  source of the Heroic Resolve Meter.
 - General and Vanguard MAY retain legacy class-slot plumbing internally, but
   player-facing names, help, menus, books, powers, stores, and tests MUST use
   their Heroband identities.
@@ -377,9 +419,16 @@ visible name. A renamed forbidden mechanic is still forbidden.
 - General tactics review: when adding a General power, verify whether it creates
   a **Temporary Ally**, **Formation**, **Marshal's Banner**, or **Banner Zone**,
   and verify the terminology matches the actor and map-state behavior.
+- Vanguard resolve review: when adding or changing a Vanguard mechanic, verify
+  whether it affects **Heroic Resolve Meter**, **Resolve Pressure**, **Last
+  Stand Tier**, or **Armor Mastery**, and verify self-harm and corrupt-power
+  loops cannot build player-accessible power.
 
 ## Changelog
 
+- 1.2.0: Added Last Line Champion, Enemy Pressure, Heroic Resolve Meter, Resolve
+  Pressure, Last Stand Tier, and Armor Mastery terminology for the Vanguard
+  redesign.
 - 1.1.0: Added Marshal of the West, Formation, Marshal's Banner, and Banner Zone
   terminology for the General's planned battlefield-control redesign.
 - 1.0.0: Initial glossary extracted from the Heroband design rule, current class

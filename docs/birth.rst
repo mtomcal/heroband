@@ -315,12 +315,11 @@ General
 .. _Vanguard:
 
 Vanguard
-  A Vanguard is a heavily armored frontline champion trained to break enemy
+  The Vanguard is a heavily armored frontline champion trained to break enemy
   lines and hold the field under impossible pressure. Through courage,
-  discipline, armor mastery, and heroic resolve, a Vanguard becomes especially
-  dangerous when duty demands a last stand. Vanguards use martial orders and
-  battlefield drills, drawing strength from endurance and perseverance rather
-  than dark powers or forbidden arts.
+  discipline, and heroic resolve, the Vanguard grows more dangerous as danger
+  mounts, refusing to yield even when badly wounded. The Vanguard draws
+  strength from duty and endurance, not dark powers or forbidden arts.
 
 .. _Druid:
 

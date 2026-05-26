@@ -21,11 +21,11 @@ General
   power from spirits, undeath, blood, shadow, demons, or occult ritual.
 
 Vanguard
-  The Vanguard replaces the old Blackguard player slot.  Vanguards are armored
-  frontline champions who rely on courage, discipline, armor mastery,
-  battlefield drills, and heroic resolve.  Their powers are martial orders and
-  clean tactics, not bloodlust, shadow magic, demonic power, curse benefits, or
-  forbidden arts.
+  The Vanguard is a heavily armored frontline champion trained to break enemy
+  lines and hold the field under impossible pressure.  Through courage,
+  discipline, and heroic resolve, the Vanguard grows more dangerous as danger
+  mounts, refusing to yield even when badly wounded.  The Vanguard draws
+  strength from duty and endurance, not dark powers or forbidden arts.
 
 Corruption
 ==========
