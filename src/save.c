@@ -39,6 +39,7 @@
 #include "obj-util.h"
 #include "player-history.h"
 #include "player-timed.h"
+#include "player-vanguard.h"
 #include "trap.h"
 #include "ui-term.h"
 
@@ -507,13 +508,22 @@ void wr_player(void)
 	wr_u32b(player->resting_turn);
 
 	/* Heroband persistent player state. */
-	wr_u32b(player->corruption);
-	wr_u32b(player->general_banner.active ? 1L : 0L);
-	wr_u32b(player->general_banner.grid.y);
-	wr_u32b(player->general_banner.grid.x);
-	wr_u32b(player->general_banner.radius);
-	wr_u32b(player->general_banner.duration);
-	for (i = 0; i < 2; i++) wr_u32b(0L);
+	{
+		uint32_t vanguard_pressure;
+		uint32_t vanguard_recent_damage;
+
+		vanguard_resolve_save_state(player, &vanguard_pressure,
+			&vanguard_recent_damage);
+
+		wr_u32b(player->corruption);
+		wr_u32b(player->general_banner.active ? 1L : 0L);
+		wr_u32b(player->general_banner.grid.y);
+		wr_u32b(player->general_banner.grid.x);
+		wr_u32b(player->general_banner.radius);
+		wr_u32b(player->general_banner.duration);
+		wr_u32b(vanguard_pressure);
+		wr_u32b(vanguard_recent_damage);
+	}
 }
 
 

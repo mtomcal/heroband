@@ -46,6 +46,7 @@
 #include "player-spell.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 #include "savefile.h"
 #include "store.h"
 #include "trap.h"
@@ -840,6 +841,8 @@ int rd_player(void)
 		uint32_t banner_x;
 		uint32_t banner_radius;
 		uint32_t banner_duration;
+		uint32_t vanguard_pressure;
+		uint32_t vanguard_recent_damage;
 
 		rd_u32b(&player->corruption);
 		rd_u32b(&banner_active);
@@ -847,7 +850,8 @@ int rd_player(void)
 		rd_u32b(&banner_x);
 		rd_u32b(&banner_radius);
 		rd_u32b(&banner_duration);
-		strip_bytes(8);
+		rd_u32b(&vanguard_pressure);
+		rd_u32b(&vanguard_recent_damage);
 
 		player->general_banner.active = banner_active ? true : false;
 		player->general_banner.grid = loc((int)banner_x, (int)banner_y);
@@ -858,6 +862,8 @@ int rd_player(void)
 			player->general_banner.radius = 0;
 			player->general_banner.duration = 0;
 		}
+		vanguard_resolve_load_state(player, vanguard_pressure,
+			vanguard_recent_damage);
 	}
 
 	return 0;
@@ -1608,6 +1614,7 @@ int rd_monsters(void)
 		return -1;
 	if (rd_monsters_aux(player->cave))
 		return -1;
+	vanguard_resolve_finalize_load_state(player);
 
 #if OBJ_RECOVER
 	player->cave->objects = mem_zalloc((cave->obj_max + 1) * sizeof(struct object*));

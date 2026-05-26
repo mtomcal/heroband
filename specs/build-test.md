@@ -1,6 +1,6 @@
 # Build And Test System
 
-Version: 1.0.0
+Version: 1.1.0
 
 ## Overview
 
@@ -47,6 +47,9 @@ requiring a full installation step.
 | Default documentation build | disabled unless requested | Documentation generation requires optional tooling and should not block ordinary compilation. |
 | Default coverage build | disabled unless requested | Coverage instrumentation changes build flags and is only valid when supported tooling exists. |
 | Parallel validation jobs | 2 for local Heroband gate runs | The local project guidance uses two jobs as a conservative default that reduces load while retaining speed. |
+| Canonical deterministic build root | `build` | Keeps normal compilation and automated tests in one predictable ignored directory. |
+| Canonical GCU build root | `build-gcu-test` | Keeps terminal playtest and human playable builds separate from deterministic validation while still enabling the test frontend. |
+| Canonical release build root | `build-release` | Keeps release configuration and artifacts separate from development and GCU builds. |
 
 ## Data Structures
 
@@ -63,6 +66,8 @@ requiring a full installation step.
   assets, and writable user-state directories needed by the executable.
 - Build identity: a version string derived from source-control tags or a
   stamped source snapshot.
+- Build root profile: a local ignored build directory with a documented role,
+  expected CMake front-end options, and cleanup status.
 
 ## Behavior
 
@@ -141,6 +146,20 @@ that can detect player-accessible evil power regressions.
 
 Test scenarios: BT-T16.
 
+BT-B16. Local Heroband development should use canonical build roots for the
+common workflows: `build` for deterministic validation, `build-gcu-test` for
+GCU playtest and human playable terminal launches, and `build-release` for
+release packaging. Other `build*` directories are local scratch or legacy roots
+unless a workflow explicitly documents them.
+
+Test scenarios: BT-T17.
+
+BT-B17. Build-root hygiene tooling must be inspection-first. It may list roots,
+roles, sizes, front-end flags, and timestamps, but must not delete build
+directories unless the user explicitly requests cleanup.
+
+Test scenarios: BT-T18.
+
 ## Error Handling
 
 - Conflicting installation profiles must stop configuration with an explicit
@@ -181,6 +200,8 @@ Test scenarios: BT-T16.
 - A build-only change may be validated by compilation, but a behavior change
   requires deterministic tests and, when player-facing, the Heroband gameplay
   validation workflow.
+- Use `scripts/heroband-build-roots` to inspect local build-root sprawl before
+  deciding whether a directory is canonical, scratch, legacy, or safe to clean.
 
 ## Test Scenarios
 
@@ -233,7 +254,16 @@ verify the build identity reflects each source state.
 BT-T16. Run Heroband moral-regression tests after a player-facing change; verify
 forbidden player-accessible evil power remains blocked or absent.
 
+BT-T17. Inspect local CMake build roots and verify `build`, `build-gcu-test`,
+and `build-release` have documented roles while other `build*` roots are
+reported as scratch or legacy unless a workflow claims them.
+
+BT-T18. Run build-root hygiene tooling and verify it reports directory metadata
+without deleting or modifying build outputs.
+
 ## Changelog
 
+- 1.1.0: Added canonical local build-root profiles and non-destructive
+  build-root hygiene requirements.
 - 1.0.0: Fully authored build and test system specification from existing
   build files, developer documentation, test harnesses, and release guidance.

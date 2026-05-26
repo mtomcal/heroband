@@ -555,6 +555,9 @@ struct player {
 
 	int16_t *timed;				/* Timed effects */
 	uint32_t corruption;			/* Character-bound corruption from corrupt use */
+	int16_t vanguard_resolve_pressure;	/* Hostile-pressure resolve charges */
+	int16_t vanguard_resolve_recent_damage;	/* Recent qualifying hostile damage */
+	int16_t vanguard_resolve_decay;		/* Turns toward next pressure decay */
 
 	int16_t word_recall;			/* Word of recall counter */
 	int16_t deep_descent;			/* Deep Descent counter */

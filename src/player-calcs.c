@@ -38,6 +38,7 @@
 #include "player-spell.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 
 /**
  * Stat Table (INT) -- Magic devices
@@ -2170,6 +2171,12 @@ void calc_bonuses(struct player *p, struct player_state *state, bool known_only,
 	if (p->timed[TMD_HERO]) {
 		state->to_h += 12;
 		adjust_skill_scale(&state->skills[SKILL_DEVICE], 1, 20, 0);
+	}
+	if (vanguard_resolve_effective_tier_for_player(p) > 0) {
+		int resolve = vanguard_resolve_effective_tier_for_player(p);
+
+		state->to_a += 2 * resolve;
+		state->to_h += resolve;
 	}
 	if (p->timed[TMD_SHERO]) {
 		state->skills[SKILL_TO_HIT_MELEE] += 75;

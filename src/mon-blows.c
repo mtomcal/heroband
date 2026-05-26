@@ -39,6 +39,7 @@
 #include "player-calcs.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 #include "project.h"
 
 /**
@@ -388,6 +389,10 @@ static bool monster_damage_target(melee_effect_handler_context_t *context,
 		display_blow_message_vs_player(context->method, context->m_name,
 			context->p, reduced);
 		take_hit(context->p, reduced, context->ddesc);
+		if (reduced > 0) {
+			(void) vanguard_resolve_note_damage(context->p,
+				VANGUARD_RESOLVE_DAMAGE_HOSTILE);
+		}
 		if (context->p->is_dead) return true;
 	} else {
 		bool dead;
@@ -472,6 +477,10 @@ static void melee_effect_elemental(melee_effect_handler_context_t *context,
 			display_blow_message_vs_player(context->method,
 				context->m_name, context->p, reduced);
 			take_hit(context->p, reduced, context->ddesc);
+			if (reduced > 0) {
+				(void) vanguard_resolve_note_damage(context->p,
+					VANGUARD_RESOLVE_DAMAGE_HOSTILE);
+			}
 		} else {
 			assert(context->t_mon);
 			display_blow_message_vs_monster(context->method,
@@ -601,6 +610,10 @@ static void melee_effect_experience(melee_effect_handler_context_t *context,
 		display_blow_message_vs_player(context->method,
 			context->m_name, context->p, reduced);
 		take_hit(context->p, reduced, context->ddesc);
+		if (reduced > 0) {
+			(void) vanguard_resolve_note_damage(context->p,
+				VANGUARD_RESOLVE_DAMAGE_HOSTILE);
+		}
 		context->obvious = true;
 		update_smart_learn(context->mon, context->p, OF_HOLD_LIFE, 0, -1);
 		if (context->p->is_dead) return;

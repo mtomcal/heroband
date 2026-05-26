@@ -38,6 +38,7 @@
 #include "player-timed.h"
 #include "player-util.h"
 #include "player.h"
+#include "player-vanguard.h"
 #include "project.h"
 #include "savefile.h"
 #include "target.h"
@@ -1275,6 +1276,18 @@ static size_t prt_tmd(int row, int col)
 }
 
 /**
+ * Print the Vanguard Heroic Resolve meter.
+ */
+static size_t prt_vanguard_resolve(int row, int col)
+{
+	const char *status = vanguard_resolve_status_name(player);
+
+	if (!status) return 0;
+	c_put_str(COLOUR_L_BLUE, status, row, col);
+	return strlen(status) + 1;
+}
+
+/**
  * Print "unignoring" status
  */
 static size_t prt_unignore(int row, int col)
@@ -1295,7 +1308,8 @@ typedef size_t status_f(int row, int col);
 
 static status_f *status_handlers[] =
 { prt_level_feeling, prt_light, prt_moves, prt_unignore, prt_recall,
-  prt_descent, prt_state, prt_study, prt_tmd, prt_dtrap, prt_terrain };
+  prt_descent, prt_state, prt_study, prt_vanguard_resolve, prt_tmd,
+  prt_dtrap, prt_terrain };
 
 
 static void update_statusline_aux(int row, int col)

@@ -31,6 +31,7 @@
 #include "player-history.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 #include "project.h"
 #include "trap.h"
 
@@ -1093,6 +1094,10 @@ bool effect_handler_PROJECT_LOS(effect_handler_context_t *context)
 	struct loc origin = origin_get_loc(context->origin);
 	int flg = PROJECT_JUMP | PROJECT_KILL | PROJECT_HIDE;
 
+	if (context->origin.what == SRC_PLAYER) {
+		dam += vanguard_resolve_control_bonus(player);
+	}
+
 	/* Affect all (nearby) monsters */
 	for (i = 1; i < cave_monster_max(cave); i++) {
 		struct monster *mon = cave_monster(cave, i);
@@ -1792,6 +1797,10 @@ bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
 	bool fear;
 	struct monster *mon;
 
+	if (context->origin.what == SRC_PLAYER) {
+		blows += vanguard_resolve_melee_blow_bonus(player);
+	}
+
 	/* Ask for a target */
 	if (context->dir == DIR_TARGET) {
 		target_get(&target);
@@ -1846,6 +1855,8 @@ bool effect_handler_MOVE_ATTACK(effect_handler_context_t *context)
 	/* Should return some energy if monster dies early */
 	while (blows-- > 0) {
 		if (py_attack_real(player, target, &fear)) break;
+		mon = square_monster(cave, target);
+		if (!mon) break;
 	}
 
 	return true;
@@ -1917,6 +1928,7 @@ bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
 	/* players only for now */
 	if (context->origin.what != SRC_PLAYER)
 		return false;
+	blows += vanguard_resolve_melee_blow_bonus(player);
 
 	/* Ask for a target if no direction given */
 	if (context->dir == DIR_TARGET && target_okay()) {
@@ -1940,7 +1952,8 @@ bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
 		/* Test for damaging the monster */
 		int hp = mon->hp;
 		if (py_attack_real(player, target, &fear)) return true;
-		/*mon = square_monster(cave, target); */
+		mon = square_monster(cave, target);
+		if (!mon) break;
 		if (mon && (mon->hp == hp)) continue;
 
 		/* Apply side-effects */
@@ -1948,6 +1961,7 @@ bool effect_handler_MELEE_BLOWS(effect_handler_context_t *context)
 					PROJECT_KILL, 0, 0, context->obj)) {
 			context->ident = true;
 		}
+		mon = square_monster(cave, target);
 	}
 	return true;
 }
@@ -1961,6 +1975,7 @@ bool effect_handler_SWEEP(effect_handler_context_t *context)
 
 	/* Players only for now */
 	if (context->origin.what != SRC_PLAYER)	return false;
+	blows += vanguard_resolve_melee_blow_bonus(player);
 
 	/* Doing these like >1 blows means spinning around multiple times. */
 	while (blows-- > 0) {

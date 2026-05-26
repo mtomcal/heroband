@@ -1,9 +1,9 @@
 # Vanguard Heroic Resolve Implementation Plan
 ## Last Line Champion redesign for Vanguard powers
 
-> **Status: PLANNING** - Supersedes the earlier Vanguard replacement plan in
+> **Status: COMPLETED** - Supersedes the earlier Vanguard replacement plan in
 > this file. Spec-driven from `specs/player.md` version 1.3.0,
-> `specs/save-load.md` version 1.1.0, and `specs/UBIQUITOUS_LANGUAGE.md`
+> `specs/save-load.md` version 1.1.1, and `specs/UBIQUITOUS_LANGUAGE.md`
 > version 1.2.0.
 
 ## Overview
@@ -609,84 +609,83 @@ Use `$heroband-playtest` for all scenarios above. Every GCU run must have:
 
 ### Slice 1: Resolve Tier Model
 
-- [ ] RED: add tier helper tests.
-- [ ] RED: run `run-unittest-game-vanguard` and observe failure.
-- [ ] GREEN: implement tier derivation and tier names.
-- [ ] GREEN: rerun targeted test.
-- [ ] REFACTOR: centralize tier thresholds/names.
+- [x] RED: add tier helper tests.
+- [x] RED: run `run-unittest-game-vanguard` and observe failure.
+- [x] GREEN: implement tier derivation and tier names.
+- [x] GREEN: rerun targeted test.
+- [x] REFACTOR: centralize tier thresholds/names.
 
 ### Slice 2: Qualifying Enemy Pressure
 
-- [ ] RED: add hostile damage and nonqualifying damage tests.
-- [ ] RED: observe no pressure state/source classification failure.
-- [ ] GREEN: implement pressure charge gain and abuse rejection.
-- [ ] GREEN: rerun targeted tests.
-- [ ] REFACTOR: consolidate qualification logic.
+- [x] RED: add hostile damage and nonqualifying damage tests.
+- [x] RED: observe no pressure state/source classification failure.
+- [x] GREEN: implement pressure charge gain and abuse rejection.
+- [x] GREEN: rerun targeted tests.
+- [x] REFACTOR: consolidate qualification logic.
 
 ### Slice 3: Decay, Healing, Cleanup
 
-- [ ] RED: add active-combat, decay, healing, rest, and level-transition tests.
-- [ ] GREEN: implement upkeep/cleanup behavior.
-- [ ] GREEN: rerun targeted tests.
-- [ ] REFACTOR: keep active-combat definition explicit.
+- [x] RED: add active-combat, decay, healing, rest, and level-transition tests.
+- [x] GREEN: implement upkeep/cleanup behavior.
+- [x] GREEN: rerun targeted tests.
+- [x] REFACTOR: keep active-combat definition explicit.
 
 ### Slice 4: Visible Meter
 
-- [ ] RED: add display/status tests.
-- [ ] GREEN: expose Heroic Resolve Meter status.
-- [ ] GREEN: rerun targeted tests.
-- [ ] REFACTOR: keep internal components hidden from normal UI.
+- [x] RED: add display/status tests.
+- [x] GREEN: expose Heroic Resolve Meter status.
+- [x] GREEN: rerun targeted tests.
+- [x] REFACTOR: keep internal components hidden from normal UI.
 
 ### Slice 5: First Order Scaling
 
-- [ ] RED: add passive and first-order scaling tests.
-- [ ] GREEN: scale `Stand Firm`, `Staggering Blow`, and `Last Stand`.
-- [ ] GREEN: verify orders do not spend resolve.
-- [ ] REFACTOR: extract shared scaling helper.
+- [x] RED: add passive and first-order scaling tests.
+- [x] GREEN: scale `Stand Firm`, `Staggering Blow`, and `Last Stand`.
+- [x] GREEN: verify orders do not spend resolve.
+- [x] REFACTOR: extract shared scaling helper.
 
 ### Slice 6: Remaining Order Scaling
 
-- [ ] RED: add remaining order scaling and utility non-scaling tests.
-- [ ] GREEN: scale eligible combat/defense/control orders.
-- [ ] GREEN: rerun targeted tests.
-- [ ] REFACTOR: keep utility invariants near scaling tests.
+- [x] RED: add remaining order scaling and utility non-scaling tests.
+- [x] GREEN: scale eligible combat/defense/control orders.
+- [x] GREEN: rerun targeted tests.
+- [x] REFACTOR: keep utility invariants near scaling tests.
 
 ### Slice 7: Armor Mastery
 
-- [ ] RED: add shield/heavy armor/light/no shield/cursed/corrupt gear tests.
-- [ ] GREEN: implement bounded defensive Armor Mastery enhancement.
-- [ ] GREEN: rerun targeted tests.
-- [ ] REFACTOR: centralize armor category checks.
+- [x] RED: add shield/heavy armor/light/no shield/cursed/corrupt gear tests.
+- [x] GREEN: implement bounded defensive Armor Mastery enhancement.
+- [x] GREEN: rerun targeted tests.
+- [x] REFACTOR: centralize armor category checks.
 
 ### Slice 8: Save/Load
 
-- [ ] RED: add conditional persistence tests.
-- [ ] GREEN: implement save/load fields and compatibility defaults.
-- [ ] GREEN: rerun `alltests`.
-- [ ] REFACTOR: keep Last Stand Tier derived.
+- [x] RED: add conditional persistence tests.
+- [x] GREEN: implement save/load fields and compatibility defaults.
+- [x] GREEN: rerun `alltests`.
+- [x] REFACTOR: keep Last Stand Tier derived.
 
 ### Slice 9: Scenario Saves And GCU
 
-- [ ] RED: add/extend Vanguard scenario-save helper support.
-- [ ] GREEN: generate scenario manifests for Scenarios A-E.
-- [ ] GREEN: run GCU playtests with contracts and clean evidence roots.
-- [ ] GREEN: validate evidence where manifests are present.
+- [x] RED: add/extend Vanguard scenario-save helper support.
+- [x] GREEN: generate scenario manifests for Scenarios A-E.
+- [x] GREEN: run GCU playtests with contracts and clean evidence roots.
+- [x] GREEN: validate evidence where manifests are present.
 
 ### Final Gates
 
-- [ ] `cmake --build build -j2`
-- [ ] `cmake --build build -t alltests -j2`
-- [ ] `git diff --check`
-- [ ] Moral-reference audit with classifications.
-- [ ] `$heroband-test-quality-verifier` if subagents are authorized, otherwise
+- [x] `cmake --build build -j2`
+- [x] `cmake --build build -t alltests -j2`
+- [x] `git diff --check`
+- [x] Moral-reference audit with classifications.
+- [x] `$heroband-test-quality-verifier` if subagents are authorized, otherwise
       documented local/manual test-quality review.
-- [ ] Mark this plan `COMPLETED` or archive/summarize durable outcomes after
+- [x] Mark this plan `COMPLETED` or archive/summarize durable outcomes after
       implementation.
 
 ## Plan Lifecycle
 
-This is the active Vanguard implementation plan and supersedes the earlier
-Vanguard replacement plan that used this same file. When implementation
-finishes, update the checklist, summarize durable behavior into specs/docs, and
-mark this file `COMPLETED` or archive it so root-level plan files do not
-accumulate stale planning state.
+This plan is complete. Durable save/load behavior was summarized in
+`specs/save-load.md` version 1.1.1. Final GCU evidence is in
+`/tmp/heroband-vanguard-evidence.O4N4P3`, with validated scenario manifests,
+contracts, transcripts, and the final playtest report.

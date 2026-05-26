@@ -35,6 +35,7 @@
 #include "player-calcs.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 #include "source.h"
 #include "target.h"
 #include "trap.h"
@@ -725,6 +726,7 @@ void process_world(struct chunk *c)
 
 	/* Timeout various things */
 	decrease_timeouts();
+	vanguard_resolve_tick(player);
 
 	/* Process light */
 	player_update_light(player);
@@ -1016,6 +1018,9 @@ void on_new_level(void)
 
 	/* Disturb */
 	disturb(player);
+	if (player->upkeep->generate_level) {
+		vanguard_resolve_on_new_level(player);
+	}
 
 	/* Track maximum player level */
 	if (player->max_lev < player->lev)

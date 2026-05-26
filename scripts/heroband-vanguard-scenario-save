@@ -1,0 +1,265 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-vanguard-scenario-save PRESET --state-dir DIR [options]
+
+Presets:
+  vanguard-l01-birth-smoke
+  vanguard-l20-enemy-pressure
+  vanguard-l20-abuse-rejection
+  vanguard-l40-last-stand
+  vanguard-l35-resolve-save-load
+  vanguard-l35-resolve-safe-load
+
+Options:
+  --state-dir DIR     Required isolated playtest state directory.
+  --build-dir DIR     Build directory with unittest-game-vanguard. Defaults to build.
+  --save-name NAME    Savefile basename. Defaults to PRESET.
+  --race NAME         Character race. Defaults to Human.
+  --class NAME        Character class. Defaults to Vanguard.
+  --level N           Character level override.
+  --depth N           Dungeon depth override.
+  --terrain NAME      Terrain fixture label for the manifest. Defaults to generated.
+  -h, --help          Show this help.
+
+Generates a temporary Vanguard scenario save and SCENARIO_MANIFEST.md for GCU
+playtests.
+EOF
+}
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+
+if [ "$#" -lt 1 ]; then
+	usage >&2
+	exit 2
+fi
+
+preset=$1
+shift
+
+case "$preset" in
+	-h|--help|help)
+		usage
+		exit 0
+		;;
+	vanguard-l01-birth-smoke|vanguard-l20-enemy-pressure|\
+	vanguard-l20-abuse-rejection|vanguard-l40-last-stand|\
+	vanguard-l35-resolve-save-load|vanguard-l35-resolve-safe-load)
+		;;
+	*)
+		echo "Unknown Vanguard scenario preset: $preset" >&2
+		usage >&2
+		exit 2
+		;;
+esac
+
+state_dir=
+build_dir="$repo_root/build"
+save_name="$preset"
+race="Human"
+class_name="Vanguard"
+level_override=
+depth_override=
+terrain="generated dungeon"
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--state-dir)
+			state_dir=${2:?"--state-dir requires a directory"}
+			shift 2
+			;;
+		--build-dir)
+			build_dir=${2:?"--build-dir requires a directory"}
+			shift 2
+			;;
+		--save-name)
+			save_name=${2:?"--save-name requires a name"}
+			shift 2
+			;;
+		--race)
+			race=${2:?"--race requires a name"}
+			shift 2
+			;;
+		--class)
+			class_name=${2:?"--class requires a name"}
+			shift 2
+			;;
+		--level)
+			level_override=${2:?"--level requires a number"}
+			shift 2
+			;;
+		--depth)
+			depth_override=${2:?"--depth requires a number"}
+			shift 2
+			;;
+		--terrain)
+			terrain=${2:?"--terrain requires a label"}
+			shift 2
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		*)
+			echo "Unknown argument: $1" >&2
+			usage >&2
+			exit 2
+			;;
+	esac
+done
+
+if [ -z "$state_dir" ]; then
+	echo "Missing required --state-dir DIR." >&2
+	exit 2
+fi
+
+case "$build_dir" in
+	/*) ;;
+	*) build_dir="$repo_root/$build_dir" ;;
+esac
+
+mkdir -p "$state_dir/save" "$state_dir/user" "$state_dir/panic" "$state_dir/archive"
+
+save_path="$state_dir/save/$save_name"
+generator="$build_dir/unittests/game/vanguard/vanguard"
+
+if [ ! -x "$generator" ]; then
+	cmake --build "$build_dir" -t unittest-game-vanguard -j2
+fi
+
+if [ ! -x "$generator" ]; then
+	echo "Missing scenario generator: $generator" >&2
+	exit 1
+fi
+
+case "$preset" in
+	vanguard-l01-birth-smoke)
+		level=1; depth=1; pressure=0; hp="full"
+		powers="Assess the Field and starting Vanguard Drills"
+		purpose="birth-visible Vanguard identity, starting inventory, and clean order language"
+		gcu_actions="Load the save; open the character and order/book views; separately start birth from no save and capture the class list containing Vanguard."
+		gcu_success="Character screen shows Human Vanguard; order/book views show Vanguard Drills and tactics orders; birth class list offers Vanguard and not Blackguard; no blood, shadow, nether, demonic, necromantic, or occult player-power language appears."
+		;;
+	vanguard-l20-enemy-pressure)
+		level=20; depth=20; pressure=2; hp="moderate"
+		powers="Stand Firm, Breakthrough, Staggering Blow, Horn of Defiance"
+		purpose="mid-level hostile pressure, visible Resolve meter, and order scaling under combat"
+		gcu_actions="Load the save; capture HP, hostile actors, and Resolve meter; issue Stand Firm and Staggering Blow if available; wait or fight while observing hostile pressure."
+		gcu_success="Resolve meter is above Steady in a hostile context; hostile monsters are visible; Stand Firm produces defensive status; Staggering Blow or nearby combat is player-visible; deterministic tests cite exact charge and decay behavior."
+		;;
+	vanguard-l20-abuse-rejection)
+		level=20; depth=20; pressure=0; hp="full"
+		powers="Stand Firm, Breakthrough, Staggering Blow, Horn of Defiance"
+		purpose="safe-context abuse rejection and no precharged Resolve in safety"
+		gcu_actions="Load the save with no nearby hostile fixture; capture the Resolve meter; wait in place; inspect messages/status for absence of Resolve gain."
+		gcu_success="Resolve meter remains Steady in safe context; no message implies self-harm, curse, corruption, or safe waiting builds pressure; deterministic tests cite nonqualifying damage sources."
+		;;
+	vanguard-l40-last-stand)
+		level=40; depth=40; pressure=2; hp="low"
+		powers="Unbroken, Last Stand, Forceful Blow, and earlier Vanguard orders"
+		purpose="deep low-HP Last Stand contribution with hostile pressure"
+		gcu_actions="Load the save; capture low HP, hostile actors, and Resolve meter; issue Last Stand or Forceful Blow; heal or inspect status if safe."
+		gcu_success="Resolve meter reflects low HP plus hostile pressure; Last Stand/Unbroken status is visible after issuing an order; no bloodlust, forced attack, or corrupt power source appears."
+		;;
+	vanguard-l35-resolve-save-load)
+		level=35; depth=35; pressure=3; hp="medium-low"
+		powers="Last Stand, Unbroken, and earlier Vanguard orders"
+		purpose="combat save/load continuity for active Resolve Pressure"
+		gcu_actions="Load the save; capture Resolve meter and visible hostile context; save and reload through GCU if practical; capture the post-load Resolve meter."
+		gcu_success="Combat-context reload preserves non-Steady Resolve; visible hostile context remains present; deterministic save/load test cites exact pressure preservation."
+		;;
+	vanguard-l35-resolve-safe-load)
+		level=35; depth=35; pressure=0; hp="medium-low"
+		powers="Last Stand, Unbroken, and earlier Vanguard orders"
+		purpose="safe-context save/load clears banked Resolve Pressure"
+		gcu_actions="Load the save; capture Resolve meter with no hostile context; wait in place; capture the unchanged safe-state meter."
+		gcu_success="Safe-context reload shows no banked pressure beyond HP-derived Last Stand contribution; deterministic save/load test cites exact pressure clearing."
+		;;
+esac
+
+if [ -n "$level_override" ]; then
+	level=$level_override
+fi
+if [ -n "$depth_override" ]; then
+	depth=$depth_override
+fi
+
+scenario_report="$state_dir/SCENARIO_STATE.md"
+env_prefix="HEROBAND_VANGUARD_SCENARIO_ONLY=1 HEROBAND_VANGUARD_SCENARIO_ID=\"$preset\" HEROBAND_VANGUARD_SCENARIO_SAVE_OUT=\"$save_path\" HEROBAND_VANGUARD_SCENARIO_REPORT_OUT=\"$scenario_report\" HEROBAND_VANGUARD_RACE=\"$race\" HEROBAND_VANGUARD_CLASS=\"$class_name\""
+if [ -n "$level_override" ]; then
+	env_prefix="$env_prefix HEROBAND_VANGUARD_LEVEL=\"$level_override\""
+fi
+if [ -n "$depth_override" ]; then
+	env_prefix="$env_prefix HEROBAND_VANGUARD_DEPTH=\"$depth_override\""
+fi
+
+eval "$env_prefix \"$generator\" -v" > "$state_dir/scenario-generator.log" 2>&1
+
+if [ ! -s "$save_path" ]; then
+	echo "Scenario save was not created: $save_path" >&2
+	exit 1
+fi
+
+cat > "$state_dir/SCENARIO_MANIFEST.md" <<EOF
+# Vanguard Scenario Save: $preset
+
+## Generator
+
+- Generated UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+- Repository: $repo_root
+- Build directory: $build_dir
+- Generator command: $env_prefix "$generator" -v
+- Save path: $save_path
+- Save name for GCU launch: $save_name
+- Terrain fixture: $terrain
+
+## Character State
+
+- Name: Tester
+- Race: $race
+- Class: $class_name
+- Level: $level
+- Depth: $depth
+- HP mode: $hp
+- Expected persisted resolve pressure: $pressure
+- Learned powers: $powers
+- Expected purpose: $purpose
+- Seed status: generated by the game/vanguard test frontend with normal Angband RNG state; exact state is serialized in the savefile
+
+$(cat "$scenario_report")
+
+## Expected GCU Actions And Success States
+
+- Exact actions: $gcu_actions
+- Exact player-visible success states: $gcu_success
+
+## GCU Launch
+
+\`\`\`sh
+scripts/heroband-playtest start \\
+  --state-dir "$state_dir" \\
+  --contract "$state_dir/TEST_CONTRACT.md" \\
+  --save-name "$save_name"
+\`\`\`
+
+## Expected Invariants
+
+- The GCU frontend loads this save instead of entering birth when launched with the save name.
+- The loaded character is a Human Vanguard at level $level and depth $depth.
+- Heroic Resolve is a defensive pressure meter derived from hostile combat and HP, not a spendable evil power.
+- Vanguard orders use discipline, courage, armor, tactics, and heroic resolve.
+- No player-accessible Vanguard action grants demonic, necromantic, blood,
+  occult, corrupt shadow, nether, or curse-benefit power.
+- Evidence is captured in TEST_CONTRACT.md, transcript.txt, and capture files.
+EOF
+
+{
+	echo "Scenario state directory: $state_dir"
+	echo "Scenario preset: $preset"
+	echo "Scenario save: $save_path"
+	echo "Manifest: $state_dir/SCENARIO_MANIFEST.md"
+	echo "Generator log: $state_dir/scenario-generator.log"
+} | tee "$state_dir/scenario-save.log"

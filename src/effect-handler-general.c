@@ -45,6 +45,7 @@
 #include "player-quest.h"
 #include "player-timed.h"
 #include "player-util.h"
+#include "player-vanguard.h"
 #include "project.h"
 #include "source.h"
 #include "target.h"
@@ -611,6 +612,11 @@ bool effect_handler_TIMED_INC(effect_handler_context_t *context)
 	struct loc decoy = cave_find_decoy(cave);
 
 	context->ident = true;
+	if (context->origin.what == SRC_PLAYER) {
+		amount += vanguard_resolve_duration_bonus(player);
+		amount += vanguard_resolve_armor_mastery_bonus(player,
+			context->subtype);
+	}
 
 	/* Destroy decoy if it's a monster attack */
 	if (cave->mon_current > 0 && decoy.y && decoy.x) {

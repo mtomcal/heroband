@@ -1,0 +1,147 @@
+#!/bin/sh
+set -u
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-play [options] [-- GAME_ARGS...]
+
+Build and launch a human-playable Heroband GCU session with an isolated,
+save-preserving play profile.
+
+Options:
+  --profile DIR      Runtime profile directory. Defaults to .play/heroband-gcu.
+  --save-name NAME   Savefile basename to load/create. Defaults to playtest.
+  --build-dir DIR    GCU build directory. Defaults to build-gcu-test.
+  --no-build         Do not configure or build; require existing executable.
+  -h, --help         Show this help.
+
+Compatible saves in the profile are preserved and loaded normally. If a save is
+broken or incompatible, the wrapper does not delete or overwrite it; launch with
+another --save-name or --profile to start clean.
+EOF
+}
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+
+profile="$repo_root/.play/heroband-gcu"
+save_name="playtest"
+build_dir="$repo_root/build-gcu-test"
+do_build=1
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--profile)
+			profile=${2:?"--profile requires a directory"}
+			shift 2
+			;;
+		--save-name)
+			save_name=${2:?"--save-name requires a name"}
+			shift 2
+			;;
+		--build-dir)
+			build_dir=${2:?"--build-dir requires a directory"}
+			shift 2
+			;;
+		--no-build)
+			do_build=0
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+case "$profile" in
+	/*) ;;
+	*) profile="$repo_root/$profile" ;;
+esac
+
+case "$build_dir" in
+	/*) ;;
+	*) build_dir="$repo_root/$build_dir" ;;
+esac
+
+mkdir -p "$profile/user" "$profile/save" "$profile/panic" "$profile/archive"
+
+if [ "$do_build" -eq 1 ]; then
+	if ! command -v pkg-config >/dev/null 2>&1; then
+		echo "pkg-config is required to configure the GCU frontend." >&2
+		echo "On Debian/Ubuntu, install: pkg-config libncurses-dev tmux ninja-build" >&2
+		exit 1
+	fi
+	if ! pkg-config --exists ncursesw; then
+		echo "ncursesw development metadata is required for the GCU frontend." >&2
+		echo "On Debian/Ubuntu, install: libncurses-dev" >&2
+		exit 1
+	fi
+	if [ ! -f "$build_dir/CMakeCache.txt" ]; then
+		if command -v ninja >/dev/null 2>&1; then
+			cmake -G Ninja -B "$build_dir" \
+				-DSUPPORT_GCU_FRONTEND=ON \
+				-DSUPPORT_TEST_FRONTEND=ON \
+				-DPKG_CONFIG_EXECUTABLE="$(command -v pkg-config)" \
+				"$repo_root"
+		else
+			cmake -B "$build_dir" \
+				-DSUPPORT_GCU_FRONTEND=ON \
+				-DSUPPORT_TEST_FRONTEND=ON \
+				-DPKG_CONFIG_EXECUTABLE="$(command -v pkg-config)" \
+				"$repo_root"
+		fi
+	else
+		if ! grep -q '^SUPPORT_GCU_FRONTEND:BOOL=ON$' "$build_dir/CMakeCache.txt"; then
+			echo "$build_dir exists but SUPPORT_GCU_FRONTEND is not ON." >&2
+			echo "Use --build-dir with a dedicated GCU build directory." >&2
+			exit 1
+		fi
+	fi
+	cmake --build "$build_dir" -j2 || exit $?
+fi
+
+exe="$build_dir/game/angband"
+if [ ! -x "$exe" ]; then
+	echo "Expected executable is missing: $exe" >&2
+	exit 1
+fi
+
+save_path="$profile/save/$save_name"
+if [ -e "$save_path" ]; then
+	echo "Loading existing save without modifying it first: $save_path"
+else
+	echo "No save exists yet for '$save_name'; Heroband will create one in:"
+	echo "  $profile/save"
+fi
+echo "Profile: $profile"
+
+TERM=${TERM:-xterm-256color}
+HOME="$profile" TERM="$TERM" "$exe" \
+	-duser="$profile/user" \
+	-dsave="$profile/save" \
+	-dpanic="$profile/panic" \
+	-darchive="$profile/archive" \
+	-u"$save_name" \
+	-mgcu \
+	"$@"
+status=$?
+
+if [ "$status" -ne 0 ]; then
+	echo
+	echo "Heroband exited with status $status." >&2
+	if [ -e "$save_path" ]; then
+		echo "Preserved save file: $save_path" >&2
+		echo "If that save is incompatible with this build, launch with another" >&2
+		echo "--save-name or --profile. Do not delete it unless you intend to." >&2
+	fi
+fi
+
+exit "$status"

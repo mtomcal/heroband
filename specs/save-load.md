@@ -1,6 +1,6 @@
 # Save, Load, and Runtime User State
 
-Version: 1.1.0
+Version: 1.1.1
 
 ## Overview
 
@@ -136,6 +136,11 @@ This specification depends on these systems:
   game is saved during active hostile pressure, must clear or rapidly decay that
   pressure in safe contexts, and must always recalculate the Last Stand Tier
   from current hit points after load. Test scenarios: T23, T24.
+- B15a. Initial level-entry processing after loading an existing dungeon save
+  must not be treated as a player-triggered level transition for Vanguard
+  resolve cleanup. Rationale: the live frontend calls level-entry UI/update
+  work after load, but active hostile pressure saved in a valid combat context
+  must remain observable to the returning player.
 - B16. Runtime user files are generated state and must not be treated as source
   truth for gameplay rules. Test scenarios: T25.
 
@@ -178,6 +183,10 @@ This specification depends on these systems:
   combat cannot be validated after load, clear pressure charges and leave the
   visible Heroic Resolve Meter to be derived from current hit points and future
   enemy pressure.
+- Treat generated-level transitions and initial loaded-save level entry
+  separately for Vanguard cleanup. Entering a newly generated level clears
+  fight-local pressure; resuming an already saved level preserves valid
+  pressure long enough for normal decay rules to apply.
 - Keep Last Stand Tier derived rather than saved as an independent durable
   value.
 
@@ -220,6 +229,8 @@ This specification depends on these systems:
 
 ## Changelog
 
+- 1.1.1: Clarified that loaded-save level-entry processing must not clear valid
+  Vanguard resolve pressure as though the player had changed levels.
 - 1.1.0: Added conditional save/load requirements for Vanguard Heroic Resolve
   pressure and derived Last Stand Tier.
 - 1.0.0: Authored full brownfield behavior specification for save, load, panic

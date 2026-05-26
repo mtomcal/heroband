@@ -244,6 +244,7 @@ add_library(OurCoreLib OBJECT
         src/player-spell.c
         src/player-timed.c
         src/player-util.c
+        src/player-vanguard.c
         src/player.c
         src/project-feat.c
         src/project-mon.c

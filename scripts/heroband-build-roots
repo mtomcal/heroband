@@ -1,0 +1,56 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-build-roots [--help]
+
+List local Heroband build roots, their intended role, size, CMake frontend
+flags, and last modified time. This command is inspection-only and never
+deletes build directories.
+EOF
+}
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+	usage
+	exit 0
+fi
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+
+role_for_dir() {
+	case "$1" in
+		build) echo "canonical deterministic/test build" ;;
+		build-gcu-test) echo "canonical GCU playtest/play build" ;;
+		build-release) echo "canonical release/package build" ;;
+		build-gcu|build-play) echo "legacy or local scratch build" ;;
+		*) echo "local scratch build" ;;
+	esac
+}
+
+cache_value() {
+	cache=$1
+	key=$2
+	if [ ! -f "$cache" ]; then
+		echo "unset"
+		return
+	fi
+	sed -n "s/^$key:[^=]*=//p" "$cache" | tail -n 1
+}
+
+printf '%-18s %-34s %-8s %-8s %-8s %s\n' \
+	"DIR" "ROLE" "SIZE" "GCU" "TEST" "MODIFIED"
+
+find "$repo_root" -maxdepth 1 -type d -name 'build*' | sort | while read -r dir
+do
+	name=$(basename "$dir")
+	cache="$dir/CMakeCache.txt"
+	size=$(du -sh "$dir" 2>/dev/null | awk '{print $1}')
+	gcu=$(cache_value "$cache" SUPPORT_GCU_FRONTEND)
+	test_frontend=$(cache_value "$cache" SUPPORT_TEST_FRONTEND)
+	modified=$(stat -c '%y' "$dir" 2>/dev/null | cut -d. -f1)
+	printf '%-18s %-34s %-8s %-8s %-8s %s\n' \
+		"$name" "$(role_for_dir "$name")" "$size" "$gcu" \
+		"$test_frontend" "$modified"
+done

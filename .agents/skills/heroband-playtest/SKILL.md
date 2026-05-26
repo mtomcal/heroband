@@ -9,6 +9,10 @@ metadata:
 
 Use this repo-local skill to close the loop on Heroband changes with both automated tests and direct terminal gameplay. Heroband is a morally heroic fork of Angband: the player may fight evil, but may not wield evil.
 
+For a human playable launch without evidence contracts, use `$heroband-play`
+instead. This skill is for validation work: contracts, deterministic tests,
+tmux captures, scenario manifests, evidence validation, and verifier review.
+
 ## Required Flow
 
 1. Define the test contract before launching tmux.
@@ -68,13 +72,18 @@ Use tier 2 by default for player-facing changes. Use tier 3 for mechanics and mo
 
 Scenario saves are temporary playtest artifacts, not checked-in user saves. Keep them under the playtest state directory and launch them with the same isolated `user`, `save`, `panic`, and `archive` paths used by `start`.
 
+Scenario presets are registered through `scripts/heroband-scenario-save`. Use
+`scripts/heroband-scenario-save --list` to inspect the available presets. When
+adding a preset, extend that registry first and keep class-specific shell
+wrappers only as thin compatibility entry points.
+
 When a test needs a high-level, hard-floor, class-power, equipment, store, spellbook, monster-pressure, or save/load-continuity situation, prefer a generated scenario save over manual grinding or hand-driven wizard setup. The save must then be loaded through normal GCU gameplay so the final pass still observes the human-visible game, not only a unit harness.
 
 Use this setup ladder before touching source solely for a playtest:
 
-1. Use an existing scenario helper through `scripts/heroband-playtest prepare-scenario`.
+1. Use an existing scenario preset through `scripts/heroband-playtest prepare-scenario`.
 2. Use reliable GCU/debug/wizard setup when it can be verified by captured game state.
-3. Add or extend a reusable scenario helper when the need will recur.
+3. Add or extend the shared scenario registry when the need will recur.
 4. Only temporarily edit source as a last resort. Revert those setup-only edits before final handoff unless the scenario generator itself is intentionally being committed.
 
 Scenario generation should be generic. It must support any class and level combination needed by the contract, not only the current feature under development. A scenario setup should record:
@@ -84,7 +93,7 @@ Scenario generation should be generic. It must support any class and level combi
 - the mechanic under test and the expected risk pressure
 - whether the save should be reused for observation only or regenerated each run
 
-Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. The wrapper command `scripts/heroband-playtest prepare-scenario <preset>` should create the isolated save and write a manifest next to it so the direct gameplay pass can report exactly what state was loaded.
+Prefer existing test, debug, wizard, or save/load hooks when they can create the fixture cleanly. If no hook exists, document the missing setup capability before adding new engine support. The wrapper command `scripts/heroband-playtest prepare-scenario <preset>` routes through `scripts/heroband-scenario-save`; extend that shared registry before adding another standalone shell script. A new class-specific shell script is justified only when the registry cannot express the setup without becoming unclear. The command should create the isolated save and write a manifest next to it so the direct gameplay pass can report exactly what state was loaded.
 
 The scenario command should accept parameters or named presets for:
 
@@ -134,6 +143,22 @@ scripts/heroband-playtest validate-evidence \
   --require general-l15-arrow-volley:'Archers harry the enemy line'
 ```
 
+## Evidence Root Lifecycle
+
+Use one clean active evidence root for the final verifier target, named like
+`/tmp/heroband-<feature>-evidence.XXXXXX`. Put each scenario in a child
+directory with its own `TEST_CONTRACT.md`, `SCENARIO_MANIFEST.md`, transcript,
+and captures. Write the final `PLAYTEST_REPORT.md` in the active root.
+
+Keep wrong-key runs, randomness failures, failed setup, and retries outside the
+active root, either as sibling `/tmp` directories or in an archive directory
+that is not passed to `validate-evidence`. Do not append failed attempts to the
+final scenario transcript. Before verifier review, always run:
+
+```sh
+scripts/heroband-playtest validate-evidence --state-dir "$EVIDENCE_ROOT"
+```
+
 ## Scenario-Save Matrix Template
 
 When planning gameplay, class-power, save/load, birth/UI, store, inventory, or
@@ -164,9 +189,9 @@ Use this shape in implementation plans and test contracts:
 
 Every generated scenario manifest should record the exact helper command, build
 path, save path, seed, inputs, expected invariant, and GCU actions. If a scenario
-needs support the helper lacks, extend `scripts/heroband-playtest
-prepare-scenario` or list the missing hook as a real blocker; do not replace the
-loaded-save pass with undocumented wizard setup.
+needs support the helper lacks, extend `scripts/heroband-scenario-save` and the
+underlying generator hook, or list the missing hook as a real blocker; do not
+replace the loaded-save pass with undocumented wizard setup.
 
 ## GCU Build
 
@@ -178,6 +203,8 @@ cmake --build build-gcu-test -j2
 ```
 
 The helper scripts below perform this setup when needed.
+Use `scripts/heroband-build-roots` when local build directories sprawl and you
+need to identify canonical, scratch, and legacy roots without deleting anything.
 
 ## Helper Scripts
 
@@ -192,7 +219,8 @@ scripts/heroband-playtest stop --state-dir "$STATE"
 
 All scripts live relative to this skill:
 
-- `scripts/heroband-playtest prepare-scenario corruption --state-dir "$STATE"`: generate a corruption scenario save and manifest using the repo scenario helper.
+- `scripts/heroband-playtest prepare-scenario corruption --state-dir "$STATE"`: generate a corruption scenario save and manifest through the shared scenario registry.
+- `scripts/heroband-scenario-save --list`: list registered scenario presets.
 - `scripts/heroband-playtest validate-evidence --state-dir "$EVIDENCE_ROOT"`: verify that a scenario evidence root has clean active directories, required contracts/manifests/transcripts, report citations, and optional required/forbidden transcript markers.
 - `scripts/start-playtest.sh`: require a contract, configure/build `build-gcu-test`, create isolated state, and launch Angband in tmux.
 - `scripts/capture-playtest.sh`: capture the pane and append a transcript.
@@ -231,8 +259,9 @@ If you do not use the scripts, preserve the same mechanics:
 ```sh
 STATE="$(mktemp -d /tmp/heroband-playtest.XXXXXX)"
 SESSION="heroband-playtest-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$STATE/user" "$STATE/save" "$STATE/panic" "$STATE/archive"
 HOME="$STATE" TERM=xterm-256color tmux new-session -d -s "$SESSION" -c "$PWD" \
-  "./build-gcu-test/game/angband -mgcu"
+  "./build-gcu-test/game/angband -duser='$STATE/user' -dsave='$STATE/save' -dpanic='$STATE/panic' -darchive='$STATE/archive' -mgcu"
 tmux capture-pane -p -t "$SESSION" | tail -n 40
 tmux send-keys -t "$SESSION" Space
 tmux send-keys -t "$SESSION" Enter

@@ -1,6 +1,6 @@
 # Player, Birth, Classes, and Timed Effects
 
-Version: 1.3.0
+Version: 1.3.1
 
 ## Overview
 
@@ -162,6 +162,9 @@ This system depends on:
 - Treat the Heroic Resolve Meter as one player-facing concept with separately testable internal contributors: resolve pressure from qualifying enemy pressure and Last Stand Tier from current hit point percentage.
 - Treat Vanguard resolve as passive scaling state rather than a spendable resource for the first full pass.
 - Keep Armor Mastery bounded and non-magical. Shields and heavy armor may improve defensive orders, but corrupt or cursed gear must not provide special Vanguard benefits.
+- Vanguard scenario-save validation should cover low-level smoke, enemy
+  pressure, abuse rejection, low-HP Last Stand contribution, combat save/load,
+  safe save/load, order-menu visibility, and moral-language regression.
 - Player-facing documentation, help, class tables, spell descriptions, and tests must remain consistent with playable behavior.
 
 ## Test Scenarios
@@ -195,7 +198,10 @@ This system depends on:
 - P-VANGUARD-008: Heal across low-hit-point thresholds during active combat and verify the Last Stand Tier contribution drops while valid resolve pressure charges remain.
 - P-VANGUARD-009: Let time pass with visible hostile monsters, then without active combat, then through level transition and safe rest-to-full; verify the expected slow decay, fast decay, and clear behavior.
 - P-VANGUARD-010: Compare defensive orders with shield/heavy armor, without shield, and in light armor; verify Armor Mastery enhances defensive orders only and does not require or reward cursed or corrupt gear.
-- P-VANGUARD-011: Load mid-level and deep scenario saves with hostile pressure and verify GCU-visible resolve tier, order messages, low-health state, and moral language match the deterministic assertions.
+- P-VANGUARD-011: Load low-level, mid-level, deep, combat-save, and safe-save
+  Vanguard scenario saves; verify GCU-visible resolve tiers, order menus,
+  low-health state, hostile and safe contexts, and moral language match the
+  deterministic assertions.
 - P-VANGUARD-012: Save and reload a Vanguard during active hostile pressure and in safe context; verify resolve pressure conditionally persists only when active combat remains valid and the Last Stand Tier is recalculated from current hit points.
 - P-PROGRESS-001: Gain and lose experience around level thresholds and verify level, maximum level, stat restoration, history, and redraw behavior.
 - P-PROGRESS-002: Increase stats below 18, between 18 and 18/99, at 18/99, and at 18/100; verify current and maximum stat results.
@@ -223,6 +229,8 @@ This system depends on:
 
 ## Changelog
 
+- 1.3.1: Clarified completed Vanguard scenario-save validation coverage and
+  made specs the durable source for Vanguard current behavior.
 - 1.3.0: Added the full Vanguard Heroic Resolve Meter direction: enemy-pressure
   charges, Last Stand Tier, non-spending order scaling, Armor Mastery, decay,
   healing, abuse-prevention, scenario-save, and save/load requirements.

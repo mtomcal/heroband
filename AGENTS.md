@@ -42,6 +42,12 @@ intended behavior, contract, terminology, or moral-access rule changes. Use
 `specs/PLAN.md` as historical extraction context, not as the primary source of
 truth for current behavior.
 
+For current gameplay behavior, class mechanics, save/load rules, build profiles,
+and terminology, prefer `specs/` as the source of truth. Use recent git history
+to understand what changed most recently, for example `git log --oneline -n 20
+-- specs src lib/gamedata scripts` and focused `git show` calls for relevant
+commits.
+
 When touching command dispatch, timed effects, command mode, or energy use,
 start from `specs/turn-engine.md` before broadening guidance in this file.
 When adding or changing domain terms in any spec, check
@@ -64,6 +70,8 @@ run it and observe the failure, implement the minimal fix, and rerun the test to
 green.
 
 Use `$heroband-playtest` from `.agents/skills/heroband-playtest/SKILL.md` for player-facing gameplay, terminal UI, birth flow, class power, store, inventory, spell, save/load, or Heroband moral-restriction changes. That skill requires a written test contract before tmux gameplay begins, then validates with deterministic tests plus a direct GCU/tmux gameplay pass when appropriate.
+
+Use `$heroband-play` from `.agents/skills/heroband-play/SKILL.md` when the user asks to compile or launch a playable Heroband build for hands-on use. It builds the GCU frontend through `scripts/heroband-play`, launches with an isolated save-preserving profile, and avoids raw default-save autoload failures such as `Broken savefile`.
 
 Use `$heroband-test-quality-verifier` from `.agents/skills/heroband-test-quality-verifier/SKILL.md` when adding or changing gameplay, class-power, birth, store, save/load, scenario-save, or moral-restriction tests. This repo-specific verifier checks for reward-hacking, setup that bypasses the behavior under test, and weak moral-compliance assertions.
 
@@ -281,16 +289,14 @@ cmake --build build -t alltests -j2
 
 If a machine uses local, non-system dependencies, keep those paths outside committed files or pass them through environment variables / CMake cache options locally. The `build` directory and local dependency caches should not be committed.
 
-## Current Heroband Notes
+For canonical build-root roles and local build sprawl inspection, use
+`specs/build-test.md` and `scripts/heroband-build-roots`.
 
-- General has a first draft implemented in the old Necromancer class slot. It uses tactics, morale, field commands, and temporary living allies rather than undead, spirits, demons, soul magic, necromancy, blood magic, shadow magic, or occult power.
-- Vanguard has a first draft implemented in the old Blackguard class slot. It uses courage, discipline, armor mastery, battlefield tactics, and heroic resolve rather than blood, shadow, demonic, necromantic, curse-benefit, life-drain, or occult power.
-- The old class-slot identifiers may still use `CLASS_NECROMANCER` internally for parser/class-ID stability; treat that as compatibility plumbing unless it exposes forbidden player-facing content.
-- The old Blackguard slot may still use legacy internal identifiers in source or save plumbing; treat those as compatibility details unless they expose forbidden player-facing content.
-- Shadow, nether, bloodlust, undead/demon summoning, and related player-beneficial mechanics still require follow-up review.
-- General has loaded-save GCU scenario coverage for low-level smoke, archer and Fighting Withdrawal, Arrow Volley, Glorious Charge, Marshal's Banner, banner cleanup across level transition, and moral-language regression. Future General playtests should keep failed/retry state directories outside the active evidence root and run `scripts/heroband-playtest validate-evidence` before verifier review.
-- Vanguard still needs loaded-save GCU scenario testing once generic scenario-save fixtures exist. Evaluate deep-floor book access, learned orders, frontline pressure, `Unbroken`, active `Last Stand`, and continued non-access to bloodlust, shadow, nether, life-drain, curse-benefit, demonic, necromantic, or occult player power.
-- A true passive low-health `Last Stand` mechanic is deferred until it can be implemented and tested without incentivizing intentional self-harm.
+## Current Context
+
+Do not use this file as a gameplay ledger. Current Heroband behavior belongs in
+`specs/`, with completed implementation plans and recent git history as
+supporting context.
 
 ## Appendix
 

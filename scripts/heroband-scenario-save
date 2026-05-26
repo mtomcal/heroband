@@ -1,0 +1,72 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	cat <<'EOF'
+Usage: scripts/heroband-scenario-save PRESET --state-dir DIR [options]
+       scripts/heroband-scenario-save --list
+
+Generate an isolated Heroband scenario save and manifest by routing PRESET
+through the shared scenario registry.
+EOF
+}
+
+list_presets() {
+	cat <<'EOF'
+corruption
+corruption-smoke
+general-l01-smoke
+general-l07-archer-withdrawal
+general-l15-arrow-volley
+general-l30-charge-banner
+general-l45-banner-cleanup
+general-moral-regression
+vanguard-l01-birth-smoke
+vanguard-l20-enemy-pressure
+vanguard-l20-abuse-rejection
+vanguard-l40-last-stand
+vanguard-l35-resolve-save-load
+vanguard-l35-resolve-safe-load
+EOF
+}
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
+
+if [ "$#" -lt 1 ]; then
+	usage >&2
+	exit 2
+fi
+
+preset=$1
+shift
+
+case "$preset" in
+	-h|--help|help)
+		usage
+		exit 0
+		;;
+	--list|list)
+		list_presets
+		exit 0
+		;;
+	corruption|corruption-smoke)
+		exec "$repo_root/scripts/heroband-corruption-scenario-save" "$@"
+		;;
+	general-l01-smoke|general-l07-archer-withdrawal|\
+	general-l15-arrow-volley|general-l30-charge-banner|\
+	general-l45-banner-cleanup|general-moral-regression)
+		exec "$repo_root/scripts/heroband-general-scenario-save" "$preset" "$@"
+		;;
+	vanguard-l01-birth-smoke|vanguard-l20-enemy-pressure|\
+	vanguard-l20-abuse-rejection|vanguard-l40-last-stand|\
+	vanguard-l35-resolve-save-load|vanguard-l35-resolve-safe-load)
+		exec "$repo_root/scripts/heroband-vanguard-scenario-save" "$preset" "$@"
+		;;
+	*)
+		echo "Unknown scenario preset: $preset" >&2
+		echo "Known presets:" >&2
+		list_presets >&2
+		exit 2
+		;;
+esac
