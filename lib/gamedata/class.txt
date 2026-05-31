@@ -1476,10 +1476,10 @@ spell:Stand Firm:3:2:20:4
 effect:CURE:AFRAID
 effect:TIMED_INC:HERO
 dice:15+d15
-effect:TIMED_INC:SHIELD
+effect:TIMED_INC:BLESSED
 dice:15+d15
 desc:Steadies your courage and guard, removing fear and granting
-desc: temporary heroism and protection.
+desc: temporary heroism and a blessed guard.
 
 spell:Whirlwind Attack:5:4:25:6
 effect:SWEEP

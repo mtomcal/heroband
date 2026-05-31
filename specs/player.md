@@ -94,6 +94,7 @@ This system depends on:
 - Healing immediately reduces the Last Stand Tier if hit points cross a threshold, but healing does not erase valid resolve pressure charges while active combat remains. Test scenario: P-VANGUARD-008.
 - Heroic Resolve Meter decay must be fight-local: pressure charges decay faster out of combat, slower in combat, and clear on level transition or safe rest-to-full. Test scenario: P-VANGUARD-009.
 - Armor Mastery must enhance defensive orders such as Stand Firm, Unbroken, Brace for Impact, and possibly Defend the Weak when the player has a shield or heavy armor. It must not require cursed or corrupt gear, must not reward ordinary curses, and must never be a hard requirement for basic resolve benefits. Test scenario: P-VANGUARD-010.
+- Early Vanguard defense must stay bounded: Stand Firm may steady courage and grant modest guard benefits, but it must not hand out full Shield-level protection at low spell levels. Heavier shielded protection belongs to later defensive orders. Test scenario: P-VANGUARD-013.
 - Birth menus must display only playable classes and must submit canonical class choices, not visible row numbers. Test scenario: P-BIRTH-007.
 - Random class completion must select only playable classes and must submit the selected canonical class identity. Test scenario: P-BIRTH-008.
 - Point-based birth must start all intrinsic stats at base 10, spend from the point budget, disallow invalid stat choices, disallow buying above base 18, disallow selling below base 10, and recalculate displayed derived values after accepted changes. Test scenario: P-BIRTH-009.
@@ -203,6 +204,7 @@ This system depends on:
   low-health state, hostile and safe contexts, and moral language match the
   deterministic assertions.
 - P-VANGUARD-012: Save and reload a Vanguard during active hostile pressure and in safe context; verify resolve pressure conditionally persists only when active combat remains valid and the Last Stand Tier is recalculated from current hit points.
+- P-VANGUARD-013: Cast Stand Firm on an early Vanguard and verify it grants courage plus a modest defensive buff without applying full Shield-level protection; later defensive orders still grant Shield where authored.
 - P-PROGRESS-001: Gain and lose experience around level thresholds and verify level, maximum level, stat restoration, history, and redraw behavior.
 - P-PROGRESS-002: Increase stats below 18, between 18 and 18/99, at 18/99, and at 18/100; verify current and maximum stat results.
 - P-PROGRESS-003: Temporarily and permanently drain stats at low, normal, and high values; verify floors, maximum changes, and recalculation flags.
@@ -229,6 +231,8 @@ This system depends on:
 
 ## Changelog
 
+- 1.3.2: Bounded early Stand Firm defense so low-level Vanguard protection
+  remains modest while later orders retain full Shield access.
 - 1.3.1: Clarified completed Vanguard scenario-save validation coverage and
   made specs the durable source for Vanguard current behavior.
 - 1.3.0: Added the full Vanguard Heroic Resolve Meter direction: enemy-pressure

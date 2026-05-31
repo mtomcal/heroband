@@ -438,8 +438,9 @@ static int assert_order_list_is_clean(void)
 
 static int assert_resolve_orders_activate_clean_buffs(void)
 {
-	require(cast_until_active("Stand Firm", TMD_SHIELD));
+	require(cast_until_active("Stand Firm", TMD_BLESSED));
 	require(player->timed[TMD_HERO] > 0);
+	eq(player->timed[TMD_SHIELD], 0);
 
 	require(cast_until_active("Combat Discipline", TMD_OPP_CONF));
 	require(player->timed[TMD_FREE_ACT] > 0);
@@ -527,8 +528,8 @@ static int assert_resolve_passive_and_first_orders_scale(void)
 	struct player_state base_state;
 	struct player_state high_state;
 	int spell;
-	int base_shield;
-	int high_shield;
+	int base_guard;
+	int high_guard;
 	int base_blessed;
 	int high_blessed;
 
@@ -542,14 +543,19 @@ static int assert_resolve_passive_and_first_orders_scale(void)
 	rand_fix(50);
 	player->chp = player->mhp;
 	vanguard_resolve_clear(player);
-	require(cast_until_active("Stand Firm", TMD_SHIELD));
-	base_shield = player->timed[TMD_SHIELD];
-	build_full_pressure();
-	player->timed[TMD_SHIELD] = 0;
+	player->timed[TMD_BLESSED] = 0;
 	player->timed[TMD_HERO] = 0;
-	require(cast_until_active("Stand Firm", TMD_SHIELD));
-	high_shield = player->timed[TMD_SHIELD];
-	require(high_shield > base_shield);
+	player->timed[TMD_SHIELD] = 0;
+	require(cast_until_active("Stand Firm", TMD_BLESSED));
+	base_guard = player->timed[TMD_BLESSED];
+	eq(player->timed[TMD_SHIELD], 0);
+	build_full_pressure();
+	player->timed[TMD_BLESSED] = 0;
+	player->timed[TMD_HERO] = 0;
+	require(cast_until_active("Stand Firm", TMD_BLESSED));
+	high_guard = player->timed[TMD_BLESSED];
+	eq(player->timed[TMD_SHIELD], 0);
+	require(high_guard > base_guard);
 	eq(vanguard_resolve_pressure(player), 4);
 
 	player->chp = player->mhp;
