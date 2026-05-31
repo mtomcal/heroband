@@ -28,15 +28,15 @@ Recent Heroband changes include:
 ## Downloads
 
 The current prerelease is
-[Heroband 0.3.0](https://github.com/mtomcal/heroband/releases/tag/heroband-0.3.0).
+[Heroband 0.3.1](https://github.com/mtomcal/heroband/releases/tag/heroband-0.3.1).
 
-- **Linux x86_64:** download `heroband-0.3.0-linux-x86_64.tar.gz`, extract it,
+- **Linux x86_64:** download `heroband-0.3.1-linux-x86_64.tar.gz`, extract it,
   and run `./angband` from the extracted directory.
-- **Source package:** download `heroband-0.3.0-source.tar.gz`. This archive
+- **Source package:** download `heroband-0.3.1-source.tar.gz`. This archive
   includes generated autotools files (`configure` and `src/autoconf.h.in`) as
   well as the CMake build files.
-- **Checksums:** download `heroband-0.3.0-checksums.txt` and verify with
-  `sha256sum -c heroband-0.3.0-checksums.txt`.
+- **Checksums:** download `heroband-0.3.1-checksums.txt` and verify with
+  `sha256sum -c heroband-0.3.1-checksums.txt`.
 
 - **How to Play:** [The Heroband Manual](https://mtomcal.github.io/heroband/)
 - **Compile it yourself:** [Building from source](https://mtomcal.github.io/heroband/hacking/compiling.html)

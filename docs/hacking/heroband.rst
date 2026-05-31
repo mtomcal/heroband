@@ -64,7 +64,7 @@ would be too indirect.
 Release Packaging
 =================
 
-Heroband releases are published from GitHub Releases.  Heroband 0.1.0 includes
+Heroband releases are published from GitHub Releases.  Heroband 0.3.1 includes
 a Linux x86_64 playable archive, a source archive, and SHA-256 checksums.
 
 The attached source archive is prepared from tracked files and then runs
@@ -83,5 +83,5 @@ manifest so it matches the downloadable files:
 
 .. code-block:: sh
 
-   sha256sum heroband-0.1.0-source.tar.gz \
-     heroband-0.1.0-linux-x86_64.tar.gz > heroband-0.1.0-checksums.txt
+   sha256sum heroband-0.3.1-source.tar.gz \
+     heroband-0.3.1-linux-x86_64.tar.gz > heroband-0.3.1-checksums.txt
